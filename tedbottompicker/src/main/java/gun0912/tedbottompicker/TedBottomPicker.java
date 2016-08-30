@@ -35,7 +35,7 @@ import java.util.Locale;
 
 import gun0912.tedbottompicker.adapter.ImageGalleryAdapter;
 
-public class CustomBottomSheetDialogFragment extends BottomSheetDialogFragment {
+public class TedBottomPicker extends BottomSheetDialogFragment {
 
     public static final String TAG = "ted";
     static final int REQ_CODE_CAMERA = 1;
@@ -336,7 +336,7 @@ public class CustomBottomSheetDialogFragment extends BottomSheetDialogFragment {
             return this;
         }
 
-        public CustomBottomSheetDialogFragment create() {
+        public TedBottomPicker create() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
                     && ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 throw new RuntimeException("Missing required WRITE_EXTERNAL_STORAGE permission. Did you remember to request it first?");
@@ -346,7 +346,7 @@ public class CustomBottomSheetDialogFragment extends BottomSheetDialogFragment {
                 throw new RuntimeException("You have to setOnImageSelectedListener() for receive selected Uri");
             }
 
-            CustomBottomSheetDialogFragment customBottomSheetDialogFragment = new CustomBottomSheetDialogFragment();
+            TedBottomPicker customBottomSheetDialogFragment = new TedBottomPicker();
 
             customBottomSheetDialogFragment.builder = this;
             return customBottomSheetDialogFragment;

@@ -16,7 +16,7 @@ import com.gun0912.tedpermission.TedPermission;
 
 import java.util.ArrayList;
 
-import gun0912.tedbottompicker.CustomBottomSheetDialogFragment;
+import gun0912.tedbottompicker.TedBottomPicker;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onPermissionGranted() {
 
-                        CustomBottomSheetDialogFragment bottomSheetDialogFragment = new CustomBottomSheetDialogFragment.Builder(MainActivity.this)
-                                .setOnImageSelectedListener(new CustomBottomSheetDialogFragment.OnImageSelectedListener() {
+                        TedBottomPicker tedBottomPicker = new TedBottomPicker.Builder(MainActivity.this)
+                                .setOnImageSelectedListener(new TedBottomPicker.OnImageSelectedListener() {
                                     @Override
                                     public void onImageSelected(Uri uri) {
                                         Log.d("ted","uri: "+uri);
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                                 .setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
                                 .create();
 
-                        bottomSheetDialogFragment.show(getSupportFragmentManager());
+                        tedBottomPicker.show(getSupportFragmentManager());
 
                     }
 
