@@ -35,22 +35,13 @@ If you want pick image from gallery or take picture, this library can help easil
 
 
 ###Gradle
-Get library from  [jitpack.io](https://jitpack.io/)
 ```javascript
 
-repositories {
-    
-    maven { url "https://jitpack.io" }
-
-}
-
 dependencies {
-    compile 'com.github.ParkSangGwon:tedbottompicker:1.0.1'
+    compile 'gun0912.ted:tedbottompicker:1.0.0'
 }
 
 ```
-
-
 
 <br/><br/>
 
