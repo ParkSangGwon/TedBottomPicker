@@ -21,7 +21,7 @@ If you want pick image from gallery or take picture, this library can help easil
 
 ##Demo
 
-![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/ScreenShot2.jpeg?raw=true)    ![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/ScreenShot.gif?raw=true)    
+![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/screenshot1.jpeg?raw=true)    ![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/demo.gif?raw=true)    
            
            
 1. Show Bottom Sheet.
@@ -69,7 +69,7 @@ I recommend [TedPermission](https://github.com/ParkSangGwon/TedPermission)<br/>
 
 ###2. Start TedBottomPicker
 **TedBottomPicker** class extend `BottomSheetDialogFragment`.<br/>
-`TedBottomPicker.Builder' make `new TedBottomPicker()`.<br/>
+`TedBottomPicker.Builder` make `new TedBottomPicker()`.<br/>
 After then, you can show TedBottomPicker<br/>
 
 
@@ -102,17 +102,25 @@ You can customize something ...<br />
 
 ###Function
 
+
+
 * `setMaxCount(Int) (default: 25)`
 * `setPeekHeight(Int)`
 * `setPeekHeightResId(R.dimen.xxx)`
 * `showCameraTile(Boolean) (default: true)`
-* `showGalleryTile(Boolean) (default: true)`
 * `setCameraTile(R.drawable.xxx or Drawable)`
+* `setCameraTileBackgroundResId(R.color.xxx)`
 * `setGalleryTile(R.drawable.xxx or Drawable)`
+* `showGalleryTile(Boolean) (default: true)`
+* `setGalleryTileBackgroundResId(R.color.xxx)`
 * `setSpacing(Int)`
 * `setSpacingResId(R.dimen.xxx)`
 * `setOnErrorListener(OnErrorListener)`
-
+* `setTitle(String or R.string.xxx) (default: 'Select Image','사진 선택')`
+* `showTitle(Boolean) (default: true)`
+* `setTitleBackgroundResId(R.color.xxx)`
+* `setImageProvider(ImageProvider)`
+: If you want load grid image yourself, you can use your ImageProvider
 
 <br/><br/>
 
