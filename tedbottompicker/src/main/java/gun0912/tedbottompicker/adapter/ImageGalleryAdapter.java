@@ -2,7 +2,6 @@ package gun0912.tedbottompicker.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.IntDef;
@@ -15,9 +14,12 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 import gun0912.tedbottompicker.R;
+import gun0912.tedbottompicker.TedBottomPicker;
 import gun0912.tedbottompicker.view.TedSquareFrameLayout;
 import gun0912.tedbottompicker.view.TedSquareImageView;
 
@@ -27,34 +29,23 @@ import gun0912.tedbottompicker.view.TedSquareImageView;
 public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapter.GalleryViewHolder> {
 
 
-    protected boolean showCamera = true;
-    protected boolean showGallery = true;
-    Drawable cameraTileDrawable;
-    Drawable galleryTileDrawable;
     ArrayList<PickerTile> pickerTiles;
     Context context;
+    TedBottomPicker.Builder builder;
     OnItemClickListener onItemClickListener;
 
-    public ImageGalleryAdapter(Context context
-            , int maxCount
-            , Drawable cameraTileDrawable
-            , Drawable galleryTileDrawable
-            , Boolean showCamera
-            , Boolean showGallery) {
+    public ImageGalleryAdapter(Context context, TedBottomPicker.Builder builder) {
 
         this.context = context;
-        this.cameraTileDrawable = cameraTileDrawable;
-        this.galleryTileDrawable = galleryTileDrawable;
-        this.showCamera = showCamera;
-        this.showGallery = showGallery;
+        this.builder = builder;
 
         pickerTiles = new ArrayList<PickerTile>();
 
-        if (showCamera) {
+        if (builder.showCamera) {
             pickerTiles.add(new PickerTile(PickerTile.CAMERA));
         }
 
-        if (showGallery) {
+        if (builder.showGallery) {
             pickerTiles.add(new PickerTile(PickerTile.GALLERY));
         }
 
@@ -71,8 +62,8 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
             if (imageCursor != null) {
 
                 int count = 0;
-                while (imageCursor.moveToNext() && count < maxCount) {
-                    String imageLocation=imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                while (imageCursor.moveToNext() && count < builder.maxCount) {
+                    String imageLocation = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
                     File imageFile = new File(imageLocation);
                     pickerTiles.add(new PickerTile(Uri.fromFile(imageFile)));
                     count++;
@@ -98,42 +89,46 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         final GalleryViewHolder holder = new GalleryViewHolder(view);
 
 
-
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(final GalleryViewHolder holder,final int position) {
+    public void onBindViewHolder(final GalleryViewHolder holder, final int position) {
 
         PickerTile pickerTile = getItem(position);
 
 
         if (pickerTile.isCameraTile()) {
-
-            holder.iv_thumbnail.setImageDrawable(cameraTileDrawable);
+            holder.iv_thumbnail.setBackgroundResource(builder.cameraTileBackgroundResId);
+            holder.iv_thumbnail.setImageDrawable(builder.cameraTileDrawable);
         } else if (pickerTile.isGalleryTile()) {
-            holder.iv_thumbnail.setImageDrawable(galleryTileDrawable);
+            holder.iv_thumbnail.setBackgroundResource(builder.galleryTileBackgroundResId);
+            holder.iv_thumbnail.setImageDrawable(builder.galleryTileDrawable);
 
         } else {
-
             Uri uri = pickerTile.getImageUri();
-            Glide.with(context)
-                    .load(uri)
-                    .thumbnail(0.1f)
-                    .dontAnimate()
-                    .centerCrop()
-                    .placeholder(R.drawable.ic_gallery)
-                    .error(R.drawable.img_error)
-                    .into(holder.iv_thumbnail);
+            if (builder.imageProvider == null) {
+                Glide.with(context)
+                        .load(uri)
+                        .thumbnail(0.1f)
+                        .dontAnimate()
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_gallery)
+                        .error(R.drawable.img_error)
+                        .into(holder.iv_thumbnail);
+            } else {
+                builder.imageProvider.onProvideImage(holder.iv_thumbnail, uri);
+            }
+
+
         }
 
 
-
-        if(onItemClickListener!=null){
+        if (onItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onItemClickListener.onItemClick(holder.itemView,position);
+                    onItemClickListener.onItemClick(holder.itemView, position);
                 }
             });
         }
@@ -156,6 +151,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
     public interface OnItemClickListener {
         public void onItemClick(View view, int position);
     }
+
 
     public static class PickerTile {
 
@@ -216,10 +212,12 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         }
 
         @IntDef({IMAGE, CAMERA, GALLERY})
+        @Retention(RetentionPolicy.SOURCE)
         public @interface TileType {
         }
 
         @IntDef({CAMERA, GALLERY})
+        @Retention(RetentionPolicy.SOURCE)
         public @interface SpecialTileType {
         }
     }

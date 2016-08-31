@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onPermissionGranted() {
 
-                        TedBottomPicker tedBottomPicker = new TedBottomPicker.Builder(MainActivity.this)
+                        TedBottomPicker bottomSheetDialogFragment = new TedBottomPicker.Builder(MainActivity.this)
                                 .setOnImageSelectedListener(new TedBottomPicker.OnImageSelectedListener() {
                                     @Override
                                     public void onImageSelected(Uri uri) {
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                                 .setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
                                 .create();
 
-                        tedBottomPicker.show(getSupportFragmentManager());
+                        bottomSheetDialogFragment.show(getSupportFragmentManager());
 
                     }
 
