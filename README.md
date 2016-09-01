@@ -2,11 +2,11 @@
 
 
 #What is TedBottomPicker?
-In Google's Material Design, Google introduce **Bottom sheets**.([Components– Bottom sheets](https://material.google.com/components/bottom-sheets.html))<br/>
+In Google's Material Design, Google introduce **Bottom sheets**.([Components – Bottom sheets](https://material.google.com/components/bottom-sheets.html))<br/>
 **Bottom sheets** slide up from the bottom of the screen to reveal more content.
 
 If you want pick image from gallery or take picture, this library can help easily.<br/>
-**TedBottomPicker** provide 3options: <br/>
+**TedBottomPicker** provide 3 options: <br/>
 
 1. Take a picture by camera(using `MediaStore.ACTION_IMAGE_CAPTURE` intent)
 2. Get image from gallery(using `Intent.ACTION_PICK` intent)
