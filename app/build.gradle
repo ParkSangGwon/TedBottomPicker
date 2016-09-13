@@ -22,7 +22,6 @@ android {
 
 repositories {
 
-    maven { url "https://jitpack.io" }
 
 }
 
@@ -32,5 +31,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.0'
     compile project(':tedbottompicker')
 
-    compile 'com.github.ParkSangGwon:TedPermission:v1.0.12'
+    compile 'gun0912.ted:tedpermission:1.0.0'
 }

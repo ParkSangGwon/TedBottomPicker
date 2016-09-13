@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:textSize="16sp"
-        android:text="@string/tedbottomsheet_title"
+        android:text="@string/tedbottompicker_title"
         />
 
 

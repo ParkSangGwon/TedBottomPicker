@@ -71,9 +71,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     public void show(FragmentManager fragmentManager) {
 
-
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-
+       FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.add(this, getTag());
         ft.commitAllowingStateLoss();
     }
@@ -94,7 +92,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
-        View contentView = View.inflate(getContext(), R.layout.bottom_sheet_dialog_content_view, null);
+        View contentView = View.inflate(getContext(), R.layout.tedbottompicker_content_view, null);
         dialog.setContentView(contentView);
         CoordinatorLayout.LayoutParams layoutParams =
                 (CoordinatorLayout.LayoutParams) ((View) contentView.getParent()).getLayoutParams();
@@ -296,8 +294,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         public  boolean showCamera = true;
         public boolean showGallery = true;
         public int peekHeight=-1;
-        public int cameraTileBackgroundResId =R.color.camera;
-        public int galleryTileBackgroundResId =R.color.gallery;
+        public int cameraTileBackgroundResId =R.color.tedbottompicker_camera;
+        public int galleryTileBackgroundResId =R.color.tedbottompicker_gallery;
 
         public String title;
         public boolean showTitle=true;
@@ -309,7 +307,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
             setCameraTile(R.drawable.ic_camera);
             setGalleryTile(R.drawable.ic_gallery);
-            setSpacingResId(R.dimen.grid_layout_margin);
+            setSpacingResId(R.dimen.tedbottompicker_grid_layout_margin);
         }
 
         public Builder setMaxCount(int maxCount) {

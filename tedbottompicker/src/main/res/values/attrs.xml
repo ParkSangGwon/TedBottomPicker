@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="TedImageView">
+    <declare-styleable name="TedBottomPickerImageView">
         <attr name="foreground" format="reference"/>
         <attr name="fit_mode" format="string"/>
     </declare-styleable>
 
 
 
-    <declare-styleable name="TedSquareView">
+    <declare-styleable name="TedBottomPickerSquareView">
         <attr name="matchHeightToWidth" format="boolean"/>
         <attr name="matchWidthToHeight" format="boolean"/>
     </declare-styleable>

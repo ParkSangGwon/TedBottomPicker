@@ -27,17 +27,17 @@ public class TedSquareImageView extends ImageView {
 
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
-                R.styleable.TedImageView,
+                R.styleable.TedBottomPickerImageView,
                 0, 0);
 
-        Drawable foreground = a.getDrawable(R.styleable.TedImageView_foreground);
+        Drawable foreground = a.getDrawable(R.styleable.TedBottomPickerImageView_foreground);
         if (foreground != null) {
             setForeground(foreground);
         }
 
 
         try {
-            fit_mode = a.getString(R.styleable.TedImageView_fit_mode);
+            fit_mode = a.getString(R.styleable.TedBottomPickerImageView_fit_mode);
 
         } finally {
             a.recycle();

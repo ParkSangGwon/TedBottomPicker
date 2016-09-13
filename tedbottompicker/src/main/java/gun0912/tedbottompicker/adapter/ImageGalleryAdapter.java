@@ -85,7 +85,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
     @Override
     public GalleryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = View.inflate(context, R.layout.grid_item, null);
+        View view = View.inflate(context, R.layout.tedbottompicker_grid_item, null);
         final GalleryViewHolder holder = new GalleryViewHolder(view);
 
 

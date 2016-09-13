@@ -1,4 +1,4 @@
 <resources>
 
-    <string name="tedbottomsheet_title">Select Image</string>
+    <string name="tedbottompicker_title">Select Image</string>
 </resources>

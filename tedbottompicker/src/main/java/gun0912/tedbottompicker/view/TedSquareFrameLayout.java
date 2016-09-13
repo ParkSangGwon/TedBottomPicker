@@ -25,12 +25,12 @@ public class TedSquareFrameLayout extends FrameLayout {
 
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
-                R.styleable.TedSquareView,
+                R.styleable.TedBottomPickerSquareView,
                 0, 0);
 
         try {
-            mMatchHeightToWidth = a.getBoolean(R.styleable.TedSquareView_matchHeightToWidth, false);
-            mMatchWidthToHeight = a.getBoolean(R.styleable.TedSquareView_matchWidthToHeight, false);
+            mMatchHeightToWidth = a.getBoolean(R.styleable.TedBottomPickerSquareView_matchHeightToWidth, false);
+            mMatchWidthToHeight = a.getBoolean(R.styleable.TedBottomPickerSquareView_matchWidthToHeight, false);
         } finally {
             a.recycle();
         }
