@@ -15,7 +15,7 @@ import gun0912.tedbottompicker.R;
  */
 public class TedSquareImageView extends ImageView {
 
-    String fit_mode;
+    private String fitMode;
     private Drawable foreground;
 
     public TedSquareImageView(Context context) {
@@ -35,39 +35,29 @@ public class TedSquareImageView extends ImageView {
             setForeground(foreground);
         }
 
-
         try {
-            fit_mode = a.getString(R.styleable.TedBottomPickerImageView_fit_mode);
-
+            fitMode = a.getString(R.styleable.TedBottomPickerImageView_fit_mode);
         } finally {
             a.recycle();
         }
     }
-
 
     //Squares the thumbnail
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-
-        if ("height".equals(fit_mode)) {
+        if ("height".equals(fitMode)) {
             setMeasuredDimension(heightMeasureSpec, heightMeasureSpec);
-
         } else {
             setMeasuredDimension(widthMeasureSpec, widthMeasureSpec);
-
         }
-
 
         if (foreground != null) {
             foreground.setBounds(0, 0, getMeasuredWidth(), getMeasuredHeight());
             invalidate();
         }
-
-
     }
-
 
     /**
      * Supply a Drawable that is to be rendered on top of all of the child views
@@ -95,7 +85,6 @@ public class TedSquareImageView extends ImageView {
         requestLayout();
         invalidate();
     }
-
 
     @Override
     protected boolean verifyDrawable(Drawable who) {
@@ -134,6 +123,4 @@ public class TedSquareImageView extends ImageView {
             foreground.draw(canvas);
         }
     }
-
-
 }

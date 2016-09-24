@@ -12,7 +12,6 @@ import gun0912.tedbottompicker.R;
  */
 public class TedSquareFrameLayout extends FrameLayout {
 
-
     private static boolean mMatchHeightToWidth;
     private static boolean mMatchWidthToHeight;
 
@@ -36,28 +35,24 @@ public class TedSquareFrameLayout extends FrameLayout {
         }
     }
 
-
-
     //Squares the thumbnail
     @Override
-    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec){
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-      //  Dlog.w("start: "+widthMeasureSpec+"x"+heightMeasureSpec);
-        if(mMatchHeightToWidth){
+
+        if (mMatchHeightToWidth) {
             setMeasuredDimension(widthMeasureSpec, widthMeasureSpec);
-        } else if(mMatchWidthToHeight){
+        } else if (mMatchWidthToHeight) {
             setMeasuredDimension(heightMeasureSpec, heightMeasureSpec);
         }
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-
-        if(mMatchHeightToWidth){
-            super.onSizeChanged(w, w,oldw,oldh);
-        } else if(mMatchWidthToHeight){
-            super.onSizeChanged(h, h,oldw,oldh);
+        if (mMatchHeightToWidth) {
+            super.onSizeChanged(w, w, oldw, oldh);
+        } else if (mMatchWidthToHeight) {
+            super.onSizeChanged(h, h, oldw, oldh);
         }
-
     }
 }

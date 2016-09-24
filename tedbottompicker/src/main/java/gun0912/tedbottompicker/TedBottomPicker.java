@@ -52,30 +52,25 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     private RecyclerView rc_gallery;
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
 
-
         @Override
         public void onStateChanged(@NonNull View bottomSheet, int newState) {
-
             if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                 dismiss();
             }
-
         }
 
         @Override
         public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
         }
     };
+
     private Uri cameraImageUri;
 
     public void show(FragmentManager fragmentManager) {
-
-       FragmentTransaction ft = fragmentManager.beginTransaction();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.add(this, getTag());
         ft.commitAllowingStateLoss();
     }
-
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -85,8 +80,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(View contentView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(contentView, savedInstanceState);
-
-
     }
 
     @Override
@@ -99,11 +92,10 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
         if (behavior != null && behavior instanceof BottomSheetBehavior) {
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetBehaviorCallback);
-            if(builder.peekHeight>0){
+            if (builder.peekHeight > 0) {
                 // ((BottomSheetBehavior) behavior).setPeekHeight(1500);
                 ((BottomSheetBehavior) behavior).setPeekHeight(builder.peekHeight);
             }
-
         }
 
         rc_gallery = (RecyclerView) contentView.findViewById(R.id.rc_gallery);
@@ -113,14 +105,9 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         setTitle();
     }
 
-
-
     private void setRecyclerView() {
-
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
         rc_gallery.setLayoutManager(gridLayoutManager);
-
-
         rc_gallery.addItemDecoration(new GridSpacingItemDecoration(gridLayoutManager.getSpanCount(), builder.spacing, false));
 
         imageGalleryAdapter = new ImageGalleryAdapter(
@@ -142,37 +129,30 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
                         break;
                     case ImageGalleryAdapter.PickerTile.IMAGE:
                         complete(pickerTile.getImageUri());
-
                         break;
-
                     default:
                         errorMessage();
                 }
-
             }
         });
     }
 
     private void setTitle() {
-
-        if(!builder.showTitle){
+        if (!builder.showTitle) {
             tv_title.setVisibility(View.GONE);
             return;
         }
 
-        if(!TextUtils.isEmpty(builder.title)){
+        if (!TextUtils.isEmpty(builder.title)) {
             tv_title.setText(builder.title);
         }
 
-        if(builder.titleBackgroundResId>0){
+        if (builder.titleBackgroundResId > 0) {
             tv_title.setBackgroundResource(builder.titleBackgroundResId);
         }
-
     }
 
-
     private void complete(Uri uri) {
-        //uri = Uri.parse(uri.toString());
         builder.onImageSelectedListener.onImageSelected(uri);
         dismiss();
     }
@@ -187,7 +167,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         File imageFile = getImageFile();
         cameraInent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageFile));
         startActivityForResult(cameraInent, REQ_CODE_CAMERA);
-
     }
 
     private void startGalleryIntent() {
@@ -198,7 +177,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         }
 
         startActivityForResult(galleryIntent, REQ_CODE_GALLERY);
-
     }
 
     private File getImageFile() {
@@ -209,13 +187,11 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             String imageFileName = "JPEG_" + timeStamp + "_";
             File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
-
             imageFile = File.createTempFile(
                     imageFileName,  /* prefix */
                     ".jpg",         /* suffix */
                     storageDir      /* directory */
             );
-
 
             // Save a file: path for use with ACTION_VIEW intents
             cameraImageUri = Uri.fromFile(imageFile);
@@ -223,7 +199,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             e.printStackTrace();
             errorMessage("Could not create imageFile for camera");
         }
-
 
         return imageFile;
     }
@@ -241,7 +216,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             } else if (requestCode == REQ_CODE_CAMERA) {
                 // Do something with imagePath
                 selectedImageUri = cameraImageUri;
-                MediaScannerConnection.scanFile(getContext(), new String[]{selectedImageUri.getPath()}, new String[]{"image/jpeg"},null);
+                MediaScannerConnection.scanFile(getContext(), new String[]{selectedImageUri.getPath()}, new String[]{"image/jpeg"}, null);
             }
 
             if (selectedImageUri != null) {
@@ -250,7 +225,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
                 errorMessage();
             }
         }
-
     }
 
     private void errorMessage() {
@@ -266,7 +240,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             builder.onErrorListener.onError(errorMessage);
         }
     }
-
 
     public interface OnImageSelectedListener {
         void onImageSelected(Uri uri);
@@ -291,18 +264,17 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         public OnImageSelectedListener onImageSelectedListener;
         public OnErrorListener onErrorListener;
         public ImageProvider imageProvider;
-        public  boolean showCamera = true;
+        public boolean showCamera = true;
         public boolean showGallery = true;
-        public int peekHeight=-1;
-        public int cameraTileBackgroundResId =R.color.tedbottompicker_camera;
-        public int galleryTileBackgroundResId =R.color.tedbottompicker_gallery;
+        public int peekHeight = -1;
+        public int cameraTileBackgroundResId = R.color.tedbottompicker_camera;
+        public int galleryTileBackgroundResId = R.color.tedbottompicker_gallery;
 
         public String title;
-        public boolean showTitle=true;
+        public boolean showTitle = true;
         public int titleBackgroundResId;
 
         public Builder(@NonNull Context context) {
-
             this.context = context;
 
             setCameraTile(R.drawable.ic_camera);
@@ -375,40 +347,40 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             return this;
         }
 
-        public Builder setCameraTileBackgroundResId(@ColorRes int colorResId){
-            this.cameraTileBackgroundResId =colorResId;
-            return this;
-        }
-        public Builder setGalleryTileBackgroundResId(@ColorRes int colorResId){
-            this.galleryTileBackgroundResId =colorResId;
+        public Builder setCameraTileBackgroundResId(@ColorRes int colorResId) {
+            this.cameraTileBackgroundResId = colorResId;
             return this;
         }
 
-        public Builder setTitle(String title){
-            this.title=title;
+        public Builder setGalleryTileBackgroundResId(@ColorRes int colorResId) {
+            this.galleryTileBackgroundResId = colorResId;
             return this;
         }
 
-        public Builder setTitle(@StringRes int stringResId){
-            this.title=context.getResources().getString(stringResId);
+        public Builder setTitle(String title) {
+            this.title = title;
             return this;
         }
 
-        public Builder showTitle(boolean showTitle){
-            this.showTitle=showTitle;
+        public Builder setTitle(@StringRes int stringResId) {
+            this.title = context.getResources().getString(stringResId);
             return this;
         }
 
-        public Builder setTitleBackgroundResId(@ColorRes int colorResId){
-            this.titleBackgroundResId =colorResId;
+        public Builder showTitle(boolean showTitle) {
+            this.showTitle = showTitle;
             return this;
         }
 
-        public Builder setImageProvider(ImageProvider imageProvider){
+        public Builder setTitleBackgroundResId(@ColorRes int colorResId) {
+            this.titleBackgroundResId = colorResId;
+            return this;
+        }
+
+        public Builder setImageProvider(ImageProvider imageProvider) {
             this.imageProvider = imageProvider;
             return this;
         }
-
 
         public TedBottomPicker create() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
@@ -425,10 +397,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             customBottomSheetDialogFragment.builder = this;
             return customBottomSheetDialogFragment;
         }
-
-
-
-
     }
 
 

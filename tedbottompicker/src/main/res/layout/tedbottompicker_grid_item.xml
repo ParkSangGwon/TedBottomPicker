@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <gun0912.tedbottompicker.view.TedSquareFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
@@ -7,18 +6,11 @@
     android:layout_height="wrap_content"
     android:background="#ccc"
     android:foreground="?android:attr/selectableItemBackground"
-    app:matchHeightToWidth="true"
-
-    >
+    app:matchHeightToWidth="true">
 
     <gun0912.tedbottompicker.view.TedSquareImageView
         android:id="@+id/iv_thumbnail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerInside"
-
-
-        />
-
-
+        android:scaleType="centerInside" />
 </gun0912.tedbottompicker.view.TedSquareFrameLayout>

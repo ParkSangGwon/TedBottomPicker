@@ -9,7 +9,7 @@ import android.view.View;
  */
 
 /**
- *https://gist.github.com/liangzhitao/e57df3c3232ee446d464
+ * https://gist.github.com/liangzhitao/e57df3c3232ee446d464
  */
 public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 
@@ -17,17 +17,15 @@ public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
     private int spacing;
     private boolean includeEdge;
 
-
     public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
         this.spanCount = spanCount;
         this.spacing = spacing;
         this.includeEdge = includeEdge;
-
     }
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        int position = parent.getChildAdapterPosition(view) ; // item position
+        int position = parent.getChildAdapterPosition(view); // item position
 
         if (position >= 0) {
             int column = position % spanCount; // item column
