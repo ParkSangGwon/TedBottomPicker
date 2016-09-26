@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import gun0912.tedbottompicker.adapter.ImageGalleryAdapter;
@@ -128,6 +129,9 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
                         startGalleryIntent();
                         break;
                     case ImageGalleryAdapter.PickerTile.IMAGE:
+                        complete(pickerTile.getImageUri());
+                        break;
+                    case ImageGalleryAdapter.PickerTile.REMOTE:
                         complete(pickerTile.getImageUri());
                         break;
                     default:
@@ -274,6 +278,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         public boolean showTitle = true;
         public int titleBackgroundResId;
 
+        public List<String> remoteImages;
+
         public Builder(@NonNull Context context) {
             this.context = context;
 
@@ -284,6 +290,11 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         public Builder setMaxCount(int maxCount) {
             this.maxCount = maxCount;
+            return this;
+        }
+
+        public Builder setRemoteImages(List<String> remoteImages) {
+            this.remoteImages = remoteImages;
             return this;
         }
 

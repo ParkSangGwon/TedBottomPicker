@@ -17,6 +17,7 @@ import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+import java.util.List;
 
 import gun0912.tedbottompicker.R;
 import gun0912.tedbottompicker.TedBottomPicker;
@@ -47,28 +48,10 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
             pickerTiles.add(new PickerTile(PickerTile.GALLERY));
         }
 
-        Cursor imageCursor = null;
-        try {
-            final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.ImageColumns.ORIENTATION};
-            final String orderBy = MediaStore.Images.Media.DATE_ADDED + " DESC";
-
-            imageCursor = context.getApplicationContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy);
-
-            if (imageCursor != null) {
-                int count = 0;
-                while (imageCursor.moveToNext() && count < builder.maxCount) {
-                    String imageLocation = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
-                    File imageFile = new File(imageLocation);
-                    pickerTiles.add(new PickerTile(Uri.fromFile(imageFile)));
-                    count++;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (imageCursor != null && !imageCursor.isClosed()) {
-                imageCursor.close();
-            }
+        if (builder.remoteImages != null) {
+            setupRemoteImages(builder.remoteImages);
+        } else {
+            setupLocalImages();
         }
     }
 
@@ -87,6 +70,19 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         } else if (pickerTile.isGalleryTile()) {
             holder.ivThumbnail.setBackgroundResource(builder.galleryTileBackgroundResId);
             holder.ivThumbnail.setImageDrawable(builder.galleryTileDrawable);
+        } else if(pickerTile.isRemoteTile()) {
+            String imageUrl = pickerTile.getImageUri().toString();
+            if (builder.imageProvider == null) {
+                Glide.with(context)
+                        .load(imageUrl)
+                        .dontAnimate()
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_gallery)
+                        .error(R.drawable.img_error)
+                        .into(holder.ivThumbnail);
+            } else {
+                builder.imageProvider.onProvideImage(holder.ivThumbnail, pickerTile.getImageUri());
+            }
         } else {
             Uri uri = pickerTile.getImageUri();
             if (builder.imageProvider == null) {
@@ -118,6 +114,38 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         return pickerTiles.size();
     }
 
+    private void setupLocalImages() {
+        Cursor imageCursor = null;
+        try {
+            final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.ImageColumns.ORIENTATION};
+            final String orderBy = MediaStore.Images.Media.DATE_ADDED + " DESC";
+
+            imageCursor = context.getApplicationContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy);
+
+            if (imageCursor != null) {
+                int count = 0;
+                while (imageCursor.moveToNext() && count < builder.maxCount) {
+                    String imageLocation = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                    File imageFile = new File(imageLocation);
+                    pickerTiles.add(new PickerTile(Uri.fromFile(imageFile)));
+                    count++;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (imageCursor != null && !imageCursor.isClosed()) {
+                imageCursor.close();
+            }
+        }
+    }
+
+    private void setupRemoteImages(List<String> remoteImages) {
+        for (String remoteImage : remoteImages) {
+            pickerTiles.add(new PickerTile(Uri.parse(remoteImage), PickerTile.REMOTE));
+        }
+    }
+
     public PickerTile getItem(int position) {
         return pickerTiles.get(position);
     }
@@ -136,6 +164,8 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         public static final int IMAGE = 1;
         public static final int CAMERA = 2;
         public static final int GALLERY = 3;
+        public static final int REMOTE = 4;
+
         final Uri imageUri;
         @TileType
         final int tileType;
@@ -175,6 +205,10 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
             return tileType == GALLERY;
         }
 
+        public boolean isRemoteTile() {
+            return tileType == REMOTE;
+        }
+
         @Override
         public String toString() {
             if (isImageTile()) {
@@ -183,12 +217,14 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
                 return "CameraTile";
             } else if (isGalleryTile()) {
                 return "PickerTile";
+            } else if (isRemoteTile()) {
+                return "RemoteTile";
             } else {
                 return "Invalid item";
             }
         }
 
-        @IntDef({IMAGE, CAMERA, GALLERY})
+        @IntDef({IMAGE, CAMERA, GALLERY, REMOTE})
         @Retention(RetentionPolicy.SOURCE)
         public @interface TileType {
         }
