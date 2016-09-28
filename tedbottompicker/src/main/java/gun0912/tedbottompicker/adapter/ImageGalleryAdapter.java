@@ -4,39 +4,31 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 
 import java.io.File;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
+import gun0912.tedbottompicker.Builder;
+import gun0912.tedbottompicker.GalleryViewHolder;
+import gun0912.tedbottompicker.PickerTile;
 import gun0912.tedbottompicker.R;
-import gun0912.tedbottompicker.TedBottomPicker;
-import gun0912.tedbottompicker.view.TedSquareFrameLayout;
-import gun0912.tedbottompicker.view.TedSquareImageView;
 
 /**
  * Created by TedPark on 2016. 8. 30..
  */
-public class ImageGalleryAdapter extends SelectableAdapter<ImageGalleryAdapter.GalleryViewHolder> {
+public class ImageGalleryAdapter extends SelectableAdapter<GalleryViewHolder> {
 
     private Context context;
-    private TedBottomPicker.Builder builder;
+    private Builder builder;
     private ArrayList<PickerTile> pickerTiles;
     private OnItemClickListener onItemClickListener;
 
-    public ImageGalleryAdapter(Context context, TedBottomPicker.Builder builder) {
+    public ImageGalleryAdapter(Context context, Builder builder) {
         this.context = context;
         this.builder = builder;
 
@@ -173,123 +165,5 @@ public class ImageGalleryAdapter extends SelectableAdapter<ImageGalleryAdapter.G
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
-    }
-
-    public static class PickerTile {
-
-        public static final int IMAGE = 1;
-        public static final int CAMERA = 2;
-        public static final int GALLERY = 3;
-        public static final int REMOTE = 4;
-
-        final Uri imageUri;
-        @TileType
-        final int tileType;
-
-        PickerTile(@SpecialTileType int tileType) {
-            this(null, tileType);
-        }
-
-        PickerTile(@NonNull Uri imageUri) {
-            this(imageUri, IMAGE);
-        }
-
-        protected PickerTile(@Nullable Uri imageUri, @TileType int tileType) {
-            this.imageUri = imageUri;
-            this.tileType = tileType;
-        }
-
-        @Nullable
-        public Uri getImageUri() {
-            return imageUri;
-        }
-
-        @TileType
-        public int getTileType() {
-            return tileType;
-        }
-
-        public boolean isImageTile() {
-            return tileType == IMAGE;
-        }
-
-        public boolean isCameraTile() {
-            return tileType == CAMERA;
-        }
-
-        public boolean isGalleryTile() {
-            return tileType == GALLERY;
-        }
-
-        public boolean isRemoteTile() {
-            return tileType == REMOTE;
-        }
-
-        @Override
-        public String toString() {
-            if (isImageTile()) {
-                return "ImageTile: " + imageUri;
-            } else if (isCameraTile()) {
-                return "CameraTile";
-            } else if (isGalleryTile()) {
-                return "PickerTile";
-            } else if (isRemoteTile()) {
-                return "RemoteTile";
-            } else {
-                return "Invalid item";
-            }
-        }
-
-        @IntDef({IMAGE, CAMERA, GALLERY, REMOTE})
-        @Retention(RetentionPolicy.SOURCE)
-        public @interface TileType {
-        }
-
-        @IntDef({CAMERA, GALLERY})
-        @Retention(RetentionPolicy.SOURCE)
-        public @interface SpecialTileType {
-        }
-    }
-
-    static class GalleryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener {
-        TedSquareFrameLayout root;
-        TedSquareImageView ivThumbnail;
-        RelativeLayout layoutSelectedOverlay;
-        ImageView imgSelectedIcon;
-
-        private ClickListener listener;
-
-        public GalleryViewHolder(View view, ClickListener listener) {
-            super(view);
-            this.listener = listener;
-
-            root = (TedSquareFrameLayout) view.findViewById(R.id.root);
-            ivThumbnail = (TedSquareImageView) view.findViewById(R.id.iv_thumbnail);
-            layoutSelectedOverlay = (RelativeLayout) view.findViewById(R.id.layout_selected_overlay);
-            imgSelectedIcon = (ImageView) view.findViewById(R.id.img_selected_icon);
-
-            root.setOnClickListener(this);
-            root.setOnLongClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (listener != null) {
-                listener.onItemClicked(getAdapterPosition ());
-            }
-        }
-        @Override
-        public boolean onLongClick (View view) {
-            if (listener != null) {
-                return listener.onItemLongClicked(getAdapterPosition ());
-            }
-            return false;
-        }
-
-        public interface ClickListener {
-            void onItemClicked(int position);
-
-            boolean onItemLongClicked(int position);
-        }
     }
 }
