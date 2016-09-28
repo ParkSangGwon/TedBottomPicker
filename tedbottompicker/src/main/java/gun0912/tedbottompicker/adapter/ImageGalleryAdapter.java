@@ -10,6 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 
@@ -27,7 +29,7 @@ import gun0912.tedbottompicker.view.TedSquareImageView;
 /**
  * Created by TedPark on 2016. 8. 30..
  */
-public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapter.GalleryViewHolder> {
+public class ImageGalleryAdapter extends SelectableAdapter<ImageGalleryAdapter.GalleryViewHolder> {
 
     private Context context;
     private TedBottomPicker.Builder builder;
@@ -57,7 +59,19 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
     @Override
     public GalleryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new GalleryViewHolder(View.inflate(context, R.layout.tedbottompicker_grid_item, null));
+        GalleryViewHolder.ClickListener listener = new GalleryViewHolder.ClickListener() {
+            @Override
+            public void onItemClicked(int position) {
+
+            }
+
+            @Override
+            public boolean onItemLongClicked(int position) {
+                return false;
+            }
+        };
+
+        return new GalleryViewHolder(View.inflate(context, R.layout.tedbottompicker_grid_item, null), listener);
     }
 
     @Override
@@ -107,6 +121,8 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
                 }
             });
         }
+
+        holder.layoutSelectedOverlay.setVisibility(isSelected(position) ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
@@ -235,14 +251,45 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         }
     }
 
-    class GalleryViewHolder extends RecyclerView.ViewHolder {
+    static class GalleryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener {
         TedSquareFrameLayout root;
         TedSquareImageView ivThumbnail;
+        RelativeLayout layoutSelectedOverlay;
+        ImageView imgSelectedIcon;
 
-        public GalleryViewHolder(View view) {
+        private ClickListener listener;
+
+        public GalleryViewHolder(View view, ClickListener listener) {
             super(view);
+            this.listener = listener;
+
             root = (TedSquareFrameLayout) view.findViewById(R.id.root);
             ivThumbnail = (TedSquareImageView) view.findViewById(R.id.iv_thumbnail);
+            layoutSelectedOverlay = (RelativeLayout) view.findViewById(R.id.layout_selected_overlay);
+            imgSelectedIcon = (ImageView) view.findViewById(R.id.img_selected_icon);
+
+            root.setOnClickListener(this);
+            root.setOnLongClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (listener != null) {
+                listener.onItemClicked(getAdapterPosition ());
+            }
+        }
+        @Override
+        public boolean onLongClick (View view) {
+            if (listener != null) {
+                return listener.onItemLongClicked(getAdapterPosition ());
+            }
+            return false;
+        }
+
+        public interface ClickListener {
+            void onItemClicked(int position);
+
+            boolean onItemLongClicked(int position);
         }
     }
 }
