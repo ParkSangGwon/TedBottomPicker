@@ -21,25 +21,33 @@ import java.util.List;
 public class Builder {
 
     public Context context;
-    public int maxCount = 25;
-    public Drawable cameraTileDrawable;
-    public Drawable galleryTileDrawable;
 
-    public int spacing = 1;
-    public TedBottomPicker.OnImageSelectedListener onImageSelectedListener;
-    public TedBottomPicker.OnErrorListener onErrorListener;
-    public TedBottomPicker.ImageProvider imageProvider;
+    // Camera Tile
+    public Drawable cameraTileDrawable;
     public boolean showCamera = true;
-    public boolean showGallery = true;
-    public int peekHeight = -1;
     public int cameraTileBackgroundResId = R.color.tedbottompicker_camera;
+
+    // Gallery Tile
+    public Drawable galleryTileDrawable;
+    public boolean showGallery = true;
     public int galleryTileBackgroundResId = R.color.tedbottompicker_gallery;
 
+    // Remote Urls
+    public List<String> remoteImages;
+
+    // Title
     public String title;
     public boolean showTitle = true;
     public int titleBackgroundResId;
 
-    public List<String> remoteImages;
+    // Settings
+    public int maxCount = 25;
+    public int peekHeight = -1;
+    public int spacing = 1;
+
+    public TedBottomPicker.OnImageSelectedListener onImageSelectedListener;
+    public TedBottomPicker.OnErrorListener onErrorListener;
+    public TedBottomPicker.ImageProvider imageProvider;
 
     public Builder(@NonNull Context context) {
         this.context = context;

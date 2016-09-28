@@ -2,15 +2,29 @@
 <resources>
 
     <declare-styleable name="TedBottomPickerImageView">
-        <attr name="foreground" format="reference"/>
-        <attr name="fit_mode" format="string"/>
+        <attr name="foreground" format="reference" />
+        <attr name="fit_mode" format="string" />
     </declare-styleable>
-
-
 
     <declare-styleable name="TedBottomPickerSquareView">
-        <attr name="matchHeightToWidth" format="boolean"/>
-        <attr name="matchWidthToHeight" format="boolean"/>
+        <attr name="matchHeightToWidth" format="boolean" />
+        <attr name="matchWidthToHeight" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="GallerySheetView">
+        <attr name="show_gallery" format="boolean" />
+        <attr name="show_camera" format="boolean" />
+
+        <attr name="icon_gallery" format="reference" />
+        <attr name="icon_camera" format="reference" />
+
+        <attr name="background_gallery" format="color" />
+        <attr name="background_camera" format="color" />
+
+        <attr name="peek_height" format="dimension" />
+        <attr name="spacing" format="dimension" />
+
+        <attr name="max_count" format="integer" />
+        <attr name="multi_selection" format="boolean" />
+    </declare-styleable>
 </resources>

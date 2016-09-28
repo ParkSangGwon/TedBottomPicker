@@ -36,6 +36,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     public static final String TAG = "ted";
     static final int REQ_CODE_CAMERA = 1;
     static final int REQ_CODE_GALLERY = 2;
+
     ImageGalleryAdapter imageGalleryAdapter;
     Builder builder;
     TextView tv_title;
@@ -108,19 +109,19 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             @Override
             public void onItemClick(View view, int position) {
 
-                ImageGalleryAdapter.PickerTile pickerTile = imageGalleryAdapter.getItem(position);
+                PickerTile pickerTile = imageGalleryAdapter.getItem(position);
 
                 switch (pickerTile.getTileType()) {
-                    case ImageGalleryAdapter.PickerTile.CAMERA:
+                    case CAMERA:
                         startCameraIntent();
                         break;
-                    case ImageGalleryAdapter.PickerTile.GALLERY:
+                    case GALLERY:
                         startGalleryIntent();
                         break;
-                    case ImageGalleryAdapter.PickerTile.IMAGE:
+                    case IMAGE:
                         complete(pickerTile.getImageUri());
                         break;
-                    case ImageGalleryAdapter.PickerTile.REMOTE:
+                    case REMOTE:
                         complete(pickerTile.getImageUri());
                         break;
                     default:
@@ -242,7 +243,5 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         void onError(String message);
     }
 
-    public interface ImageProvider {
-        void onProvideImage(ImageView imageView, Uri imageUri);
-    }
+
 }

@@ -7,45 +7,59 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import gun0912.tedbottompicker.Builder;
+import gun0912.tedbottompicker.GallerySheetView;
 import gun0912.tedbottompicker.GalleryViewHolder;
 import gun0912.tedbottompicker.PickerTile;
 import gun0912.tedbottompicker.R;
+import gun0912.tedbottompicker.TileType;
 
 /**
  * Created by TedPark on 2016. 8. 30..
  */
 public class ImageGalleryAdapter extends SelectableAdapter<GalleryViewHolder> {
 
-    private Context context;
-    private Builder builder;
-    private ArrayList<PickerTile> pickerTiles;
     private OnItemClickListener onItemClickListener;
 
-    public ImageGalleryAdapter(Context context, Builder builder) {
+    public OnItemClickListener getOnItemClickListener() {
+        return onItemClickListener;
+    }
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    private Context context;
+    private GallerySheetView gallerySheetView;
+    private ArrayList<PickerTile> pickerTiles;
+
+    public ImageGalleryAdapter(Context context, GallerySheetView gallerySheetView) {
         this.context = context;
-        this.builder = builder;
+        this.gallerySheetView = gallerySheetView;
 
-        pickerTiles = new ArrayList<>();
+        setupGalleryCameraTiles();
 
-        if (builder.showCamera) {
-            pickerTiles.add(new PickerTile(PickerTile.CAMERA));
-        }
-
-        if (builder.showGallery) {
-            pickerTiles.add(new PickerTile(PickerTile.GALLERY));
-        }
-
-        if (builder.remoteImages != null) {
-            setupRemoteImages(builder.remoteImages);
+        if (gallerySheetView.getRemoteImages() != null) {
+            setupRemoteImages(gallerySheetView.getRemoteImages());
         } else {
             setupLocalImages();
+        }
+    }
+
+    private void setupGalleryCameraTiles() {
+        pickerTiles = new ArrayList<>();
+
+        if (gallerySheetView.showCamera) {
+            pickerTiles.add(new PickerTile(TileType.CAMERA));
+        }
+
+        if (gallerySheetView.showGallery) {
+            pickerTiles.add(new PickerTile(TileType.GALLERY));
         }
     }
 
@@ -67,54 +81,34 @@ public class ImageGalleryAdapter extends SelectableAdapter<GalleryViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final GalleryViewHolder holder, final int position) {
+    public void onBindViewHolder(final GalleryViewHolder holder, int position) {
         PickerTile pickerTile = getItem(position);
 
-        if (pickerTile.isCameraTile()) {
-            holder.ivThumbnail.setBackgroundResource(builder.cameraTileBackgroundResId);
-            holder.ivThumbnail.setImageDrawable(builder.cameraTileDrawable);
-        } else if (pickerTile.isGalleryTile()) {
-            holder.ivThumbnail.setBackgroundResource(builder.galleryTileBackgroundResId);
-            holder.ivThumbnail.setImageDrawable(builder.galleryTileDrawable);
-        } else if(pickerTile.isRemoteTile()) {
-            String imageUrl = pickerTile.getImageUri().toString();
-            if (builder.imageProvider == null) {
-                Glide.with(context)
-                        .load(imageUrl)
-                        .dontAnimate()
-                        .centerCrop()
-                        .placeholder(R.drawable.ic_gallery)
-                        .error(R.drawable.img_error)
-                        .into(holder.ivThumbnail);
-            } else {
-                builder.imageProvider.onProvideImage(holder.ivThumbnail, pickerTile.getImageUri());
-            }
-        } else {
-            Uri uri = pickerTile.getImageUri();
-            if (builder.imageProvider == null) {
-                Glide.with(context)
-                        .load(uri)
-                        .thumbnail(0.1f)
-                        .dontAnimate()
-                        .centerCrop()
-                        .placeholder(R.drawable.ic_gallery)
-                        .error(R.drawable.img_error)
-                        .into(holder.ivThumbnail);
-            } else {
-                builder.imageProvider.onProvideImage(holder.ivThumbnail, uri);
-            }
+        switch (pickerTile.getTileType()) {
+            case GALLERY:
+                holder.ivThumbnail.setBackgroundResource(gallerySheetView.backgroundGallery);
+                holder.ivThumbnail.setImageDrawable(gallerySheetView.iconGallery);
+
+                break;
+            case CAMERA:
+                holder.ivThumbnail.setBackgroundResource(gallerySheetView.backgroundCamera);
+                holder.ivThumbnail.setImageDrawable(gallerySheetView.iconCamera);
+
+                break;
+            case IMAGE:
+                gallerySheetView.imageProvider.onProvideImage(holder.ivThumbnail, pickerTile.getImageUri());
+
+                break;
+            case REMOTE:
+                gallerySheetView.imageProvider.onProvideImage(holder.ivThumbnail, pickerTile.getImageUri().toString());
+
+                break;
+            default:
+                break;
         }
 
-        if (onItemClickListener != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onItemClickListener.onItemClick(holder.itemView, position);
-                }
-            });
-        }
-
-        holder.layoutSelectedOverlay.setVisibility(isSelected(position) ? View.VISIBLE : View.INVISIBLE);
+        if (gallerySheetView.multiSelection)
+            holder.layoutSelectedOverlay.setVisibility(isSelected(position) ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
@@ -132,7 +126,7 @@ public class ImageGalleryAdapter extends SelectableAdapter<GalleryViewHolder> {
 
             if (imageCursor != null) {
                 int count = 0;
-                while (imageCursor.moveToNext() && count < builder.maxCount) {
+                while (imageCursor.moveToNext() && count < gallerySheetView.maxCount) {
                     String imageLocation = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
                     File imageFile = new File(imageLocation);
                     pickerTiles.add(new PickerTile(Uri.fromFile(imageFile)));
@@ -150,7 +144,7 @@ public class ImageGalleryAdapter extends SelectableAdapter<GalleryViewHolder> {
 
     private void setupRemoteImages(List<String> remoteImages) {
         for (String remoteImage : remoteImages) {
-            pickerTiles.add(new PickerTile(Uri.parse(remoteImage), PickerTile.REMOTE));
+            pickerTiles.add(new PickerTile(Uri.parse(remoteImage), TileType.REMOTE));
         }
     }
 
@@ -158,12 +152,4 @@ public class ImageGalleryAdapter extends SelectableAdapter<GalleryViewHolder> {
         return pickerTiles.get(position);
     }
 
-    public void setOnItemClickListener(
-            OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
-    }
 }

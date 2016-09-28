@@ -1,12 +1,11 @@
 package gun0912.tedbottompicker;
 
 import android.net.Uri;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import static gun0912.tedbottompicker.TileType.IMAGE;
+import static gun0912.tedbottompicker.TileType.REMOTE;
 
 /**
  * Created by broto on 9/28/16.
@@ -14,34 +13,22 @@ import java.lang.annotation.RetentionPolicy;
 
 public class PickerTile {
 
-    @IntDef({IMAGE, CAMERA, GALLERY, REMOTE})
-    @Retention(RetentionPolicy.SOURCE)
-    @interface TileType {
-    }
+    private Uri imageUri;
+    private final TileType tileType;
 
-    @IntDef({CAMERA, GALLERY})
-    @Retention(RetentionPolicy.SOURCE)
-    @interface SpecialTileType {
-    }
-
-    public static final int IMAGE = 1;
-    public static final int CAMERA = 2;
-    public static final int GALLERY = 3;
-    public static final int REMOTE = 4;
-
-    final Uri imageUri;
-    @TileType
-    final int tileType;
-
-    public PickerTile(@SpecialTileType int tileType) {
-        this(null, tileType);
+    public PickerTile(TileType tileType) {
+        this.tileType = tileType;
     }
 
     public PickerTile(@NonNull Uri imageUri) {
         this(imageUri, IMAGE);
     }
 
-    public PickerTile(@Nullable Uri imageUri, @TileType int tileType) {
+    public PickerTile(@NonNull String imageUrl) {
+        this(Uri.parse(imageUrl), REMOTE);
+    }
+
+    public PickerTile(@Nullable Uri imageUri, TileType tileType) {
         this.imageUri = imageUri;
         this.tileType = tileType;
     }
@@ -51,39 +38,7 @@ public class PickerTile {
         return imageUri;
     }
 
-    @TileType
-    public int getTileType() {
+    public TileType getTileType() {
         return tileType;
-    }
-
-    public boolean isImageTile() {
-        return tileType == IMAGE;
-    }
-
-    public boolean isCameraTile() {
-        return tileType == CAMERA;
-    }
-
-    public boolean isGalleryTile() {
-        return tileType == GALLERY;
-    }
-
-    public boolean isRemoteTile() {
-        return tileType == REMOTE;
-    }
-
-    @Override
-    public String toString() {
-        if (isImageTile()) {
-            return "ImageTile: " + imageUri;
-        } else if (isCameraTile()) {
-            return "CameraTile";
-        } else if (isGalleryTile()) {
-            return "PickerTile";
-        } else if (isRemoteTile()) {
-            return "RemoteTile";
-        } else {
-            return "Invalid item";
-        }
     }
 }
