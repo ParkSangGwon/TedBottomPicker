@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TedBottomPickerDemo</string>
+    <string name="show_local_images">Show TedBottomPicker Local Images</string>
+    <string name="show_remote_images">Show TedBottomPicker Remote Images</string>
 </resources>

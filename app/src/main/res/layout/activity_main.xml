@@ -11,17 +11,22 @@
     tools:context="gun0912.tedbottompickerdemo.MainActivity">
 
     <Button
-        android:id="@+id/btn_show"
+        android:id="@+id/btn_show_local_images"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="onLocalImagesClick"
+        android:text="@string/show_local_images" />
 
-        android:text="Show Ted Bottom Picker" />
+    <Button
+        android:id="@+id/btn_show_remote_images"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onRemoteImagesClick"
+        android:text="@string/show_remote_images" />
 
     <ImageView
         android:id="@+id/iv_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btn_show"
-        android:layout_centerInParent="true"
         android:layout_marginTop="@dimen/activity_vertical_margin" />
 </LinearLayout>
