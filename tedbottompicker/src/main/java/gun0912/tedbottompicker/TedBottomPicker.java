@@ -174,7 +174,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     private void complete(Uri uri) {
         //uri = Uri.parse(uri.toString());
         builder.onImageSelectedListener.onImageSelected(uri);
-        dismiss();
+        dismissAllowingStateLoss();
     }
 
     private void startCameraIntent() {
