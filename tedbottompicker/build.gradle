@@ -29,7 +29,7 @@ ext {
     siteUrl = 'https://github.com/ParkSangGwon/TedBottomPicker'
     gitUrl = 'https://github.com/ParkSangGwon/TedBottomPicker.git'
 
-    libraryVersion = '1.0.3'
+    libraryVersion = '1.0.4'
 
     developerId = 'gun0912'
     developerName = 'Ted Park'
