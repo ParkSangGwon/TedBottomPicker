@@ -45,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
                                 .setOnImageSelectedListener(new TedBottomPicker.OnImageSelectedListener() {
                                     @Override
                                     public void onImageSelected(Uri uri) {
-                                        Log.d("ted","uri: "+uri);
-                                        Log.d("ted","uri.getPath(): "+uri.getPath());
+                                        Log.d("ted", "uri: " + uri);
+                                        Log.d("ted", "uri.getPath(): " + uri.getPath());
 
                                         Glide.with(MainActivity.this)
                                                 //.load(uri.toString())
@@ -54,8 +54,20 @@ public class MainActivity extends AppCompatActivity {
                                                 .into(iv_image);
 
                                     }
+                                }).setImageProvider(new TedBottomPicker.ImageProvider() {
+                                    @Override
+                                    public void onProvideImage(ImageView imageView, Uri imageUri) {
+                                        Glide.with(imageView.getContext())
+                                                .load(imageUri)
+                                                .thumbnail(0.1f)
+                                                .dontAnimate()
+                                                .centerCrop()
+                                                .placeholder(R.drawable.ic_gallery)
+                                                .error(R.drawable.img_error)
+                                                .into(imageView);
+                                    }
                                 })
-                                .setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
+                                .setPeekHeight(getResources().getDisplayMetrics().heightPixels / 2)
                                 .create();
 
                         bottomSheetDialogFragment.show(getSupportFragmentManager());

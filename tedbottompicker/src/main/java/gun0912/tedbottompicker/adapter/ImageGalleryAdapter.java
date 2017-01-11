@@ -11,8 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
-
 import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -108,21 +106,11 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         } else {
             Uri uri = pickerTile.getImageUri();
             if (builder.imageProvider == null) {
-                Glide.with(context)
-                        .load(uri)
-                        .thumbnail(0.1f)
-                        .dontAnimate()
-                        .centerCrop()
-                        .placeholder(R.drawable.ic_gallery)
-                        .error(R.drawable.img_error)
-                        .into(holder.iv_thumbnail);
+                throw new RuntimeException("Must provide a custom image Provider such as Picasso/Glide/Fresco etc...");
             } else {
                 builder.imageProvider.onProvideImage(holder.iv_thumbnail, uri);
             }
-
-
         }
-
 
         if (onItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
