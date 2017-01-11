@@ -25,6 +25,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -185,7 +186,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         }
 
         File imageFile = getImageFile();
-        cameraInent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageFile));
+        Uri photoURI = FileProvider.getUriForFile(getContext(), getContext().getApplicationContext().getPackageName() + ".provider", imageFile);
+        cameraInent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
         startActivityForResult(cameraInent, REQ_CODE_CAMERA);
 
     }
