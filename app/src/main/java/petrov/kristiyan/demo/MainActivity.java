@@ -1,4 +1,4 @@
-package gun0912.tedbottompickerdemo;
+package petrov.kristiyan.demo;
 
 import android.Manifest;
 import android.net.Uri;
@@ -16,7 +16,7 @@ import com.gun0912.tedpermission.TedPermission;
 
 import java.util.ArrayList;
 
-import gun0912.tedbottompicker.TedBottomPicker;
+import petrov.kristiyan.TedBottomPicker;
 
 public class MainActivity extends AppCompatActivity {
 

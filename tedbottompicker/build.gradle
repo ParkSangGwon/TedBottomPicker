@@ -1,45 +1,26 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
 
-/*
+def gitHubUsername = "kristiyanP"
+def gitHubProjectName = "tedbottompicker"
 
-apply plugin: 'com.novoda.bintray-release'
+// start - do not modify this if your project is on github
+def siteUrl = "https://github.com/${gitHubUsername}/${gitHubProjectName}"
+def gitUrl = siteUrl + '.git'
+def bugTrackerUrl = siteUrl + '/issues/'
+def projectName = gitHubProjectName
+// end - do not modify this if your project is on github
 
-publish {
-    //userOrg = 'kmshack'
-    groupId = 'gun0912.ted'
-    artifactId = 'tedbottompicker'
-    publishVersion = '1.0.0'
-    desc = 'Simple image picker using bottom sheet on Android'
-    website = 'https://github.com/ParkSangGwon/TedBottomPicker'
-    issueTracker = "https://github.com/ParkSangGwon/TedBottomPicker/issues"
-    repository = "https://github.com/ParkSangGwon/TedBottomPicker.git"
-}
-*/
+def projectDesc = "Bottom image picker"
+def projectGroup = "petrov.kristiyan"
+def projectLicenses = ["Apache-2.0"]
+def projectLicenseUrl = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+def projectKeywords = ['imagepicker', 'bottom', 'image','picker']
+def developerFullName = "Kristiyan Petrov"
 
-ext {
-    bintrayRepo = 'maven'
-    bintrayName = 'tedbottompicker'
-
-    publishedGroupId = 'gun0912.ted'
-    libraryName = 'TedBottomPicker'
-    artifact = 'tedbottompicker'
-
-    libraryDescription = 'Simple image picker using bottom sheet on Android'
-
-    siteUrl = 'https://github.com/ParkSangGwon/TedBottomPicker'
-    gitUrl = 'https://github.com/ParkSangGwon/TedBottomPicker.git'
-
-    libraryVersion = '1.0.4'
-
-    developerId = 'gun0912'
-    developerName = 'Ted Park'
-    developerEmail = 'gun0912@naver.com'
-
-
-    licenseName = 'The Apache Software License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    allLicenses = ["Apache-2.0"]
-}
+group = projectGroup
+version = "1.0"
 
 def sdkVersion = 25;
 def toolsVersion = "24.0.3"
@@ -65,21 +46,97 @@ android {
 
 
 
-configurations {
-    javadocDeps
-}
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
-
     compile "com.android.support:support-annotations:${supportLibVersion}"
-    javadocDeps "com.android.support:support-annotations:${supportLibVersion}"
-
 }
 
-// Place it at the end of the file
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+
+Properties properties = new Properties()
+if (project.rootProject.file("local.properties").exists()) {
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            name projectName
+            description projectDesc
+            packaging 'aar'
+            groupId projectGroup
+            version version
+            url siteUrl
+            licenses {
+                license {
+                    name projectLicenses[0]
+                    url projectLicenseUrl
+                }
+            }
+            developers {
+                developer {
+                    id properties.getProperty("bintray.user")
+                    name developerFullName
+                }
+            }
+            scm {
+                connection gitUrl
+                developerConnection gitUrl
+                url siteUrl
+
+            }
+        }
+    }
+}
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    configurations = ['archives']
+    pkg {
+        repo = "maven"
+        name = projectName
+        desc = projectDesc
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        issueTrackerUrl = bugTrackerUrl
+        licenses = projectLicenses
+        labels = projectKeywords
+        publicDownloadNumbers = true
+        publish = true
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    title = "$projectName $project.version API"
+    description "Generates Javadoc"
+    source = android.sourceSets.main.java.srcDirs
+    classpath += files(android.bootClasspath)
+    exclude '**/BuildConfig.java', '**/R.java'
+    options {
+        windowTitle("$projectName $project.version Reference")
+        locale = 'en_US'
+        encoding = 'UTF-8'
+        charSet = 'UTF-8'
+        links("http://docs.oracle.com/javase/7/docs/api/");
+        linksOffline("http://d.android.com/reference", "${android.sdkDirectory}/docs/reference");
+        setMemberLevel(JavadocMemberLevel.PUBLIC)
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}

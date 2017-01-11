@@ -1,4 +1,4 @@
-package gun0912.tedbottompicker;
+package petrov.kristiyan;
 
 import android.Manifest;
 import android.app.Activity;
@@ -40,7 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import gun0912.tedbottompicker.adapter.ImageGalleryAdapter;
+import petrov.kristiyan.adapter.ImageGalleryAdapter;
 
 public class TedBottomPicker extends BottomSheetDialogFragment {
 

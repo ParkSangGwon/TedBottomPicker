@@ -1,11 +1,12 @@
-package gun0912.tedbottompicker.view;
+package petrov.kristiyan.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
-import gun0912.tedbottompicker.R;
+import petrov.kristiyan.R;
+
 
 /**
  * Created by Gil on 09/06/2014.

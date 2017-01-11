@@ -1,4 +1,4 @@
-package gun0912.tedbottompicker.adapter;
+package petrov.kristiyan.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -16,10 +16,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
-import gun0912.tedbottompicker.R;
-import gun0912.tedbottompicker.TedBottomPicker;
-import gun0912.tedbottompicker.view.TedSquareFrameLayout;
-import gun0912.tedbottompicker.view.TedSquareImageView;
+import petrov.kristiyan.R;
+import petrov.kristiyan.TedBottomPicker;
+import petrov.kristiyan.view.TedSquareFrameLayout;
+import petrov.kristiyan.view.TedSquareImageView;
 
 /**
  * Created by TedPark on 2016. 8. 30..

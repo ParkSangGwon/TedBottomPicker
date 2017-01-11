@@ -1,4 +1,4 @@
-package gun0912.tedbottompicker.view;
+package petrov.kristiyan.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -7,7 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import gun0912.tedbottompicker.R;
+import petrov.kristiyan.R;
 
 
 /**

@@ -1,4 +1,4 @@
-package gun0912.tedbottompicker;
+package petrov.kristiyan;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

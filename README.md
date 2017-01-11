@@ -1,4 +1,5 @@
  
+[ ![Download](https://api.bintray.com/packages/petrovkristiyan/maven/tedbottompicker/images/download.svg) ](https://bintray.com/petrovkristiyan/maven/tedbottompicker/_latestVersion)
 #What is TedBottomPicker?
 In Google's Material Design, Google introduce **Bottom sheets**.([Components – Bottom sheets](https://material.google.com/components/bottom-sheets.html))<br/>
 **Bottom sheets** slide up from the bottom of the screen to reveal more content.
