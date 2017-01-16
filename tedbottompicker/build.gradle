@@ -1,21 +1,5 @@
 apply plugin: 'com.android.library'
 
-/*
-
-apply plugin: 'com.novoda.bintray-release'
-
-publish {
-    //userOrg = 'kmshack'
-    groupId = 'gun0912.ted'
-    artifactId = 'tedbottompicker'
-    publishVersion = '1.0.0'
-    desc = 'Simple image picker using bottom sheet on Android'
-    website = 'https://github.com/ParkSangGwon/TedBottomPicker'
-    issueTracker = "https://github.com/ParkSangGwon/TedBottomPicker/issues"
-    repository = "https://github.com/ParkSangGwon/TedBottomPicker.git"
-}
-*/
-
 ext {
     bintrayRepo = 'maven'
     bintrayName = 'tedbottompicker'
@@ -29,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/ParkSangGwon/TedBottomPicker'
     gitUrl = 'https://github.com/ParkSangGwon/TedBottomPicker.git'
 
-    libraryVersion = '1.0.4'
+    libraryVersion = '1.0.5'
 
     developerId = 'gun0912'
     developerName = 'Ted Park'
@@ -42,8 +26,8 @@ ext {
 }
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    compileSdkVersion 25
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         minSdkVersion 16
@@ -66,15 +50,13 @@ configurations {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.0'
-    compile 'com.android.support:design:24.2.0'
-
-    compile 'com.android.support:support-annotations:24.2.0'
-    javadocDeps 'com.android.support:support-annotations:24.2.0'
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:design:25.1.0'
+    compile 'com.android.support:support-annotations:25.1.0'
+    javadocDeps 'com.android.support:support-annotations:25.1.0'
     compile 'com.github.bumptech.glide:glide:3.6.1'
-
 }
 
 // Place it at the end of the file
