@@ -57,7 +57,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     static final int REQ_CODE_CAMERA = 1;
     static final int REQ_CODE_GALLERY = 2;
     ImageGalleryAdapter imageGalleryAdapter;
-    Builder builder;
+   static Builder builder;
 
 
     View view_title_container;
