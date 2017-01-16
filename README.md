@@ -95,8 +95,8 @@ If you want select multi image, you can use `OnMultiImageSelectedListener`
 ```
 
 **Don't forget!!**<br/>
-You have to declare `setOnImageSelectedListener()` in Builder.<br/>
-This listener will pass selected Uri.<br/>
+You have to declare `setOnImageSelectedListener()` or `OnMultiImageSelectedListener()` in Builder.<br/>
+This listener will pass selected Uri/UriList.<br/>
 
 
 
