@@ -19,11 +19,15 @@ If you want pick image from gallery or take picture, this library can help easil
 
 ##Demo
 
-![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/screenshot1.jpeg?raw=true)    ![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/demo.gif?raw=true)    
-           
-           
 1. Show Bottom Sheet.
 2. Pick Image
+
+###Single/Multi Select
+
+![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/screenshot1.jpeg?raw=true)    ![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/demo.gif?raw=true)  
+![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/screenshot_multi_select.jpeg?raw=true)    
+
+           
 
 
 <br/><br/>
