@@ -19,11 +19,15 @@ If you want pick image from gallery or take picture, this library can help easil
 
 ##Demo
 
-![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/screenshot1.jpeg?raw=true)    ![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/demo.gif?raw=true)    
-           
-           
 1. Show Bottom Sheet.
 2. Pick Image
+
+###Single/Multi Select
+
+![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/screenshot1.jpeg?raw=true)    ![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/demo.gif?raw=true)  
+![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/screenshot_multi_select.jpeg?raw=true)    
+
+           
 
 
 <br/><br/>
@@ -36,7 +40,7 @@ If you want pick image from gallery or take picture, this library can help easil
 ```javascript
 
 dependencies {
-    compile 'gun0912.ted:tedbottompicker:1.0.3'
+    compile 'gun0912.ted:tedbottompicker:1.0.6'
 }
 
 ```
@@ -76,10 +80,27 @@ After then, you can show TedBottomPicker<br/>
      tedBottomPicker.show(getSupportFragmentManager());
 ```
 
+If you want select multi image, you can use `OnMultiImageSelectedListener`
+```javascript
+ TedBottomPicker bottomSheetDialogFragment = new TedBottomPicker.Builder(MainActivity.this)
+                               .setOnMultiImageSelectedListener(new TedBottomPicker.OnMultiImageSelectedListener() {
+                                   @Override
+                                   public void onImagesSelected(ArrayList<Uri> uriList) {
+                                       // here is selected uri list
+                                   }
+                               })
+                                .setPeekHeight(1600)
+                                .showTitle(false)
+                                .setCompleteButtonText("Done")
+                                .setEmptySelectionText("No Select")
+                                .create();
+
+                        bottomSheetDialogFragment.show(getSupportFragmentManager());
+```
 
 **Don't forget!!**<br/>
-You have to declare `setOnImageSelectedListener()` in Builder.<br/>
-This listener will pass selected Uri.<br/>
+You have to declare `setOnImageSelectedListener()` or `OnMultiImageSelectedListener()` in Builder.<br/>
+This listener will pass selected Uri/UriList.<br/>
 
 
 
@@ -91,9 +112,9 @@ You can customize something ...<br />
 
 ###Function
 
+####Common
 
-
-* `setMaxCount(Int) (default: 25)`
+* `setPreviewMaxCount(Int) (default: 25)`
 * `setPeekHeight(Int)`
 * `setPeekHeightResId(R.dimen.xxx)`
 * `showCameraTile(Boolean) (default: true)`
@@ -111,6 +132,14 @@ You can customize something ...<br />
 * `setImageProvider(ImageProvider)`
 : If you want load grid image yourself, you can use your ImageProvider
 
+####Multi Select
+* `setDeSelectIcon(R.drawable.xxx or Drawable)`
+* `setSelectedForeground(R.drawable.xxx or Drawable)`
+* `setSelectMaxCount(Int)`
+* `setSelectMinCount(Int)`
+* `setCompleteButtonText(String or R.string.xxx) (default: 'Done','완료')`
+* `setEmptySelectionText(String or R.string.xxx) (default: 'No Image','이미지가 선택되지 않았습니다')`
+
 <br/><br/>
 
 
@@ -126,7 +155,7 @@ You can customize something ...<br />
 
 ##License 
  ```code
-Copyright 2016 Ted Park
+Copyright 2017 Ted Park
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

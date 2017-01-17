@@ -2,5 +2,6 @@
 <resources>
     <color name="tedbottompicker_camera">#000</color>
     <color name="tedbottompicker_gallery">#ccc</color>
+    <color name="tedbottompicker_selected">#f0f0f0</color>
 
 </resources>
