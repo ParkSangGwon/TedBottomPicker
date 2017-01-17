@@ -139,8 +139,8 @@ You can customize something ...<br />
 * `setSelectMinCount(Int)`
 * `setCompleteButtonText(String or R.string.xxx) (default: 'Done','완료')`
 * `setEmptySelectionText(String or R.string.xxx) (default: 'No Image','이미지가 선택되지 않았습니다')`
-* `setSelectMaxCountErrorText(String or R.string.xxx)
-* `setSelectMinCountErrorText(String or R.string.xxx)
+* `setSelectMaxCountErrorText(String or R.string.xxx)`
+* `setSelectMinCountErrorText(String or R.string.xxx)`
 
 <br/><br/>
 
