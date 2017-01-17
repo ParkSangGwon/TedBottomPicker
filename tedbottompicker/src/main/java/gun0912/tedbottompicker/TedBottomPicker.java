@@ -57,10 +57,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     public static final String TAG = "ted";
     static final int REQ_CODE_CAMERA = 1;
     static final int REQ_CODE_GALLERY = 2;
+    static Builder builder;
     ImageGalleryAdapter imageGalleryAdapter;
-   static Builder builder;
-
-
     View view_title_container;
     TextView tv_title;
     Button btn_done;
@@ -141,7 +139,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     private void setSelectionView() {
 
-        if(builder.emptySelectionText!=null){
+        if (builder.emptySelectionText != null) {
             selected_photos_empty.setText(builder.emptySelectionText);
         }
 
@@ -168,8 +166,14 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     private void onMultiSelectComplete() {
 
         if (selectedUriList.size() < builder.selectMinCount) {
-            String text = String.format(getResources().getString(R.string.select_min_count), builder.selectMinCount);
-            Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+            String message;
+            if(builder.selectMinCountErrorText!=null){
+                message = builder.selectMinCountErrorText;
+            }else{
+                message= String.format(getResources().getString(R.string.select_min_count), builder.selectMinCount);
+            }
+
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -184,10 +188,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             selected_photos_container_frame.setVisibility(View.GONE);
         }
 
-    }
-
-    private boolean isMultiSelect() {
-        return builder.onMultiImageSelectedListener != null;
     }
 
     private void initView(View contentView) {
@@ -270,8 +270,14 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         }
 
         if (selectedUriList.size() == builder.selectMaxCount) {
-            String text = String.format(getResources().getString(R.string.select_max_count), builder.selectMaxCount);
-            Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+            String message;
+            if(builder.selectMaxCountErrorText!=null){
+                message = builder.selectMaxCountErrorText;
+            }else{
+                message = String.format(getResources().getString(R.string.select_max_count), builder.selectMaxCount);
+            }
+
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -441,6 +447,10 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     }
 
+    private boolean isMultiSelect() {
+        return builder.onMultiImageSelectedListener != null;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -549,6 +559,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         public String completeButtonText;
         public String emptySelectionText;
+        public String selectMaxCountErrorText;
+        public String selectMinCountErrorText;
 
         public Builder(@NonNull Context context) {
 
@@ -704,6 +716,28 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             this.emptySelectionText = context.getResources().getString(emptySelectionResId);
             return this;
         }
+
+
+        public Builder setSelectMaxCountErrorText(String selectMaxCountErrorText){
+            this.selectMaxCountErrorText = selectMaxCountErrorText;
+            return this;
+        }
+
+        public Builder setSelectMaxCountErrorText(@StringRes int selectMaxCountErrorResId) {
+            this.selectMaxCountErrorText = context.getResources().getString(selectMaxCountErrorResId);
+            return this;
+        }
+
+        public Builder setSelectMinCountErrorText(String selectMinCountErrorText){
+            this.selectMinCountErrorText= selectMinCountErrorText;
+            return this;
+        }
+
+        public Builder setSelectMinCountErrorText(@StringRes int selectMinCountErrorResId) {
+            this.selectMinCountErrorText = context.getResources().getString(selectMinCountErrorResId);
+            return this;
+        }
+
 
         public Builder setTitleBackgroundResId(@ColorRes int colorResId) {
             this.titleBackgroundResId = colorResId;
