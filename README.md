@@ -38,7 +38,7 @@ If you want pick image from gallery or take picture, this library can help easil
 ```javascript
 
 dependencies {
-    compile 'petrov.kristiyan:tedbottompicker:1.0'
+    compile 'petrov.kristiyan:tedbottompicker:1.1'
 }
 
 ```
