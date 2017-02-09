@@ -20,7 +20,7 @@ def projectKeywords = ['imagepicker', 'bottom', 'image','picker']
 def developerFullName = "Kristiyan Petrov"
 
 group = projectGroup
-version = "1.0"
+version = "1.1"
 
 def sdkVersion = 25;
 def toolsVersion = "24.0.3"
