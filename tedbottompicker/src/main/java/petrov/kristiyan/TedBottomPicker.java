@@ -78,6 +78,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     }
 
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return super.onCreateDialog(savedInstanceState);
@@ -100,7 +101,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
         if (behavior != null && behavior instanceof BottomSheetBehavior) {
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetBehaviorCallback);
-            if (builder.peekHeight > 0) {
+            if (builder != null && builder.peekHeight > 0) {
                 // ((BottomSheetBehavior) behavior).setPeekHeight(1500);
                 ((BottomSheetBehavior) behavior).setPeekHeight(builder.peekHeight);
             }
@@ -262,7 +263,9 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     private void errorMessage(String message) {
         String errorMessage = message == null ? "Something wrong." : message;
-
+        if (builder == null) {
+            return;
+        }
         if (builder.onErrorListener == null) {
             Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
         } else {
