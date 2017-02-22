@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
@@ -25,6 +26,7 @@ import gun0912.tedbottompicker.TedBottomPicker;
 public class MainActivity extends AppCompatActivity {
 
 
+    public RequestManager mGlideRequestManager;
     ImageView iv_image;
     private ViewGroup mSelectedImagesContainer;
 
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mGlideRequestManager = Glide.with(this);
 
         iv_image = (ImageView) findViewById(R.id.iv_image);
         mSelectedImagesContainer = (ViewGroup) findViewById(R.id.selected_photos_container);
@@ -43,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setSingleShowButton() {
-
 
 
         Button btn_single_show = (Button) findViewById(R.id.btn_single_show);
@@ -59,18 +61,27 @@ public class MainActivity extends AppCompatActivity {
                         TedBottomPicker bottomSheetDialogFragment = new TedBottomPicker.Builder(MainActivity.this)
                                 .setOnImageSelectedListener(new TedBottomPicker.OnImageSelectedListener() {
                                     @Override
-                                    public void onImageSelected(Uri uri) {
-                                        Log.d("ted","uri: "+uri);
-                                        Log.d("ted","uri.getPath(): "+uri.getPath());
+                                    public void onImageSelected(final Uri uri) {
+                                        Log.d("ted", "uri: " + uri);
+                                        Log.d("ted", "uri.getPath(): " + uri.getPath());
 
 
                                         iv_image.setVisibility(View.VISIBLE);
                                         mSelectedImagesContainer.setVisibility(View.GONE);
+                                        iv_image.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mGlideRequestManager
+                                                        .load(uri)
+                                                        .into(iv_image);
+                                            }
+                                        });
+                                        /*
                                         Glide.with(MainActivity.this)
                                                 //.load(uri.toString())
                                                 .load(uri)
                                                 .into(iv_image);
-
+                                         */
                                     }
                                 })
                                 //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
@@ -78,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
                                 .create();
 
                         bottomSheetDialogFragment.show(getSupportFragmentManager());
-
 
 
                     }
@@ -103,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setMultiShowButton() {
 
-    Button btn_multi_show = (Button) findViewById(R.id.btn_multi_show);
+        Button btn_multi_show = (Button) findViewById(R.id.btn_multi_show);
         btn_multi_show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,12 +124,12 @@ public class MainActivity extends AppCompatActivity {
                     public void onPermissionGranted() {
 
                         TedBottomPicker bottomSheetDialogFragment = new TedBottomPicker.Builder(MainActivity.this)
-                               .setOnMultiImageSelectedListener(new TedBottomPicker.OnMultiImageSelectedListener() {
-                                   @Override
-                                   public void onImagesSelected(ArrayList<Uri> uriList) {
+                                .setOnMultiImageSelectedListener(new TedBottomPicker.OnMultiImageSelectedListener() {
+                                    @Override
+                                    public void onImagesSelected(ArrayList<Uri> uriList) {
                                         showUriList(uriList);
-                                   }
-                               })
+                                    }
+                                })
                                 //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
                                 .setPeekHeight(1600)
                                 .showTitle(false)
@@ -128,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
                                 .create();
 
                         bottomSheetDialogFragment.show(getSupportFragmentManager());
-
 
 
                     }
@@ -151,8 +160,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-
 
 
     private void showUriList(ArrayList<Uri> uriList) {
