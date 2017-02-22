@@ -57,6 +57,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     public static final String TAG = "ted";
     static final int REQ_CODE_CAMERA = 1;
     static final int REQ_CODE_GALLERY = 2;
+    static final String EXTRA_CAMERA_IMAGE_URI="camera_image_uri";
     static Builder builder;
     ImageGalleryAdapter imageGalleryAdapter;
     View view_title_container;
@@ -70,6 +71,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     TextView selected_photos_empty;
     View contentView;
     ArrayList<Uri> selectedUriList;
+
+    private Uri cameraImageUri;
     private RecyclerView rc_gallery;
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
 
@@ -89,7 +92,23 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             Log.d(TAG, "onSlide() slideOffset: " + slideOffset);
         }
     };
-    private Uri cameraImageUri;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState!=null){
+            cameraImageUri = savedInstanceState.getParcelable(EXTRA_CAMERA_IMAGE_URI);
+        }
+        //  setRetainInstance(true);
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(EXTRA_CAMERA_IMAGE_URI,cameraImageUri);
+        super.onSaveInstanceState(outState);
+
+    }
 
     public void show(FragmentManager fragmentManager) {
 
@@ -167,10 +186,10 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         if (selectedUriList.size() < builder.selectMinCount) {
             String message;
-            if(builder.selectMinCountErrorText!=null){
+            if (builder.selectMinCountErrorText != null) {
                 message = builder.selectMinCountErrorText;
-            }else{
-                message= String.format(getResources().getString(R.string.select_min_count), builder.selectMinCount);
+            } else {
+                message = String.format(getResources().getString(R.string.select_min_count), builder.selectMinCount);
             }
 
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
@@ -271,9 +290,9 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         if (selectedUriList.size() == builder.selectMaxCount) {
             String message;
-            if(builder.selectMaxCountErrorText!=null){
+            if (builder.selectMaxCountErrorText != null) {
                 message = builder.selectMaxCountErrorText;
-            }else{
+            } else {
                 message = String.format(getResources().getString(R.string.select_max_count), builder.selectMaxCount);
             }
 
@@ -495,6 +514,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             }
         });
     }
+
 
     private void onActivityResultGallery(Intent data) {
         Uri temp = data.getData();
@@ -718,7 +738,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         }
 
 
-        public Builder setSelectMaxCountErrorText(String selectMaxCountErrorText){
+        public Builder setSelectMaxCountErrorText(String selectMaxCountErrorText) {
             this.selectMaxCountErrorText = selectMaxCountErrorText;
             return this;
         }
@@ -728,8 +748,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             return this;
         }
 
-        public Builder setSelectMinCountErrorText(String selectMinCountErrorText){
-            this.selectMinCountErrorText= selectMinCountErrorText;
+        public Builder setSelectMinCountErrorText(String selectMinCountErrorText) {
+            this.selectMinCountErrorText = selectMinCountErrorText;
             return this;
         }
 
