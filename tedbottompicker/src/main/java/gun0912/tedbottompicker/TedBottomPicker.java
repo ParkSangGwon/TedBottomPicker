@@ -400,6 +400,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             String imageFileName = "JPEG_" + timeStamp + "_";
             File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
+            storageDir.mkdirs();
 
             imageFile = File.createTempFile(
                     imageFileName,  /* prefix */
