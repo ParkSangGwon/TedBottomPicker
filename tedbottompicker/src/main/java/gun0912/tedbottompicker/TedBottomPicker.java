@@ -130,6 +130,14 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        final WindowManager.LayoutParams params = getDialog().getWindow().getAttributes();
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        getDialog().getWindow().setAttributes(params);
+    }
+    
+    @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
         contentView = View.inflate(getContext(), R.layout.tedbottompicker_content_view, null);
@@ -400,6 +408,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             String imageFileName = "JPEG_" + timeStamp + "_";
             File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
+            if (!storageDir.exists())
+                storageDir.mkdirs();
 
             imageFile = File.createTempFile(
                     imageFileName,  /* prefix */
@@ -523,14 +533,33 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             errorMessage();
         }
 
-        String realPath = RealPathUtil.getRealPath(getActivity(), temp);
-
-
-        Uri selectedImageUri = Uri.fromFile(new File(realPath));
-        complete(selectedImageUri);
+        if (temp.toString().startsWith("content://com.google.android.apps.photos.content")) {
+            try {
+                InputStream is = getActivity().getContentResolver().openInputStream(temp);
+                if (is != null) {
+                    Bitmap pictureBitmap = BitmapFactory.decodeStream(is);
+                    String realPath = RealPathUtil.getRealPath(getActivity(), getImageUri(getActivity(), pictureBitmap));
+                    Uri selectedImageUri = Uri.fromFile(new File(realPath));
+                    complete(selectedImageUri);
+                }
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            String realPath = RealPathUtil.getRealPath(getActivity(), temp);
+            Uri selectedImageUri = Uri.fromFile(new File(realPath));
+            complete(selectedImageUri);
+        }
 
     }
 
+    public Uri getImageUri(Context context, Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "img", null);
+        return Uri.parse(path);
+    }
 
     public interface OnMultiImageSelectedListener {
         void onImagesSelected(ArrayList<Uri> uriList);
