@@ -130,6 +130,14 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        final WindowManager.LayoutParams params = getDialog().getWindow().getAttributes();
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        getDialog().getWindow().setAttributes(params);
+    }
+    
+    @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
         contentView = View.inflate(getContext(), R.layout.tedbottompicker_content_view, null);
@@ -400,6 +408,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             String imageFileName = "JPEG_" + timeStamp + "_";
             File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
+            if (!storageDir.exists())
+                storageDir.mkdirs();
 
             imageFile = File.createTempFile(
                     imageFileName,  /* prefix */
