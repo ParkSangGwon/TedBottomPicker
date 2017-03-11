@@ -544,6 +544,12 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     }
 
+    public Uri getImageUri(Context context, Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "img", null);
+        return Uri.parse(path);
+    }
 
     public interface OnMultiImageSelectedListener {
         void onImagesSelected(ArrayList<Uri> uriList);
