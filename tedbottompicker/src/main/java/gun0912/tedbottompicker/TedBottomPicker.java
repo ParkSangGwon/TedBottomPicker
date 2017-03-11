@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -47,6 +49,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import gun0912.tedbottompicker.adapter.ImageGalleryAdapter;
@@ -54,10 +57,11 @@ import gun0912.tedbottompicker.util.RealPathUtil;
 
 public class TedBottomPicker extends BottomSheetDialogFragment {
 
-    public static final String TAG = "ted";
+    public static final String TAG = "TedBottomPicker";
     static final int REQ_CODE_CAMERA = 1;
     static final int REQ_CODE_GALLERY = 2;
     static final String EXTRA_CAMERA_IMAGE_URI="camera_image_uri";
+    static final String EXTRA_CAMERA_SELECTED_IMAGE_URI="camera_selected_image_uri";
     static Builder builder;
     ImageGalleryAdapter imageGalleryAdapter;
     View view_title_container;
@@ -98,6 +102,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         super.onCreate(savedInstanceState);
         if(savedInstanceState!=null){
             cameraImageUri = savedInstanceState.getParcelable(EXTRA_CAMERA_IMAGE_URI);
+            selectedUriList = savedInstanceState.getParcelableArrayList(EXTRA_CAMERA_SELECTED_IMAGE_URI);
+
         }
         //  setRetainInstance(true);
     }
@@ -106,6 +112,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(EXTRA_CAMERA_IMAGE_URI,cameraImageUri);
+        outState.putParcelableArrayList(EXTRA_CAMERA_SELECTED_IMAGE_URI, selectedUriList);
         super.onSaveInstanceState(outState);
 
     }
@@ -151,7 +158,13 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         setRecyclerView();
         setSelectionView();
 
-        selectedUriList = new ArrayList<>();
+        if (selectedUriList == null) {
+            selectedUriList = new ArrayList<>();
+        } else {
+            for (Uri uri:selectedUriList){
+                addUri(uri);
+            }
+        }
         setDoneButton();
         checkMultiMode();
     }
@@ -387,6 +400,13 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         File imageFile = getImageFile();
         Uri photoURI = FileProvider.getUriForFile(getContext(), getContext().getApplicationContext().getPackageName() + ".provider", imageFile);
+
+        List<ResolveInfo> resolvedIntentActivities = getContext().getPackageManager().queryIntentActivities(cameraInent, PackageManager.MATCH_DEFAULT_ONLY);
+        for (ResolveInfo resolvedIntentInfo : resolvedIntentActivities) {
+            String packageName = resolvedIntentInfo.activityInfo.packageName;
+            getContext().grantUriPermission(packageName, photoURI, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+
         cameraInent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
         startActivityForResult(cameraInent, REQ_CODE_CAMERA);
 
