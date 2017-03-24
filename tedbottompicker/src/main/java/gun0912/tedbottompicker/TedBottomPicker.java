@@ -62,7 +62,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     static final int REQ_CODE_GALLERY = 2;
     static final String EXTRA_CAMERA_IMAGE_URI="camera_image_uri";
     static final String EXTRA_CAMERA_SELECTED_IMAGE_URI="camera_selected_image_uri";
-    static Builder builder;
+    public Builder builder;
     ImageGalleryAdapter imageGalleryAdapter;
     View view_title_container;
     TextView tv_title;
