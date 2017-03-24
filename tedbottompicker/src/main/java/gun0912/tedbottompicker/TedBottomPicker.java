@@ -400,6 +400,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             String imageFileName = "JPEG_" + timeStamp + "_";
             File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
+            if (!storageDir.exists())
+                storageDir.mkdirs();
 
             imageFile = File.createTempFile(
                     imageFileName,  /* prefix */
@@ -525,8 +527,13 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         String realPath = RealPathUtil.getRealPath(getActivity(), temp);
 
+        Uri selectedImageUri = null;
+        try {
+            selectedImageUri = Uri.fromFile(new File(realPath));
+        } catch (Exception ex) {
+            selectedImageUri = Uri.parse(realPath);
+        }
 
-        Uri selectedImageUri = Uri.fromFile(new File(realPath));
         complete(selectedImageUri);
 
     }
