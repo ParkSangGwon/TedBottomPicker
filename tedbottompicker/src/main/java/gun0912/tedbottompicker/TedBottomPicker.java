@@ -534,21 +534,20 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         }
         
         Uri selectedImageUri = null;
-        String realPath = RealPathUtil.getRealPath(getActivity(), temp);
         
         if (temp.toString().startsWith("content://com.google.android.apps.photos.content")) {
             try {
                 InputStream is = getActivity().getContentResolver().openInputStream(temp);
                 if (is != null) {
                     Bitmap pictureBitmap = BitmapFactory.decodeStream(is);
-                    realPath = RealPathUtil.getRealPath(getActivity(), getImageUri(getActivity(), pictureBitmap));
+                    String realPath = RealPathUtil.getRealPath(getActivity(), getImageUri(getActivity(), pictureBitmap));
                     selectedImageUri = Uri.fromFile(new File(realPath));
-                    complete(selectedImageUri);
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         } else {
+            String realPath = RealPathUtil.getRealPath(getActivity(), temp);
             try {
                 selectedImageUri = Uri.fromFile(new File(realPath));
             } catch (Exception ex) {
