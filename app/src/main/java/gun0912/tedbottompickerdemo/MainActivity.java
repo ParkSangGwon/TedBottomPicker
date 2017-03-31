@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
     public RequestManager mGlideRequestManager;
     ImageView iv_image;
+    ArrayList<Uri> selectedUriList;
+    Uri selectedUri;
     private ViewGroup mSelectedImagesContainer;
 
     @Override
@@ -64,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                                     public void onImageSelected(final Uri uri) {
                                         Log.d("ted", "uri: " + uri);
                                         Log.d("ted", "uri.getPath(): " + uri.getPath());
-
+                                        selectedUri = uri;
 
                                         iv_image.setVisibility(View.VISIBLE);
                                         mSelectedImagesContainer.setVisibility(View.GONE);
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 })
                                 //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
+                                .setSelectedUri(selectedUri)
                                 .setPeekHeight(1200)
                                 .create();
 
@@ -127,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
                                 .setOnMultiImageSelectedListener(new TedBottomPicker.OnMultiImageSelectedListener() {
                                     @Override
                                     public void onImagesSelected(ArrayList<Uri> uriList) {
+                                        selectedUriList = uriList;
                                         showUriList(uriList);
                                     }
                                 })
@@ -135,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
                                 .showTitle(false)
                                 .setCompleteButtonText("Done")
                                 .setEmptySelectionText("No Select")
+                                .setSelectedUriList(selectedUriList)
                                 .create();
 
                         bottomSheetDialogFragment.show(getSupportFragmentManager());
