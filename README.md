@@ -1,5 +1,5 @@
  
-#What is TedBottomPicker?
+# What is TedBottomPicker?
 In Google's Material Design, Google introduce **Bottom sheets**.([Components – Bottom sheets](https://material.google.com/components/bottom-sheets.html))<br/>
 **Bottom sheets** slide up from the bottom of the screen to reveal more content.
 
@@ -17,12 +17,12 @@ If you want pick image from gallery or take picture, this library can help easil
 
 
 
-##Demo
+## Demo
 
 1. Show Bottom Sheet.
 2. Pick Image
 
-###Single/Multi Select
+### Single/Multi Select
 
 ![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/screenshot1.jpeg?raw=true)    ![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/demo.gif?raw=true)  
 ![Screenshot](https://github.com/ParkSangGwon/TedBottomPicker/blob/master/screenshot_multi_select.jpeg?raw=true)    
@@ -33,14 +33,14 @@ If you want pick image from gallery or take picture, this library can help easil
 <br/><br/>
 
 
-##Setup
+## Setup
 
 
-###Gradle
+### Gradle
 ```javascript
 
 dependencies {
-    compile 'gun0912.ted:tedbottompicker:1.0.9'
+    compile 'gun0912.ted:tedbottompicker:1.0.10'
 }
 
 ```
@@ -49,8 +49,8 @@ dependencies {
 
 
 
-##How to use
-###1. Check Permission
+## How to use
+### 1. Check Permission
 You have to grant `WRITE_EXTERNAL_STORAGE` permission from user.<br/>
 If your targetSDK version is 23+, you have to check permission and request permission to user.<br/>
 Because after Marshmallow(6.0), you have to not only decalare permisions in `AndroidManifest.xml` but also request permissions at runtime.<br/>
@@ -60,7 +60,7 @@ I recommend [TedPermission](https://github.com/ParkSangGwon/TedPermission)<br/>
 <br/>
 
 
-###2. Start TedBottomPicker
+### 2. Start TedBottomPicker
 **TedBottomPicker** class extend `BottomSheetDialogFragment`.<br/>
 `TedBottomPicker.Builder` make `new TedBottomPicker()`.<br/>
 After then, you can show TedBottomPicker<br/>
@@ -107,12 +107,12 @@ This listener will pass selected Uri/UriList.<br/>
 
 <br/>
 
-##Customize
+## Customize
 You can customize something ...<br />
 
-###Function
+### Function
 
-####Common
+#### Common
 
 * `setPreviewMaxCount(Int) (default: 25)`
 * `setPeekHeight(Int)`
@@ -132,7 +132,7 @@ You can customize something ...<br />
 * `setImageProvider(ImageProvider)`
 : If you want load grid image yourself, you can use your ImageProvider
 
-####Multi Select
+#### Multi Select
 * `setDeSelectIcon(R.drawable.xxx or Drawable)`
 * `setSelectedForeground(R.drawable.xxx or Drawable)`
 * `setSelectMaxCount(Int)`
@@ -146,7 +146,7 @@ You can customize something ...<br />
 
 
 
-##Thanks 
+## Thanks 
 * [Flipboard-bottomsheet](https://github.com/Flipboard/bottomsheet) - Android component which presents a dismissible view from the bottom of the screen
 
 
@@ -155,7 +155,7 @@ You can customize something ...<br />
 <br/><br/>
 
 
-##License 
+## License 
  ```code
 Copyright 2017 Ted Park
 
