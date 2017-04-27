@@ -40,11 +40,14 @@ If you want pick image from gallery or take picture, this library can help easil
 ```javascript
 
 dependencies {
-    compile 'gun0912.ted:tedbottompicker:1.0.10'
+    compile 'gun0912.ted:tedbottompicker:1.0.11'
 }
 
 ```
 
+If you think this library is usuful, please press start button at upside.
+<br/>
+<img src="https://phaser.io/content/news/2015/09/10000-stars.png" width="200">
 <br/><br/>
 
 
@@ -132,6 +135,9 @@ You can customize something ...<br />
 * `setImageProvider(ImageProvider)`
 : If you want load grid image yourself, you can use your ImageProvider
 
+#### Single Select
+* `setSelectedUri(Uri)`
+
 #### Multi Select
 * `setDeSelectIcon(R.drawable.xxx or Drawable)`
 * `setSelectedForeground(R.drawable.xxx or Drawable)`
@@ -141,6 +147,7 @@ You can customize something ...<br />
 * `setEmptySelectionText(String or R.string.xxx) (default: 'No Image','이미지가 선택되지 않았습니다')`
 * `setSelectMaxCountErrorText(String or R.string.xxx)`
 * `setSelectMinCountErrorText(String or R.string.xxx)`
+* `setSelectedUriList(ArrayList<Uri>)`
 
 <br/><br/>
 
