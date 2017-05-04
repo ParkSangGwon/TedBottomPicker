@@ -559,15 +559,19 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         String realPath = RealPathUtil.getRealPath(getActivity(), temp);
 
-        Uri selectedImageUri = null;
-        try {
-            selectedImageUri = Uri.fromFile(new File(realPath));
-        } catch (Exception ex) {
-            selectedImageUri = Uri.parse(realPath);
+        Uri selectedImageUri;
+
+        if (realPath != null && !realPath.equals("")) {
+            try {
+                selectedImageUri = Uri.fromFile(new File(realPath));
+            } catch (Exception ex) {
+                selectedImageUri = Uri.parse(realPath);
+            }
+
+            complete(selectedImageUri);
+        } else {
+            errorMessage("Corrupted Image/already deleted from gallery");
         }
-
-        complete(selectedImageUri);
-
     }
 
 
