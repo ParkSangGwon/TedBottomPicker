@@ -55,38 +55,42 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
             pickerTiles.add(new PickerTile(PickerTile.GALLERY));
         }
 
-        Cursor imageCursor = null;
-        try {
-            final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.ImageColumns.ORIENTATION};
-            final String orderBy = MediaStore.Images.Media.DATE_ADDED + " DESC";
+        if (builder.remoteImages == null) {
+            Cursor imageCursor = null;
+            try {
+                final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.ImageColumns.ORIENTATION};
+                final String orderBy = MediaStore.Images.Media.DATE_ADDED + " DESC";
 
 
-            imageCursor = context.getApplicationContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy);
-            //imageCursor = sContext.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy);
+                imageCursor = context.getApplicationContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy);
+                //imageCursor = sContext.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy);
 
 
-            if (imageCursor != null) {
+                if (imageCursor != null) {
 
-                int count = 0;
-                while (imageCursor.moveToNext() && count < builder.previewMaxCount) {
-                    String imageLocation = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
-                    File imageFile = new File(imageLocation);
-                    pickerTiles.add(new PickerTile(Uri.fromFile(imageFile)));
-                    count++;
+                    int count = 0;
+                    while (imageCursor.moveToNext() && count < builder.previewMaxCount) {
+                        String imageLocation = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                        File imageFile = new File(imageLocation);
+                        pickerTiles.add(new PickerTile(Uri.fromFile(imageFile)));
+                        count++;
+
+                    }
 
                 }
 
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (imageCursor != null && !imageCursor.isClosed()) {
+                    imageCursor.close();
+                }
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (imageCursor != null && !imageCursor.isClosed()) {
-                imageCursor.close();
+        } else {
+            for (String remoteImage : builder.remoteImages) {
+                pickerTiles.add(new PickerTile(remoteImage));
             }
         }
-
-
     }
 
     public void setSelectedUriList(ArrayList<Uri> selectedUriList, Uri uri) {
@@ -136,7 +140,22 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         } else if (pickerTile.isGalleryTile()) {
             holder.iv_thumbnail.setBackgroundResource(builder.galleryTileBackgroundResId);
             holder.iv_thumbnail.setImageDrawable(builder.galleryTileDrawable);
+        } else if (builder.remoteImages != null){
 
+            String imageUrl = pickerTile.imageUrl;
+
+            if (builder.imageProvider == null) {
+                Glide.with(context)
+                        .load(imageUrl)
+                        .thumbnail(0.1f)
+                        .dontAnimate()
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_gallery)
+                        .error(R.drawable.img_error)
+                        .into(holder.iv_thumbnail);
+            } else {
+                builder.imageProvider.onProvideImage(holder.iv_thumbnail, imageUrl);
+            }
         } else {
             Uri uri = pickerTile.getImageUri();
             if (builder.imageProvider == null) {
@@ -154,10 +173,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
 
             isSelected = selectedUriList.contains(uri);
-
-
         }
-
 
         if (holder.root instanceof FrameLayout) {
 
@@ -207,8 +223,10 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         public static final int IMAGE = 1;
         public static final int CAMERA = 2;
         public static final int GALLERY = 3;
-        protected final Uri imageUri;
-        protected final
+        public static final int REMOTE = 4;
+
+        protected Uri imageUri;
+        protected String imageUrl;
         @TileType
         int tileType;
 
@@ -223,6 +241,16 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
         PickerTile(@NonNull Uri imageUri) {
             this(imageUri, IMAGE);
+        }
+
+        PickerTile(@NonNull String imageUrl) {
+            this.imageUrl = imageUrl;
+            this.tileType = REMOTE;
+        }
+
+        @Nullable
+        public String getImageUrl() {
+            return imageUrl;
         }
 
         @Nullable
@@ -243,6 +271,8 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
                 return "CameraTile";
             } else if (isGalleryTile()) {
                 return "PickerTile";
+            } else if (isRemoteTile()) {
+                return "RemoteTile" + imageUrl;
             } else {
                 return "Invalid item";
             }
@@ -260,7 +290,11 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
             return tileType == GALLERY;
         }
 
-        @IntDef({IMAGE, CAMERA, GALLERY})
+        public boolean isRemoteTile() {
+            return tileType == REMOTE;
+        }
+
+        @IntDef({IMAGE, CAMERA, GALLERY, REMOTE})
         @Retention(RetentionPolicy.SOURCE)
         public @interface TileType {
         }
