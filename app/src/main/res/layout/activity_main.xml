@@ -11,17 +11,50 @@
     tools:context="petrov.kristiyan.demo.MainActivity">
 
     <Button
-        android:id="@+id/btn_show"
+        android:id="@+id/btn_single_show"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:text="Show Ted Bottom Picker" />
+        android:text="Show Ted Bottom Picker(Single)" />
+
+
+    <Button
+        android:id="@+id/btn_multi_show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="Show Ted Bottom Picker(Multi)" />
 
     <ImageView
         android:id="@+id/iv_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btn_show"
+        android:layout_below="@id/btn_single_show"
         android:layout_centerInParent="true"
         android:layout_marginTop="@dimen/activity_vertical_margin" />
+
+
+    <HorizontalScrollView
+        android:id="@+id/hori_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="false"
+        android:foregroundGravity="left"
+        >
+
+
+        <LinearLayout
+            android:id="@+id/selected_photos_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:animateLayoutChanges="true"
+            android:gravity="left"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+
+            <!-- images will be added dynamicall to this layout -->
+        </LinearLayout>
+    </HorizontalScrollView>
 </LinearLayout>

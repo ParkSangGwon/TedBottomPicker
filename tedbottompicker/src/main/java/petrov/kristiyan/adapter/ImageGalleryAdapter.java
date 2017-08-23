@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.io.File;
 import java.lang.annotation.Retention;
@@ -22,22 +23,26 @@ import petrov.kristiyan.view.TedSquareFrameLayout;
 import petrov.kristiyan.view.TedSquareImageView;
 
 /**
- * Created by TedPark on 2016. 8. 30..
+ * @author Kristiyan Petrov (kristiyan@igenius.net)
  */
+
 public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapter.GalleryViewHolder> {
 
 
-    ArrayList<PickerTile> pickerTiles;
-    Context context;
-    TedBottomPicker.Builder builder;
-    OnItemClickListener onItemClickListener;
+    private ArrayList<PickerTile> pickerTiles;
+    private Context context;
+    private TedBottomPicker.Builder builder;
+    private OnItemClickListener onItemClickListener;
+    private ArrayList<Uri> selectedUriList;
+
 
     public ImageGalleryAdapter(Context context, TedBottomPicker.Builder builder) {
 
         this.context = context;
         this.builder = builder;
 
-        pickerTiles = new ArrayList<PickerTile>();
+        pickerTiles = new ArrayList<>();
+        selectedUriList = new ArrayList<>();
 
         if (builder.showCamera) {
             pickerTiles.add(new PickerTile(PickerTile.CAMERA));
@@ -60,7 +65,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
             if (imageCursor != null) {
 
                 int count = 0;
-                while (imageCursor.moveToNext() && count < builder.maxCount) {
+                while (imageCursor.moveToNext() && count < builder.previewMaxCount) {
                     String imageLocation = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
                     File imageFile = new File(imageLocation);
                     pickerTiles.add(new PickerTile(Uri.fromFile(imageFile)));
@@ -81,13 +86,34 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
     }
 
+    public void setSelectedUriList(ArrayList<Uri> selectedUriList, Uri uri) {
+        this.selectedUriList = selectedUriList;
+
+        int position = -1;
+
+
+        PickerTile pickerTile;
+        for (int i = 0; i < pickerTiles.size(); i++) {
+            pickerTile = pickerTiles.get(i);
+            if (pickerTile.isImageTile() && pickerTile.getImageUri().equals(uri)) {
+                position = i;
+                break;
+            }
+
+        }
+
+
+        if (position > 0) {
+            notifyItemChanged(position);
+        }
+
+
+    }
+
     @Override
     public GalleryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = View.inflate(context, R.layout.tedbottompicker_grid_item, null);
-        final GalleryViewHolder holder = new GalleryViewHolder(view);
-
-
-        return holder;
+        return new GalleryViewHolder(view);
     }
 
     @Override
@@ -95,6 +121,8 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
         PickerTile pickerTile = getItem(position);
 
+
+        boolean isSelected = false;
 
         if (pickerTile.isCameraTile()) {
             holder.iv_thumbnail.setBackgroundResource(builder.cameraTileBackgroundResId);
@@ -110,25 +138,32 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
             } else {
                 builder.imageProvider.onProvideImage(holder.iv_thumbnail, uri);
             }
+
+
+            isSelected = selectedUriList.contains(uri);
+
+
         }
+
+        holder.selected_icon.setVisibility(isSelected ? View.VISIBLE : View.GONE);
 
         if (onItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onItemClickListener.onItemClick(holder.itemView, position);
+                    onItemClickListener.onItemClick(holder.itemView, holder.getAdapterPosition());
                 }
             });
         }
     }
 
+    public PickerTile getItem(int position) {
+        return pickerTiles.get(position);
+    }
+
     @Override
     public int getItemCount() {
         return pickerTiles.size();
-    }
-
-    public PickerTile getItem(int position) {
-        return pickerTiles.get(position);
     }
 
     public void setOnItemClickListener(
@@ -137,7 +172,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
     }
 
     public interface OnItemClickListener {
-        public void onItemClick(View view, int position);
+        void onItemClick(View view, int position);
     }
 
 
@@ -146,8 +181,8 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         public static final int IMAGE = 1;
         public static final int CAMERA = 2;
         public static final int GALLERY = 3;
-        protected final Uri imageUri;
-        protected final
+        final Uri imageUri;
+        final
         @TileType
         int tileType;
 
@@ -159,7 +194,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
             this(imageUri, IMAGE);
         }
 
-        protected PickerTile(@Nullable Uri imageUri, @TileType int tileType) {
+        PickerTile(@Nullable Uri imageUri, @TileType int tileType) {
             this.imageUri = imageUri;
             this.tileType = tileType;
         }
@@ -174,15 +209,15 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
             return tileType;
         }
 
-        public boolean isImageTile() {
+        boolean isImageTile() {
             return tileType == IMAGE;
         }
 
-        public boolean isCameraTile() {
+        boolean isCameraTile() {
             return tileType == CAMERA;
         }
 
-        public boolean isGalleryTile() {
+        boolean isGalleryTile() {
             return tileType == GALLERY;
         }
 
@@ -201,27 +236,26 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
         @IntDef({IMAGE, CAMERA, GALLERY})
         @Retention(RetentionPolicy.SOURCE)
-        public @interface TileType {
+        @interface TileType {
         }
 
         @IntDef({CAMERA, GALLERY})
         @Retention(RetentionPolicy.SOURCE)
-        public @interface SpecialTileType {
+        @interface SpecialTileType {
         }
     }
 
     class GalleryViewHolder extends RecyclerView.ViewHolder {
 
         TedSquareFrameLayout root;
-
-
         TedSquareImageView iv_thumbnail;
+        ImageView selected_icon;
 
-        public GalleryViewHolder(View view) {
+        GalleryViewHolder(View view) {
             super(view);
-            root = (TedSquareFrameLayout) view.findViewById(R.id.root);
-            iv_thumbnail = (TedSquareImageView) view.findViewById(R.id.iv_thumbnail);
-
+            root = view.findViewById(R.id.root);
+            iv_thumbnail = view.findViewById(R.id.iv_thumbnail);
+            selected_icon = view.findViewById(R.id.selected_icon);
         }
 
     }

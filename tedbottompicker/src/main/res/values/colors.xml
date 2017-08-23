@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="tedbottompicker_camera">#000</color>
-    <color name="tedbottompicker_gallery">#ccc</color>
+    <color name="tedbottompicker_camera">#000000</color>
+    <color name="tedbottompicker_gallery">#eeeeee</color>
+    <color name="tedbottompicker_selected">#6200EA</color>
 
 </resources>

@@ -19,12 +19,13 @@ def projectLicenseUrl = "http://www.apache.org/licenses/LICENSE-2.0.txt"
 def projectKeywords = ['imagepicker', 'bottom', 'image','picker']
 def developerFullName = "Kristiyan Petrov"
 
-group = projectGroup
-version = "1.2"
 
-def sdkVersion = 25;
-def toolsVersion = "24.0.3"
-def supportLibVersion = "25.1.0"
+group = projectGroup
+version = "1.3"
+
+def sdkVersion = 26;
+def toolsVersion = "26.0.1"
+def supportLibVersion = "26.0.1"
 
 android {
     compileSdkVersion sdkVersion
@@ -47,8 +48,9 @@ android {
 
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:support-annotations:${supportLibVersion}"
