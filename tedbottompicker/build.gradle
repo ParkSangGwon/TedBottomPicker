@@ -21,7 +21,7 @@ def developerFullName = "Kristiyan Petrov"
 
 
 group = projectGroup
-version = "1.3"
+version = "1.4"
 
 def sdkVersion = 26;
 def toolsVersion = "26.0.1"

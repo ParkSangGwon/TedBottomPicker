@@ -154,6 +154,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
+        if (builder == null)
+            return;
         View contentView = View.inflate(getContext(), R.layout.tedbottompicker_content_view, null);
         dialog.setContentView(contentView);
         CoordinatorLayout.LayoutParams layoutParams =
@@ -161,10 +163,9 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
         if (behavior != null && behavior instanceof BottomSheetBehavior) {
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetBehaviorCallback);
-            if (builder != null && builder.peekHeight > 0) {
+            if (builder.peekHeight > 0) {
                 ((BottomSheetBehavior) behavior).setPeekHeight(builder.peekHeight);
             }
-
         }
 
         initView(contentView);
