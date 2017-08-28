@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -42,9 +44,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.request.RequestOptions;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -291,7 +298,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     }
 
     private void complete(final Uri uri) {
-        Log.d(TAG, "selected uri: " + uri.toString());
+        //Log.d(TAG, "selected uri: " + uri.toString());
         //uri = Uri.parse(uri.toString());
         if (isMultiSelect()) {
 
@@ -340,13 +347,16 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         thumbnail.setLayoutParams(new FrameLayout.LayoutParams(px, px));
 
         if (builder.imageProvider == null) {
-            Glide.with(getActivity())
-                    .load(uri)
-                    .thumbnail(0.1f)
-                    .dontAnimate()
+            RequestOptions options = new RequestOptions()
                     .centerCrop()
                     .placeholder(R.drawable.ic_gallery)
                     .error(R.drawable.img_error)
+                    .dontAnimate()
+                    .priority(Priority.HIGH);
+
+            Glide.with(getActivity())
+                    .load(uri)
+                    .apply(options)
                     .into(thumbnail);
         } else {
             builder.imageProvider.onProvideImage(thumbnail, uri);
@@ -379,7 +389,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         for (int i = 0; i < selected_photos_container.getChildCount(); i++) {
             View childView = selected_photos_container.getChildAt(i);
-
 
             if (childView.getTag().equals(uri)) {
                 selected_photos_container.removeViewAt(i);
@@ -557,19 +566,36 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             errorMessage();
         }
 
-        String realPath = RealPathUtil.getRealPath(getActivity(), temp);
-
         Uri selectedImageUri = null;
-        try {
-            selectedImageUri = Uri.fromFile(new File(realPath));
-        } catch (Exception ex) {
-            selectedImageUri = Uri.parse(realPath);
+        if (temp != null && temp.toString().startsWith("content://com.google.android.apps.photos.content")) {
+            try {
+                InputStream is = getActivity().getContentResolver().openInputStream(temp);
+                if (is != null) {
+                    Bitmap pictureBitmap = BitmapFactory.decodeStream(is);
+                    String realPath = RealPathUtil.getRealPath(getActivity(), getImageUri(getActivity(), pictureBitmap));
+                    selectedImageUri = Uri.fromFile(new File(realPath));
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            String realPath = RealPathUtil.getRealPath(getActivity(), temp);
+            try {
+                selectedImageUri = Uri.fromFile(new File(realPath));
+            } catch (Exception ex) {
+                selectedImageUri = Uri.parse(realPath);
+            }
         }
 
         complete(selectedImageUri);
-
     }
 
+    public Uri getImageUri(Context context, Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "image", null);
+        return Uri.parse(path);
+    }
 
     public interface OnMultiImageSelectedListener {
         void onImagesSelected(ArrayList<Uri> uriList);
