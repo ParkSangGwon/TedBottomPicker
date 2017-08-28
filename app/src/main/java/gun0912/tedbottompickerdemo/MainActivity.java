@@ -15,7 +15,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.request.RequestOptions;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
@@ -184,9 +186,13 @@ public class MainActivity extends AppCompatActivity {
             View imageHolder = LayoutInflater.from(this).inflate(R.layout.image_item, null);
             ImageView thumbnail = (ImageView) imageHolder.findViewById(R.id.media_image);
 
+            RequestOptions options = new RequestOptions()
+                    .fitCenter()
+                    .priority(Priority.HIGH);
+
             Glide.with(this)
                     .load(uri.toString())
-                    .fitCenter()
+                    .apply(options)
                     .into(thumbnail);
 
             mSelectedImagesContainer.addView(imageHolder);
