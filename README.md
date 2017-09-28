@@ -29,7 +29,7 @@ If you want pick image from gallery or take picture, this library can help easil
 
            
 
-
+[![Screenshot](https://github.com/ParkSangGwon/TedPermission/blob/master/google_play_150.png?raw=true)](https://play.google.com/store/apps/details?id=gun0912.tedbottompickerdemo)
 <br/><br/>
 
 
