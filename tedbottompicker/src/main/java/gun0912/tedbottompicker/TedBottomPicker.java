@@ -42,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.io.File;
 import java.io.IOException;
@@ -149,7 +150,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     @Override
     public void setupDialog(Dialog dialog, int style) {
-        super.setupDialog(dialog, style);
         contentView = View.inflate(getContext(), R.layout.tedbottompicker_content_view, null);
         dialog.setContentView(contentView);
         CoordinatorLayout.LayoutParams layoutParams =
@@ -340,13 +340,16 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         thumbnail.setLayoutParams(new FrameLayout.LayoutParams(px, px));
 
         if (builder.imageProvider == null) {
-            Glide.with(getActivity())
-                    .load(uri)
-                    .thumbnail(0.1f)
+            RequestOptions options = new RequestOptions()
                     .dontAnimate()
                     .centerCrop()
                     .placeholder(R.drawable.ic_gallery)
-                    .error(R.drawable.img_error)
+                    .error(R.drawable.img_error);
+
+            Glide.with(getActivity())
+                    .load(uri)
+                    .thumbnail(0.1f)
+                    .apply(options)
                     .into(thumbnail);
         } else {
             builder.imageProvider.onProvideImage(thumbnail, uri);

@@ -2,16 +2,14 @@
 
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/view_title_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
 
         <Button
@@ -23,7 +21,7 @@
             android:layout_centerVertical="true"
             android:text="@string/done"
             android:textColor="?attr/colorAccent"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/tv_title"
@@ -33,8 +31,7 @@
             android:layout_margin="16dp"
             android:layout_toLeftOf="@id/btn_done"
             android:text="@string/tedbottompicker_title"
-            android:textSize="16sp"
-            />
+            android:textSize="16sp" />
 
     </RelativeLayout>
 
@@ -84,8 +81,7 @@
             android:background="@color/tedbottompicker_selected"
             android:fillViewport="false"
 
-            android:foregroundGravity="left"
-            >
+            android:foregroundGravity="left">
 
             <LinearLayout
                 android:id="@+id/selected_photos_container"
@@ -95,7 +91,7 @@
                 android:animateLayoutChanges="false"
                 android:gravity="left"
                 android:orientation="horizontal"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </HorizontalScrollView>
 
         <TextView
@@ -105,7 +101,7 @@
             android:layout_gravity="center"
             android:text="@string/no_image"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="?attr/colorAccent"/>
+            android:textColor="?attr/colorAccent" />
     </FrameLayout>
 
     <!--
@@ -121,7 +117,6 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rc_gallery"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
 
 </LinearLayout>

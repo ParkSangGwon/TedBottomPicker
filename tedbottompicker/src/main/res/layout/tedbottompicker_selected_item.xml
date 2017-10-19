@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2016. Ted Park. All Rights Reserved
   -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="@dimen/tedbottompicker_selected_image_height"
-             android:layout_height="@dimen/tedbottompicker_selected_image_height"
-             android:paddingLeft="@dimen/tedbottompicker_grid_layout_margin"
-             android:paddingRight="@dimen/tedbottompicker_grid_layout_margin">
+    android:layout_width="@dimen/tedbottompicker_selected_image_height"
+    android:layout_height="@dimen/tedbottompicker_selected_image_height"
+    android:paddingLeft="@dimen/tedbottompicker_grid_layout_margin"
+    android:paddingRight="@dimen/tedbottompicker_grid_layout_margin">
 
     <ImageView
         android:id="@+id/selected_photo"
