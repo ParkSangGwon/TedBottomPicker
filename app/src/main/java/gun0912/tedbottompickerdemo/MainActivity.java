@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.request.RequestOptions;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
@@ -38,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mGlideRequestManager = Glide.with(this);
 
-        iv_image = (ImageView) findViewById(R.id.iv_image);
-        mSelectedImagesContainer = (ViewGroup) findViewById(R.id.selected_photos_container);
+        iv_image = findViewById(R.id.iv_image);
+        mSelectedImagesContainer = findViewById(R.id.selected_photos_container);
 
         setSingleShowButton();
         setMultiShowButton();
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private void setSingleShowButton() {
 
 
-        Button btn_single_show = (Button) findViewById(R.id.btn_single_show);
+        Button btn_single_show = findViewById(R.id.btn_single_show);
         btn_single_show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -116,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setMultiShowButton() {
 
-        Button btn_multi_show = (Button) findViewById(R.id.btn_multi_show);
+        Button btn_multi_show = findViewById(R.id.btn_multi_show);
         btn_multi_show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -182,11 +183,13 @@ public class MainActivity extends AppCompatActivity {
         for (Uri uri : uriList) {
 
             View imageHolder = LayoutInflater.from(this).inflate(R.layout.image_item, null);
-            ImageView thumbnail = (ImageView) imageHolder.findViewById(R.id.media_image);
+            ImageView thumbnail = imageHolder.findViewById(R.id.media_image);
+
+            RequestOptions options = new RequestOptions().fitCenter();
 
             Glide.with(this)
                     .load(uri.toString())
-                    .fitCenter()
+                    .apply(options)
                     .into(thumbnail);
 
             mSelectedImagesContainer.addView(imageHolder);

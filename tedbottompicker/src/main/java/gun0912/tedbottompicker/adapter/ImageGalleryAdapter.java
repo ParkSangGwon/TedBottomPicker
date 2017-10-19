@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.io.File;
 import java.lang.annotation.Retention;
@@ -140,13 +142,16 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         } else {
             Uri uri = pickerTile.getImageUri();
             if (builder.imageProvider == null) {
-                Glide.with(context)
-                        .load(uri)
-                        .thumbnail(0.1f)
-                        .dontAnimate()
+                RequestOptions options = new RequestOptions()
                         .centerCrop()
                         .placeholder(R.drawable.ic_gallery)
                         .error(R.drawable.img_error)
+                        .dontAnimate()
+                        .priority(Priority.HIGH);
+                Glide.with(context)
+                        .load(uri)
+                        .thumbnail(0.1f)
+                        .apply(options)
                         .into(holder.iv_thumbnail);
             } else {
                 builder.imageProvider.onProvideImage(holder.iv_thumbnail, uri);
@@ -163,13 +168,13 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
             Drawable foregroundDrawable;
 
-            if(builder.selectedForegroundDrawable!=null){
+            if (builder.selectedForegroundDrawable != null) {
                 foregroundDrawable = builder.selectedForegroundDrawable;
-            }else{
-                foregroundDrawable = ContextCompat.getDrawable(context,R.drawable.gallery_photo_selected);
+            } else {
+                foregroundDrawable = ContextCompat.getDrawable(context, R.drawable.gallery_photo_selected);
             }
 
-            ((FrameLayout) holder.root).setForeground(isSelected ? foregroundDrawable : null);
+            holder.root.setForeground(isSelected ? foregroundDrawable : null);
         }
 
 
@@ -198,7 +203,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
     }
 
     public interface OnItemClickListener {
-        public void onItemClick(View view, int position);
+        void onItemClick(View view, int position);
     }
 
 
@@ -280,8 +285,8 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
         public GalleryViewHolder(View view) {
             super(view);
-            root = (TedSquareFrameLayout) view.findViewById(R.id.root);
-            iv_thumbnail = (TedSquareImageView) view.findViewById(R.id.iv_thumbnail);
+            root = view.findViewById(R.id.root);
+            iv_thumbnail = view.findViewById(R.id.iv_thumbnail);
 
         }
 

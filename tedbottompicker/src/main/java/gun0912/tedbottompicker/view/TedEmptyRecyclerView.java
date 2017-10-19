@@ -8,53 +8,50 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class TedEmptyRecyclerView extends RecyclerView {
-	@Nullable
-	View emptyView;
+    @Nullable
+    View emptyView;
+    final @NonNull
+    AdapterDataObserver observer = new AdapterDataObserver() {
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            checkIfEmpty();
+        }
+    };
 
-	public TedEmptyRecyclerView(Context context) {
-		super(context);
-	}
+    public TedEmptyRecyclerView(Context context) {
+        super(context);
+    }
 
-	public TedEmptyRecyclerView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public TedEmptyRecyclerView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public TedEmptyRecyclerView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public TedEmptyRecyclerView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	void checkIfEmpty() {
-		if (emptyView != null) {
-			
-			emptyView.setVisibility(getAdapter().getItemCount() > 0 ? GONE : VISIBLE);
-		}
-	}
+    void checkIfEmpty() {
+        if (emptyView != null) {
 
-	final @NonNull
-	AdapterDataObserver observer = new AdapterDataObserver() {
-		@Override
-		public void onChanged() {
-			super.onChanged();
-			checkIfEmpty();
-		}
-	};
-	
-	
-	
-	@Override
-	public void setAdapter(@Nullable Adapter adapter) {
-		final Adapter oldAdapter = getAdapter();
-		if (oldAdapter != null) {
-			oldAdapter.unregisterAdapterDataObserver(observer);
-		}
-		super.setAdapter(adapter);
-		if (adapter != null) {
-			adapter.registerAdapterDataObserver(observer);
-		}
-	}
+            emptyView.setVisibility(getAdapter().getItemCount() > 0 ? GONE : VISIBLE);
+        }
+    }
 
-	public void setEmptyView(@Nullable View emptyView) {
-		this.emptyView = emptyView;
-		checkIfEmpty();
-	}
+    @Override
+    public void setAdapter(@Nullable Adapter adapter) {
+        final Adapter oldAdapter = getAdapter();
+        if (oldAdapter != null) {
+            oldAdapter.unregisterAdapterDataObserver(observer);
+        }
+        super.setAdapter(adapter);
+        if (adapter != null) {
+            adapter.registerAdapterDataObserver(observer);
+        }
+    }
+
+    public void setEmptyView(@Nullable View emptyView) {
+        this.emptyView = emptyView;
+        checkIfEmpty();
+    }
 }

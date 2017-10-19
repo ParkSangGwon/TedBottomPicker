@@ -27,13 +27,13 @@ ext {
 
 android {
 
-    compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
 
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
     }
@@ -54,11 +54,11 @@ configurations {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:design:25.1.0'
-    compile 'com.android.support:support-annotations:25.1.0'
-    javadocDeps 'com.android.support:support-annotations:25.1.0'
-    compile 'com.github.bumptech.glide:glide:3.6.1'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
+    compile 'com.android.support:support-annotations:26.1.0'
+    javadocDeps 'com.android.support:support-annotations:26.1.0'
+    compile 'com.github.bumptech.glide:glide:4.0.0'
 }
 
 // Place it at the end of the file

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2016. Ted Park. All Rights Reserved
   -->
 
@@ -9,13 +8,13 @@
     <!-- <solid android:color="@android:color/transparent" /> -->
     <solid android:color="#d0000000" />
 
-<!--
+    <!--
 
-    <solid android:color="#a0000000" />
-    <stroke
-        android:width="4dp"
-        android:color="?attr/colorPrimary" />
--->
+        <solid android:color="#a0000000" />
+        <stroke
+            android:width="4dp"
+            android:color="?attr/colorPrimary" />
+    -->
 
     <!--<solid android:color="?attr/colorPrimary" />-->
 
