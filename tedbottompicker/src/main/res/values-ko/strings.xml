@@ -1,0 +1,14 @@
+<resources>
+
+
+
+    <string name="tedbottompicker_title">사진 선택</string>
+    <string name="no_image">이미지가 선택되지 않았습니다</string>
+    <string name="done">완료</string>
+
+
+
+    <string name="select_max_count">%1$d개까지 선택 가능합니다</string>
+    <string name="select_min_count">%1$d개이상 선택하셔야 합니다</string>
+
+</resources>
