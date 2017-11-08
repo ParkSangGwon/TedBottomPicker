@@ -279,15 +279,20 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
                         break;
                     case ImageGalleryAdapter.PickerTile.IMAGE:
                         complete(pickerTile.getImageUri());
-
                         break;
-
+                    case ImageGalleryAdapter.PickerTile.REMOTE:
+                        complete(pickerTile.getImageUrl());
+                        break;
                     default:
                         errorMessage();
                 }
 
             }
         });
+    }
+
+    private void complete(final String url) {
+        complete(Uri.parse(url));
     }
 
     private void complete(final Uri uri) {
@@ -312,7 +317,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     private boolean addUri(final Uri uri) {
 
-
         if (selectedUriList.size() == builder.selectMaxCount) {
             String message;
             if (builder.selectMaxCountErrorText != null) {
@@ -325,7 +329,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             return false;
         }
 
-
         selectedUriList.add(uri);
 
         final View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.tedbottompicker_selected_item, null);
@@ -334,7 +337,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         rootView.setTag(uri);
 
         selected_photos_container.addView(rootView, 0);
-
 
         int px = (int) getResources().getDimension(R.dimen.tedbottompicker_selected_image_height);
         thumbnail.setLayoutParams(new FrameLayout.LayoutParams(px, px));
@@ -352,7 +354,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             builder.imageProvider.onProvideImage(thumbnail, uri);
         }
 
-
         if (builder.deSelectIconDrawable != null) {
             iv_close.setImageDrawable(builder.deSelectIconDrawable);
         }
@@ -364,7 +365,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
             }
         });
-
 
         updateSelectedView();
         imageGalleryAdapter.setSelectedUriList(selectedUriList, uri);
@@ -585,6 +585,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     public interface ImageProvider {
         void onProvideImage(ImageView imageView, Uri imageUri);
+        void onProvideImage(ImageView imageView, String imageUrl);
     }
 
     public static class Builder {
@@ -621,6 +622,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         public String selectMaxCountErrorText;
         public String selectMinCountErrorText;
 
+        public List<String> remoteImages;
 
         ArrayList<Uri> selectedUriList;
         Uri selectedUri;
@@ -632,6 +634,11 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             setCameraTile(R.drawable.ic_camera);
             setGalleryTile(R.drawable.ic_gallery);
             setSpacingResId(R.dimen.tedbottompicker_grid_layout_margin);
+        }
+
+        public Builder setRemoteImages(List<String> remoteImages) {
+            this.remoteImages = remoteImages;
+            return this;
         }
 
         public Builder setCameraTile(@DrawableRes int cameraTileResId) {

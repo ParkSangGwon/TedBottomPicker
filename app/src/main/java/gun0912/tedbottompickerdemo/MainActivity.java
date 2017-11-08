@@ -20,11 +20,11 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import gun0912.tedbottompicker.TedBottomPicker;
 
 public class MainActivity extends AppCompatActivity {
-
 
     public RequestManager mGlideRequestManager;
     ImageView iv_image;
@@ -43,18 +43,14 @@ public class MainActivity extends AppCompatActivity {
 
         setSingleShowButton();
         setMultiShowButton();
-
-
+        setMultiShowRemoteButton();
     }
 
     private void setSingleShowButton() {
-
-
         Button btn_single_show = (Button) findViewById(R.id.btn_single_show);
         btn_single_show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
                 PermissionListener permissionlistener = new PermissionListener() {
                     @Override
@@ -78,30 +74,19 @@ public class MainActivity extends AppCompatActivity {
                                                         .into(iv_image);
                                             }
                                         });
-                                        /*
-                                        Glide.with(MainActivity.this)
-                                                //.load(uri.toString())
-                                                .load(uri)
-                                                .into(iv_image);
-                                         */
                                     }
                                 })
-                                //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
                                 .setSelectedUri(selectedUri)
                                 .setPeekHeight(1200)
                                 .create();
 
                         bottomSheetDialogFragment.show(getSupportFragmentManager());
-
-
                     }
 
                     @Override
                     public void onPermissionDenied(ArrayList<String> deniedPermissions) {
                         Toast.makeText(MainActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
                     }
-
-
                 };
 
                 new TedPermission(MainActivity.this)
@@ -109,18 +94,15 @@ public class MainActivity extends AppCompatActivity {
                         .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                         .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         .check();
-
             }
         });
     }
 
     private void setMultiShowButton() {
-
         Button btn_multi_show = (Button) findViewById(R.id.btn_multi_show);
         btn_multi_show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
                 PermissionListener permissionlistener = new PermissionListener() {
                     @Override
@@ -134,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
                                         showUriList(uriList);
                                     }
                                 })
-                                //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
                                 .setPeekHeight(1600)
                                 .showTitle(false)
                                 .setCompleteButtonText("Done")
@@ -143,16 +124,12 @@ public class MainActivity extends AppCompatActivity {
                                 .create();
 
                         bottomSheetDialogFragment.show(getSupportFragmentManager());
-
-
                     }
 
                     @Override
                     public void onPermissionDenied(ArrayList<String> deniedPermissions) {
                         Toast.makeText(MainActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
                     }
-
-
                 };
 
                 new TedPermission(MainActivity.this)
@@ -160,12 +137,59 @@ public class MainActivity extends AppCompatActivity {
                         .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                         .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         .check();
-
             }
         });
-
     }
 
+    private void setMultiShowRemoteButton() {
+        Button btn_multi_show = (Button) findViewById(R.id.btn_multi_show_remote);
+        btn_multi_show.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                PermissionListener permissionlistener = new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+
+                        List<String> remoteImages = new ArrayList<>();
+                        remoteImages.add("http://static.boredpanda.com/blog/wp-content/uploads/2016/03/funny-snapchat-face-swaps-261__605.jpg");
+                        remoteImages.add("https://i.ytimg.com/vi/v9oxyswY8fs/maxresdefault.jpg");
+                        remoteImages.add("https://i.ytimg.com/vi/ObJgJizBFh8/maxresdefault.jpg");
+                        remoteImages.add("https://i.ytimg.com/vi/lAkw1M2G5y8/maxresdefault.jpg");
+
+                        TedBottomPicker bottomSheetDialogFragment = new TedBottomPicker.Builder(MainActivity.this)
+                                .setOnMultiImageSelectedListener(new TedBottomPicker.OnMultiImageSelectedListener() {
+                                    @Override
+                                    public void onImagesSelected(ArrayList<Uri> uriList) {
+                                        selectedUriList = uriList;
+                                        showUriList(uriList);
+                                    }
+                                })
+                                .setPeekHeight(1600)
+                                .setRemoteImages(remoteImages)
+                                .showTitle(false)
+                                .setCompleteButtonText("Done")
+                                .setEmptySelectionText("No Select")
+                                .setSelectedUriList(selectedUriList)
+                                .create();
+
+                        bottomSheetDialogFragment.show(getSupportFragmentManager());
+                    }
+
+                    @Override
+                    public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                        Toast.makeText(MainActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                };
+
+                new TedPermission(MainActivity.this)
+                        .setPermissionListener(permissionlistener)
+                        .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                        .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .check();
+            }
+        });
+    }
 
     private void showUriList(ArrayList<Uri> uriList) {
         // Remove all views before
@@ -177,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
 
         int wdpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
         int htpx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
-
 
         for (Uri uri : uriList) {
 
@@ -192,9 +215,6 @@ public class MainActivity extends AppCompatActivity {
             mSelectedImagesContainer.addView(imageHolder);
 
             thumbnail.setLayoutParams(new FrameLayout.LayoutParams(wdpx, htpx));
-
-
         }
-
     }
 }
