@@ -40,7 +40,7 @@ If you want pick image from gallery or take picture, this library can help easil
 ```javascript
 
 dependencies {
-    compile 'gun0912.ted:tedbottompicker:1.0.12'
+    compile 'gun0912.ted:tedbottompicker:1.1.0'
 }
 
 ```
@@ -117,6 +117,7 @@ You can customize something ...<br />
 
 #### Common
 
+* `showVideoMedia()` : Not only load image, but also load video
 * `setPreviewMaxCount(Int) (default: 25)`
 * `setPeekHeight(Int)`
 * `setPeekHeightResId(R.dimen.xxx)`
