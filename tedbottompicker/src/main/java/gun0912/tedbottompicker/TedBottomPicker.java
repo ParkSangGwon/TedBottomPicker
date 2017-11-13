@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -45,13 +46,15 @@ import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import gun0912.tedbottompicker.adapter.ImageGalleryAdapter;
+import gun0912.tedbottompicker.adapter.GalleryAdapter;
 import gun0912.tedbottompicker.util.RealPathUtil;
 
 public class TedBottomPicker extends BottomSheetDialogFragment {
@@ -62,7 +65,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     static final String EXTRA_CAMERA_IMAGE_URI = "camera_image_uri";
     static final String EXTRA_CAMERA_SELECTED_IMAGE_URI = "camera_selected_image_uri";
     public Builder builder;
-    ImageGalleryAdapter imageGalleryAdapter;
+    GalleryAdapter imageGalleryAdapter;
     View view_title_container;
     TextView tv_title;
     Button btn_done;
@@ -260,24 +263,24 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     private void updateAdapter() {
 
-        imageGalleryAdapter = new ImageGalleryAdapter(
+        imageGalleryAdapter = new GalleryAdapter(
                 getActivity()
                 , builder);
         rc_gallery.setAdapter(imageGalleryAdapter);
-        imageGalleryAdapter.setOnItemClickListener(new ImageGalleryAdapter.OnItemClickListener() {
+        imageGalleryAdapter.setOnItemClickListener(new GalleryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
 
-                ImageGalleryAdapter.PickerTile pickerTile = imageGalleryAdapter.getItem(position);
+                GalleryAdapter.PickerTile pickerTile = imageGalleryAdapter.getItem(position);
 
                 switch (pickerTile.getTileType()) {
-                    case ImageGalleryAdapter.PickerTile.CAMERA:
+                    case GalleryAdapter.PickerTile.CAMERA:
                         startCameraIntent();
                         break;
-                    case ImageGalleryAdapter.PickerTile.GALLERY:
+                    case GalleryAdapter.PickerTile.GALLERY:
                         startGalleryIntent();
                         break;
-                    case ImageGalleryAdapter.PickerTile.IMAGE:
+                    case GalleryAdapter.PickerTile.IMAGE:
                         complete(pickerTile.getImageUri());
 
                         break;
@@ -404,14 +407,24 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     }
 
     private void startCameraIntent() {
-        Intent cameraInent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent cameraInent;
+        File mediaFile;
+
+        if (builder.mediaType == Builder.MediaType.IMAGE) {
+            cameraInent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            mediaFile = getImageFile();
+        } else {
+            cameraInent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            mediaFile = getVideoFile();
+        }
+
         if (cameraInent.resolveActivity(getActivity().getPackageManager()) == null) {
             errorMessage("This Application do not have Camera Application");
             return;
         }
 
-        File imageFile = getImageFile();
-        Uri photoURI = FileProvider.getUriForFile(getContext(), getContext().getApplicationContext().getPackageName() + ".provider", imageFile);
+
+        Uri photoURI = FileProvider.getUriForFile(getContext(), getContext().getApplicationContext().getPackageName() + ".provider", mediaFile);
 
         List<ResolveInfo> resolvedIntentActivities = getContext().getPackageManager().queryIntentActivities(cameraInent, PackageManager.MATCH_DEFAULT_ONLY);
         for (ResolveInfo resolvedIntentInfo : resolvedIntentActivities) {
@@ -453,6 +466,35 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         return imageFile;
     }
 
+    private File getVideoFile() {
+        // Create an image file name
+        File videoFile = null;
+        try {
+            String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
+            String imageFileName = "VIDEO_" + timeStamp + "_";
+            File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
+
+            if (!storageDir.exists())
+                storageDir.mkdirs();
+
+            videoFile = File.createTempFile(
+                    imageFileName,  /* prefix */
+                    ".mp4",         /* suffix */
+                    storageDir      /* directory */
+            );
+
+
+            // Save a file: path for use with ACTION_VIEW intents
+            cameraImageUri = Uri.fromFile(videoFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            errorMessage("Could not create imageFile for camera");
+        }
+
+
+        return videoFile;
+    }
+
     private void errorMessage(String message) {
         String errorMessage = message == null ? "Something wrong." : message;
 
@@ -464,7 +506,17 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     }
 
     private void startGalleryIntent() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent galleryIntent;
+        Uri uri;
+        if (builder.mediaType == Builder.MediaType.IMAGE) {
+            galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            galleryIntent.setType("image/*");
+        } else {
+            galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+            galleryIntent.setType("video/*");
+
+        }
+
         if (galleryIntent.resolveActivity(getActivity().getPackageManager()) == null) {
             errorMessage("This Application do not have Gallery Application");
             return;
@@ -620,8 +672,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         public String emptySelectionText;
         public String selectMaxCountErrorText;
         public String selectMinCountErrorText;
-
-
+        public @MediaType
+        int mediaType = MediaType.IMAGE;
         ArrayList<Uri> selectedUriList;
         Uri selectedUri;
 
@@ -704,7 +756,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             return this;
         }
 
-
         public Builder setOnErrorListener(OnErrorListener onErrorListener) {
             this.onErrorListener = onErrorListener;
             return this;
@@ -780,7 +831,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             return this;
         }
 
-
         public Builder setSelectMaxCountErrorText(String selectMaxCountErrorText) {
             this.selectMaxCountErrorText = selectMaxCountErrorText;
             return this;
@@ -801,7 +851,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             return this;
         }
 
-
         public Builder setTitleBackgroundResId(@ColorRes int colorResId) {
             this.titleBackgroundResId = colorResId;
             return this;
@@ -812,7 +861,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             return this;
         }
 
-
         public Builder setSelectedUriList(ArrayList<Uri> selectedUriList) {
             this.selectedUriList = selectedUriList;
             return this;
@@ -820,6 +868,11 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         public Builder setSelectedUri(Uri selectedUri) {
             this.selectedUri = selectedUri;
+            return this;
+        }
+
+        public Builder showVideoMedia() {
+            this.mediaType = MediaType.VIDEO;
             return this;
         }
 
@@ -837,6 +890,13 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
             customBottomSheetDialogFragment.builder = this;
             return customBottomSheetDialogFragment;
+        }
+
+        @Retention(RetentionPolicy.SOURCE)
+        @IntDef({MediaType.IMAGE, MediaType.VIDEO})
+        public @interface MediaType {
+            int IMAGE = 1;
+            int VIDEO = 2;
         }
 
 

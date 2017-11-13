@@ -29,7 +29,7 @@ import gun0912.tedbottompicker.view.TedSquareImageView;
 /**
  * Created by TedPark on 2016. 8. 30..
  */
-public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapter.GalleryViewHolder> {
+public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder> {
 
 
     ArrayList<PickerTile> pickerTiles;
@@ -39,7 +39,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
     ArrayList<Uri> selectedUriList;
 
 
-    public ImageGalleryAdapter(Context context, TedBottomPicker.Builder builder) {
+    public GalleryAdapter(Context context, TedBottomPicker.Builder builder) {
 
         this.context = context;
         this.builder = builder;
@@ -55,21 +55,40 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
             pickerTiles.add(new PickerTile(PickerTile.GALLERY));
         }
 
-        Cursor imageCursor = null;
+        Cursor cursor = null;
         try {
-            final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.ImageColumns.ORIENTATION};
-            final String orderBy = MediaStore.Images.Media.DATE_ADDED + " DESC";
+            String[] columns;
+            String orderBy;
+            Uri uri;
+            if (builder.mediaType == TedBottomPicker.Builder.MediaType.IMAGE) {
+                uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                columns = new String[]{MediaStore.Images.Media.DATA};
+                orderBy = MediaStore.Images.Media.DATE_ADDED + " DESC";
+            } else {
+                uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                columns = new String[]{MediaStore.Video.VideoColumns.DATA};
+                orderBy = MediaStore.Video.VideoColumns.DATE_ADDED + " DESC";
+            }
 
 
-            imageCursor = context.getApplicationContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy);
+
+
+            cursor = context.getApplicationContext().getContentResolver().query(uri, columns, null, null, orderBy);
             //imageCursor = sContext.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy);
 
 
-            if (imageCursor != null) {
+            if (cursor != null) {
 
                 int count = 0;
-                while (imageCursor.moveToNext() && count < builder.previewMaxCount) {
-                    String imageLocation = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                while (cursor.moveToNext() && count < builder.previewMaxCount) {
+
+                    String dataIndex;
+                    if (builder.mediaType == TedBottomPicker.Builder.MediaType.IMAGE) {
+                        dataIndex = MediaStore.Images.Media.DATA;
+                    }else{
+                        dataIndex = MediaStore.Video.VideoColumns.DATA;
+                    }
+                    String imageLocation = cursor.getString(cursor.getColumnIndex(dataIndex));
                     File imageFile = new File(imageLocation);
                     pickerTiles.add(new PickerTile(Uri.fromFile(imageFile)));
                     count++;
@@ -81,8 +100,8 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (imageCursor != null && !imageCursor.isClosed()) {
-                imageCursor.close();
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
             }
         }
 
@@ -163,10 +182,10 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
             Drawable foregroundDrawable;
 
-            if(builder.selectedForegroundDrawable!=null){
+            if (builder.selectedForegroundDrawable != null) {
                 foregroundDrawable = builder.selectedForegroundDrawable;
-            }else{
-                foregroundDrawable = ContextCompat.getDrawable(context,R.drawable.gallery_photo_selected);
+            } else {
+                foregroundDrawable = ContextCompat.getDrawable(context, R.drawable.gallery_photo_selected);
             }
 
             ((FrameLayout) holder.root).setForeground(isSelected ? foregroundDrawable : null);
