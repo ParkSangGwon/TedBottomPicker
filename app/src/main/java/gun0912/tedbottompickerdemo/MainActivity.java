@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                                 })
                                 //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
                                 .setSelectedUri(selectedUri)
-                                .showVideoMedia()
+                                //.showVideoMedia()
                                 .setPeekHeight(1200)
                                 .create();
 
