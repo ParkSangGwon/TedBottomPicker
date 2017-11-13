@@ -19,6 +19,8 @@ If you want pick image from gallery or take picture, this library can help easil
 
 ## Demo
 
+[![Screenshot](https://github.com/ParkSangGwon/TedPermission/blob/master/google_play_150.png?raw=true)](https://play.google.com/store/apps/details?id=gun0912.tedbottompickerdemo)
+<br/><br/>
 1. Show Bottom Sheet.
 2. Pick Image
 
@@ -29,8 +31,7 @@ If you want pick image from gallery or take picture, this library can help easil
 
            
 
-[![Screenshot](https://github.com/ParkSangGwon/TedPermission/blob/master/google_play_150.png?raw=true)](https://play.google.com/store/apps/details?id=gun0912.tedbottompickerdemo)
-<br/><br/>
+
 
 
 ## Setup
