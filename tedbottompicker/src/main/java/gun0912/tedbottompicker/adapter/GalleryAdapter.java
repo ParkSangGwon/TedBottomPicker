@@ -99,6 +99,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException("error while loading images", e);
         } finally {
             if (cursor != null && !cursor.isClosed()) {
                 cursor.close();
