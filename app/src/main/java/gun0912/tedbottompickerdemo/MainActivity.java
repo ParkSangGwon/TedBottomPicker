@@ -1,6 +1,7 @@
 package gun0912.tedbottompickerdemo;
 
 import android.Manifest;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,8 +15,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.GenericTransitionOptions;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.FitCenter;
+import com.bumptech.glide.request.RequestOptions;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
@@ -185,10 +190,15 @@ public class MainActivity extends AppCompatActivity {
             View imageHolder = LayoutInflater.from(this).inflate(R.layout.image_item, null);
             ImageView thumbnail = (ImageView) imageHolder.findViewById(R.id.media_image);
 
+//            Glide.with(this)
+//                    .load(uri.toString())
+//                    .fitCenter()
+//                    .into(thumbnail);
+
             Glide.with(this)
-                    .load(uri.toString())
-                    .fitCenter()
-                    .into(thumbnail);
+                 .load(uri.toString())
+                 .apply(new RequestOptions().transforms(new FitCenter()))
+                 .into(thumbnail);
 
             mSelectedImagesContainer.addView(imageHolder);
 
