@@ -115,8 +115,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         if (savedInstanceState == null) {
             cameraImageUri = builder.selectedUri;
             tempUriList = builder.selectedUriList;
-        }
-        else {
+        } else {
             cameraImageUri = savedInstanceState.getParcelable(EXTRA_CAMERA_IMAGE_URI);
             tempUriList = savedInstanceState.getParcelableArrayList(EXTRA_CAMERA_SELECTED_IMAGE_URI);
         }
@@ -179,8 +178,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         if (builder.onImageSelectedListener != null && cameraImageUri != null) {
             addUri(cameraImageUri);
-        }
-        else if (builder.onMultiImageSelectedListener != null && tempUriList != null) {
+        } else if (builder.onMultiImageSelectedListener != null && tempUriList != null) {
             for (Uri uri : tempUriList) {
                 addUri(uri);
             }
@@ -222,8 +220,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             String message;
             if (builder.selectMinCountErrorText != null) {
                 message = builder.selectMinCountErrorText;
-            }
-            else {
+            } else {
                 message = String.format(getResources().getString(R.string.select_min_count), builder.selectMinCount);
             }
 
@@ -306,14 +303,12 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
             if (selectedUriList.contains(uri)) {
                 removeImage(uri);
-            }
-            else {
+            } else {
                 addUri(uri);
             }
 
 
-        }
-        else {
+        } else {
             builder.onImageSelectedListener.onImageSelected(uri);
             dismissAllowingStateLoss();
         }
@@ -327,8 +322,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             String message;
             if (builder.selectMaxCountErrorText != null) {
                 message = builder.selectMaxCountErrorText;
-            }
-            else {
+            } else {
                 message = String.format(getResources().getString(R.string.select_max_count), builder.selectMaxCount);
             }
 
@@ -359,8 +353,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
                     .placeholder(R.drawable.ic_gallery)
                     .error(R.drawable.img_error)
                     .into(thumbnail);
-        }
-        else {
+        } else {
             builder.imageProvider.onProvideImage(thumbnail, uri);
         }
 
@@ -408,8 +401,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         if (selectedUriList == null || selectedUriList.size() == 0) {
             selected_photos_empty.setVisibility(View.VISIBLE);
             selected_photos_container.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             selected_photos_empty.setVisibility(View.GONE);
             selected_photos_container.setVisibility(View.VISIBLE);
         }
@@ -423,8 +415,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         if (builder.mediaType == Builder.MediaType.IMAGE) {
             cameraInent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             mediaFile = getImageFile();
-        }
-        else {
+        } else {
             cameraInent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             mediaFile = getVideoFile();
         }
@@ -522,8 +513,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         if (builder.mediaType == Builder.MediaType.IMAGE) {
             galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             galleryIntent.setType("image/*");
-        }
-        else {
+        } else {
             galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
             galleryIntent.setType("video/*");
 
