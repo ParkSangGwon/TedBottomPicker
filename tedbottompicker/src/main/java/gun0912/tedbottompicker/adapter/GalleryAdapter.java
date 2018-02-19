@@ -267,7 +267,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
             } else if (isGalleryTile()) {
                 return "PickerTile";
             } else {
-                throw new IllegalArgumentException("Invalid item");
+                throw new IllegalStateException("Invalid item");
             }
         }
 
