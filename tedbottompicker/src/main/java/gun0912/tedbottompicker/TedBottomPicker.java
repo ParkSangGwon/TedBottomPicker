@@ -513,12 +513,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     }
 
     private void onError(Throwable throwable) {
-        if (builder.onErrorListener == null) {
-            throw new OnErrorNotImplementedException("Error listener is not implemented", throwable);
-        }
-        else {
-            builder.onErrorListener.onError(throwable);
-        }
+        builder.onErrorListener.onError(throwable);
     }
 
     private void startGalleryIntent() {
@@ -691,9 +686,17 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         ArrayList<Uri> selectedUriList;
         Uri selectedUri;
 
+        private OnErrorListener defaultErrorListener = new OnErrorListener() {
+            @Override
+            public void onError(Throwable throwable) {
+                throw new OnErrorNotImplementedException("Error listener is not implemented", throwable);
+            }
+        };
+
         public Builder(@NonNull Context context) {
 
             this.context = context;
+            this.onErrorListener = defaultErrorListener;
 
             setCameraTile(R.drawable.ic_camera);
             setGalleryTile(R.drawable.ic_gallery);
