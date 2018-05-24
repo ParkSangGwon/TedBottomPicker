@@ -43,6 +43,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.io.File;
 import java.io.IOException;
@@ -346,10 +347,10 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             Glide.with(getActivity())
                     .load(uri)
                     .thumbnail(0.1f)
-                    .dontAnimate()
-                    .centerCrop()
-                    .placeholder(R.drawable.ic_gallery)
-                    .error(R.drawable.img_error)
+                    .apply(new RequestOptions()
+                            .centerCrop()
+                            .placeholder(R.drawable.ic_gallery)
+                            .error(R.drawable.img_error))
                     .into(thumbnail);
         } else {
             builder.imageProvider.onProvideImage(thumbnail, uri);
@@ -691,23 +692,23 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             return this;
         }
 
-        public Builder setCameraTile(Drawable cameraTileDrawable) {
-            this.cameraTileDrawable = cameraTileDrawable;
-            return this;
-        }
-
         public Builder setGalleryTile(@DrawableRes int galleryTileResId) {
             setGalleryTile(ContextCompat.getDrawable(context, galleryTileResId));
             return this;
         }
 
-        public Builder setGalleryTile(Drawable galleryTileDrawable) {
-            this.galleryTileDrawable = galleryTileDrawable;
+        public Builder setSpacingResId(@DimenRes int dimenResId) {
+            this.spacing = context.getResources().getDimensionPixelSize(dimenResId);
             return this;
         }
 
-        public Builder setSpacingResId(@DimenRes int dimenResId) {
-            this.spacing = context.getResources().getDimensionPixelSize(dimenResId);
+        public Builder setCameraTile(Drawable cameraTileDrawable) {
+            this.cameraTileDrawable = cameraTileDrawable;
+            return this;
+        }
+
+        public Builder setGalleryTile(Drawable galleryTileDrawable) {
+            this.galleryTileDrawable = galleryTileDrawable;
             return this;
         }
 

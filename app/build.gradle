@@ -37,5 +37,6 @@ dependencies {
     compile project(':tedbottompicker')
 
     compile 'gun0912.ted:tedpermission:2.2.0'
-    implementation 'com.github.bumptech.glide:glide:3.6.1'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
 }
