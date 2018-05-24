@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Uri> selectedUriList;
     Uri selectedUri;
     private ViewGroup mSelectedImagesContainer;
+    private RequestManager requestManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         iv_image = (ImageView) findViewById(R.id.iv_image);
         mSelectedImagesContainer = (ViewGroup) findViewById(R.id.selected_photos_container);
-
+        requestManager = Glide.with(this);
         setSingleShowButton();
         setMultiShowButton();
 
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                                         iv_image.setVisibility(View.VISIBLE);
                                         mSelectedImagesContainer.setVisibility(View.GONE);
 
-                                        Glide.with(MainActivity.this)
+                                        requestManager
                                                 .load(uri)
                                                 .into(iv_image);
                                     }
@@ -174,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
             View imageHolder = LayoutInflater.from(this).inflate(R.layout.image_item, null);
             ImageView thumbnail = (ImageView) imageHolder.findViewById(R.id.media_image);
 
-            Glide.with(this)
+            requestManager
                     .load(uri.toString())
                     .apply(new RequestOptions().fitCenter())
                     .into(thumbnail);
