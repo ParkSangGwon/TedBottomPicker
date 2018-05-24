@@ -258,7 +258,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
         rc_gallery.setLayoutManager(gridLayoutManager);
-        rc_gallery.addItemDecoration(new GridSpacingItemDecoration(gridLayoutManager.getSpanCount(), builder.spacing, false));
+        rc_gallery.addItemDecoration(new GridSpacingItemDecoration(gridLayoutManager.getSpanCount(), builder.spacing, builder.includeEdgeSpacing));
         updateAdapter();
     }
 
@@ -647,6 +647,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         public Drawable selectedForegroundDrawable;
 
         public int spacing = 1;
+        public boolean includeEdgeSpacing = false;
         public OnImageSelectedListener onImageSelectedListener;
         public OnMultiImageSelectedListener onMultiImageSelectedListener;
         public OnErrorListener onErrorListener;
@@ -770,6 +771,11 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         public Builder setSpacing(int spacing) {
             this.spacing = spacing;
+            return this;
+        }
+
+        public Builder setIncludeEdgeSpacing(boolean includeEdgeSpacing){
+            this.includeEdgeSpacing = includeEdgeSpacing;
             return this;
         }
 
