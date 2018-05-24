@@ -37,9 +37,9 @@ If you want pick image from gallery or take picture, this library can help easil
 
 ### Gradle
 ```javascript
-
+[ ![Download](https://api.bintray.com/packages/tkdrnjs0912/maven/tedbottompicker/images/download.svg) ](https://bintray.com/tkdrnjs0912/maven/tedbottompicker/_latestVersion)
 dependencies {
-    compile 'gun0912.ted:tedbottompicker:1.1.0'
+    compile 'gun0912.ted:tedbottompicker:x.y.z'
 }
 
 ```
