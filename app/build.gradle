@@ -36,6 +36,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:27.1.1'
     compile project(':tedbottompicker')
 
-    compile 'gun0912.ted:tedpermission:1.0.0'
+    compile 'gun0912.ted:tedpermission:2.2.0'
     implementation 'com.github.bumptech.glide:glide:3.6.1'
 }
