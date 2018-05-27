@@ -18,8 +18,6 @@ If you want pick image from gallery or take picture, this library can help easil
 
 
 ## Demo
-
-[![Screenshot](https://github.com/ParkSangGwon/TedPermission/blob/master/google_play_150.png?raw=true)](https://play.google.com/store/apps/details?id=gun0912.tedbottompickerdemo)
 <br/><br/>
 1. Show Bottom Sheet.
 2. Pick Image
@@ -38,10 +36,10 @@ If you want pick image from gallery or take picture, this library can help easil
 
 
 ### Gradle
+[ ![Download](https://api.bintray.com/packages/tkdrnjs0912/maven/tedbottompicker/images/download.svg) ](https://bintray.com/tkdrnjs0912/maven/tedbottompicker/_latestVersion)
 ```javascript
-
 dependencies {
-    compile 'gun0912.ted:tedbottompicker:1.1.0'
+    compile 'gun0912.ted:tedbottompicker:x.y.z'
 }
 
 ```

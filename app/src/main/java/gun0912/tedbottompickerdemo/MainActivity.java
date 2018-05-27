@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.request.RequestOptions;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
@@ -26,21 +27,20 @@ import gun0912.tedbottompicker.TedBottomPicker;
 public class MainActivity extends AppCompatActivity {
 
 
-    public RequestManager mGlideRequestManager;
     ImageView iv_image;
     ArrayList<Uri> selectedUriList;
     Uri selectedUri;
     private ViewGroup mSelectedImagesContainer;
+    private RequestManager requestManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mGlideRequestManager = Glide.with(this);
 
         iv_image = (ImageView) findViewById(R.id.iv_image);
         mSelectedImagesContainer = (ViewGroup) findViewById(R.id.selected_photos_container);
-
+        requestManager = Glide.with(this);
         setSingleShowButton();
         setMultiShowButton();
 
@@ -70,20 +70,10 @@ public class MainActivity extends AppCompatActivity {
 
                                         iv_image.setVisibility(View.VISIBLE);
                                         mSelectedImagesContainer.setVisibility(View.GONE);
-                                        iv_image.post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                mGlideRequestManager
-                                                        .load(uri)
-                                                        .into(iv_image);
-                                            }
-                                        });
-                                        /*
-                                        Glide.with(MainActivity.this)
-                                                //.load(uri.toString())
+
+                                        requestManager
                                                 .load(uri)
                                                 .into(iv_image);
-                                         */
                                     }
                                 })
                                 //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
@@ -112,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
                 };
 
-                new TedPermission(MainActivity.this)
+                TedPermission.with(MainActivity.this)
                         .setPermissionListener(permissionlistener)
                         .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                         .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -170,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
                 };
 
-                new TedPermission(MainActivity.this)
+                TedPermission.with(MainActivity.this)
                         .setPermissionListener(permissionlistener)
                         .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                         .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -199,9 +189,9 @@ public class MainActivity extends AppCompatActivity {
             View imageHolder = LayoutInflater.from(this).inflate(R.layout.image_item, null);
             ImageView thumbnail = (ImageView) imageHolder.findViewById(R.id.media_image);
 
-            Glide.with(this)
+            requestManager
                     .load(uri.toString())
-                    .fitCenter()
+                    .apply(new RequestOptions().fitCenter())
                     .into(thumbnail);
 
             mSelectedImagesContainer.addView(imageHolder);
