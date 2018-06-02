@@ -65,7 +65,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     public static final String TAG = "TedBottomPicker";
     static final String EXTRA_CAMERA_IMAGE_URI = "camera_image_uri";
     static final String EXTRA_CAMERA_SELECTED_IMAGE_URI = "camera_selected_image_uri";
-    public Builder builder;
+    public static Builder builder;
     GalleryAdapter imageGalleryAdapter;
     View view_title_container;
     TextView tv_title;
@@ -99,7 +99,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             Log.d(TAG, "onSlide() slideOffset: " + slideOffset);
         }
     };
-
+    
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
