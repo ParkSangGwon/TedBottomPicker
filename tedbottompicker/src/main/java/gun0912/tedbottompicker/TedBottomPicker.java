@@ -49,7 +49,6 @@ import com.gun0912.tedonactivityresult.listener.OnActivityResultListener;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.text.SimpleDateFormat;
@@ -64,21 +63,22 @@ import gun0912.tedbottompicker.util.RealPathUtil;
 public class TedBottomPicker extends BottomSheetDialogFragment {
 
     public static final String TAG = "TedBottomPicker";
-    private static final String EXTRA_CAMERA_IMAGE_URI = "camera_image_uri";
-    private static final String EXTRA_CAMERA_SELECTED_IMAGE_URI = "camera_selected_image_uri";
-    private static final String EXTRA_BUILDER = "builder";
+    static final String EXTRA_CAMERA_IMAGE_URI = "camera_image_uri";
+    static final String EXTRA_CAMERA_SELECTED_IMAGE_URI = "camera_selected_image_uri";
+    public Builder builder;
     GalleryAdapter imageGalleryAdapter;
     View view_title_container;
     TextView tv_title;
     Button btn_done;
+
     FrameLayout selected_photos_container_frame;
     HorizontalScrollView hsv_selected_photos;
     LinearLayout selected_photos_container;
+
     TextView selected_photos_empty;
     View contentView;
     ArrayList<Uri> selectedUriList;
     ArrayList<Uri> tempUriList;
-    private Builder builder;
     private Uri cameraImageUri;
     private RecyclerView rc_gallery;
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
@@ -86,6 +86,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         @Override
         public void onStateChanged(@NonNull View bottomSheet, int newState) {
+            Log.d(TAG, "onStateChanged() newState: " + newState);
             if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                 dismissAllowingStateLoss();
             }
@@ -95,16 +96,9 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         @Override
         public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            Log.d(TAG, "onSlide() slideOffset: " + slideOffset);
         }
     };
-
-    public static TedBottomPicker newInstance(Builder builder) {
-        TedBottomPicker tedBottomPicker = new TedBottomPicker();
-        Bundle args = new Bundle();
-        args.putSerializable(EXTRA_BUILDER, builder);
-        tedBottomPicker.setArguments(args);
-        return tedBottomPicker;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,14 +111,13 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     private void setupSavedInstanceState(Bundle savedInstanceState) {
 
+
         if (savedInstanceState == null) {
-            builder = (Builder) getArguments().getSerializable(EXTRA_BUILDER);
             cameraImageUri = builder.selectedUri;
             tempUriList = builder.selectedUriList;
         } else {
             cameraImageUri = savedInstanceState.getParcelable(EXTRA_CAMERA_IMAGE_URI);
             tempUriList = savedInstanceState.getParcelableArrayList(EXTRA_CAMERA_SELECTED_IMAGE_URI);
-            builder = (Builder) savedInstanceState.getSerializable(EXTRA_BUILDER);
         }
 
 
@@ -135,7 +128,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(EXTRA_CAMERA_IMAGE_URI, cameraImageUri);
         outState.putParcelableArrayList(EXTRA_CAMERA_SELECTED_IMAGE_URI, selectedUriList);
-        outState.putSerializable(EXTRA_BUILDER, builder);
         super.onSaveInstanceState(outState);
 
     }
@@ -644,7 +636,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         void onProvideImage(ImageView imageView, Uri imageUri);
     }
 
-    public static class Builder implements Serializable {
+    public static class Builder {
 
         public Context context;
         public int previewMaxCount = 25;
@@ -782,7 +774,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             return this;
         }
 
-        public Builder setIncludeEdgeSpacing(boolean includeEdgeSpacing) {
+        public Builder setIncludeEdgeSpacing(boolean includeEdgeSpacing){
             this.includeEdgeSpacing = includeEdgeSpacing;
             return this;
         }
@@ -896,7 +888,11 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             if (onImageSelectedListener == null && onMultiImageSelectedListener == null) {
                 throw new RuntimeException("You have to use setOnImageSelectedListener() or setOnMultiImageSelectedListener() for receive selected Uri");
             }
-            return TedBottomPicker.newInstance(this);
+
+            TedBottomPicker customBottomSheetDialogFragment = new TedBottomPicker();
+
+            customBottomSheetDialogFragment.builder = this;
+            return customBottomSheetDialogFragment;
         }
 
         @Retention(RetentionPolicy.SOURCE)
