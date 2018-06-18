@@ -20,6 +20,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.support.annotation.StringRes;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
@@ -576,9 +577,18 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         return builder.onMultiImageSelectedListener != null;
     }
 
+    private @Builder.MimeType String getMimeType(){
+        switch (builder.mediaType) {
+            case (Builder.MediaType.IMAGE) : return Builder.MimeType.IMAGE;
+            case (Builder.MediaType.VIDEO) : return Builder.MimeType.VIDEO;
+            default: return Builder.MimeType.WILDCARD;
+        }
+    }
+
     private void onActivityResultCamera(final Uri cameraImageUri) {
 
-        MediaScannerConnection.scanFile(getContext(), new String[]{cameraImageUri.getPath()}, new String[]{"image/jpeg"}, new MediaScannerConnection.MediaScannerConnectionClient() {
+        String mimeType = getMimeType();
+        MediaScannerConnection.scanFile(getContext(), new String[]{cameraImageUri.getPath()}, new String[]{mimeType}, new MediaScannerConnection.MediaScannerConnectionClient() {
             @Override
             public void onMediaScannerConnected() {
 
@@ -900,6 +910,14 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         public @interface MediaType {
             int IMAGE = 1;
             int VIDEO = 2;
+        }
+
+        @Retention(RetentionPolicy.SOURCE)
+        @StringDef({MimeType.IMAGE, MimeType.VIDEO, MimeType.WILDCARD})
+        public @interface MimeType {
+            String IMAGE = "image/jpeg";
+            String VIDEO = "video/mp4";
+            String WILDCARD = "*/*";
         }
 
 
