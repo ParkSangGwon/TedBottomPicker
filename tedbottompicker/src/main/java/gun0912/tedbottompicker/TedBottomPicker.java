@@ -547,6 +547,14 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     if (builder.topBarBackgroundResId > 0) {
       view_title_container.setBackgroundResource(builder.topBarBackgroundResId);
     }
+
+    if (builder.buttonColor > 0) {
+      btn_done.setTextColor(builder.buttonColor);
+    }
+
+    if (builder.titleColor > 0) {
+      tv_title.setTextColor(builder.titleColor);
+    }
   }
 
   private boolean isMultiSelect() {
@@ -636,6 +644,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     public boolean showTitle = true;
     public int titleBackgroundResId;
     public int topBarBackgroundResId;
+    private int buttonColor;
+    private int titleColor;
 
     public int selectMaxCount = Integer.MAX_VALUE;
     public int selectMinCount = 0;
@@ -836,6 +846,16 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     public Builder setTopBarBackgroundResId(int topBarBackgroundResId) {
       this.topBarBackgroundResId = topBarBackgroundResId;
+      return this;
+    }
+
+    public Builder setButtonColor(int buttonColor) {
+      this.buttonColor = buttonColor;
+      return this;
+    }
+
+    public Builder setTitleColor(int titleColor) {
+      this.titleColor = titleColor;
       return this;
     }
 
