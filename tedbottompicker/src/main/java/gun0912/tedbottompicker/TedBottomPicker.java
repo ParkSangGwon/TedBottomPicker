@@ -28,13 +28,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -66,7 +66,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
   GalleryAdapter imageGalleryAdapter;
   View view_title_container;
   TextView tv_title;
-  Button btn_done;
+  AppCompatTextView btn_done;
 
   FrameLayout selected_photos_container_frame;
   HorizontalScrollView hsv_selected_photos;
@@ -190,7 +190,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     btn_done.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-
         onMultiSelectComplete();
       }
     });
@@ -225,16 +224,16 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
   private void initView(View contentView) {
 
     view_title_container = contentView.findViewById(R.id.view_title_container);
-    rc_gallery = (RecyclerView) contentView.findViewById(R.id.rc_gallery);
-    tv_title = (TextView) contentView.findViewById(R.id.tv_title);
-    btn_done = (Button) contentView.findViewById(R.id.btn_done);
+    rc_gallery = contentView.findViewById(R.id.rc_gallery);
+    tv_title = contentView.findViewById(R.id.tv_title);
+    btn_done = contentView.findViewById(R.id.btn_done);
 
     selected_photos_container_frame =
-        (FrameLayout) contentView.findViewById(R.id.selected_photos_container_frame);
-    hsv_selected_photos = (HorizontalScrollView) contentView.findViewById(R.id.hsv_selected_photos);
+        contentView.findViewById(R.id.selected_photos_container_frame);
+    hsv_selected_photos = contentView.findViewById(R.id.hsv_selected_photos);
     selected_photos_container =
-        (LinearLayout) contentView.findViewById(R.id.selected_photos_container);
-    selected_photos_empty = (TextView) contentView.findViewById(R.id.selected_photos_empty);
+        contentView.findViewById(R.id.selected_photos_container);
+    selected_photos_empty = contentView.findViewById(R.id.selected_photos_empty);
   }
 
   private void setRecyclerView() {
@@ -555,6 +554,14 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     if (builder.titleColor > 0) {
       tv_title.setTextColor(builder.titleColor);
     }
+
+    if (builder.multipleMediaBarColor > 0) {
+      hsv_selected_photos.setBackgroundColor(builder.multipleMediaBarColor);
+    }
+
+    if (builder.multipleMediaBarTextColor > 0) {
+      selected_photos_empty.setTextColor(builder.multipleMediaBarTextColor);
+    }
   }
 
   private boolean isMultiSelect() {
@@ -644,6 +651,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     public boolean showTitle = true;
     public int titleBackgroundResId;
     public int topBarBackgroundResId;
+    private int multipleMediaBarColor;
+    private int multipleMediaBarTextColor;
     private int buttonColor;
     private int titleColor;
 
@@ -849,8 +858,18 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
       return this;
     }
 
-    public Builder setButtonColor(int buttonColor) {
+    public Builder setButtonTextColor(int buttonColor) {
       this.buttonColor = buttonColor;
+      return this;
+    }
+
+    public Builder setMultipleMediaBarColor(int multipleMediaBarColor) {
+      this.multipleMediaBarColor = multipleMediaBarColor;
+      return this;
+    }
+
+    public Builder setMultipleMediaBarTextColor(int multipleMediaBarTextColor) {
+      this.multipleMediaBarTextColor = multipleMediaBarTextColor;
       return this;
     }
 

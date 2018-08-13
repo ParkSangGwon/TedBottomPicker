@@ -27,9 +27,6 @@ import gun0912.tedbottompicker.TedBottomPicker;
 import gun0912.tedbottompicker.view.TedSquareFrameLayout;
 import gun0912.tedbottompicker.view.TedSquareImageView;
 
-/**
- * Created by TedPark on 2016. 8. 30..
- */
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder> {
 
 
@@ -63,7 +60,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
             Uri uri;
             if (builder.mediaType == TedBottomPicker.Builder.MediaType.IMAGE) {
                 uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                columns = new String[]{MediaStore.Images.Media.DATA};
+                columns = new String[]{MediaStore.Images.Media.DATA, MediaStore.Video.VideoColumns.DATA};
                 orderBy = MediaStore.Images.Media.DATE_ADDED + " DESC";
             } else {
                 uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;

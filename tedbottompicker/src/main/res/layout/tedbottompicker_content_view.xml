@@ -11,9 +11,13 @@
       android:id="@+id/view_title_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginTop="8dp"
+      android:layout_marginBottom="8dp"
       >
 
-    <Button
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/btn_done"
         style="?borderlessButtonStyle"
         android:layout_width="wrap_content"
@@ -21,17 +25,14 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="8dp"
         android:text="@string/done"
-        android:textSize="16sp"
-        android:layout_marginRight="8dp"/>
+        android:textSize="16sp"/>
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_margin="16dp"
         android:layout_toLeftOf="@id/btn_done"
         android:text="@string/tedbottompicker_title"
         android:textSize="16sp"
@@ -73,6 +74,7 @@
         android:text="@string/no_image"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="?attr/colorAccent"/>
+
   </FrameLayout>
 
   <android.support.v7.widget.RecyclerView
