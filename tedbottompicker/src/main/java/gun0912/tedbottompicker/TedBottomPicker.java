@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -531,8 +532,10 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
       if (!isMultiSelect()) {
         view_title_container.setVisibility(View.GONE);
       }
+    }
 
-      return;
+    if (builder.titleColor > 0) {
+      tv_title.setTextColor(getResources().getColor(builder.titleColor));
     }
 
     if (!TextUtils.isEmpty(builder.title)) {
@@ -540,7 +543,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     }
 
     if (builder.titleBackgroundResId > 0) {
-      tv_title.setBackgroundResource(builder.titleBackgroundResId);
+      tv_title.setBackgroundColor(builder.titleBackgroundResId);
     }
 
     if (builder.topBarBackgroundResId > 0) {
@@ -548,19 +551,15 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     }
 
     if (builder.buttonColor > 0) {
-      btn_done.setTextColor(builder.buttonColor);
-    }
-
-    if (builder.titleColor > 0) {
-      tv_title.setTextColor(builder.titleColor);
+      btn_done.setTextColor(getResources().getColor(builder.buttonColor));
     }
 
     if (builder.multipleMediaBarColor > 0) {
-      hsv_selected_photos.setBackgroundColor(builder.multipleMediaBarColor);
+      hsv_selected_photos.setBackgroundResource(builder.multipleMediaBarColor);
     }
 
     if (builder.multipleMediaBarTextColor > 0) {
-      selected_photos_empty.setTextColor(builder.multipleMediaBarTextColor);
+      selected_photos_empty.setTextColor(getResources().getColor(builder.multipleMediaBarTextColor));
     }
   }
 
@@ -652,9 +651,9 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     public int titleBackgroundResId;
     public int topBarBackgroundResId;
     private int multipleMediaBarColor;
-    private int multipleMediaBarTextColor;
-    private int buttonColor;
-    private int titleColor;
+    private @ColorRes int multipleMediaBarTextColor;
+    private @ColorRes int buttonColor;
+    private @ColorRes int titleColor;
 
     public int selectMaxCount = Integer.MAX_VALUE;
     public int selectMinCount = 0;
