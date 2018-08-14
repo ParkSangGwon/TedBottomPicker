@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -261,16 +260,17 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         switch (pickerTile.getTileType()) {
           case GalleryAdapter.PickerTile.CAMERA:
-            startCameraIntent();
+            startCameraIntent(Builder.MediaType.IMAGE);
+            break;
+          case GalleryAdapter.PickerTile.VIDEO:
+            startCameraIntent(Builder.MediaType.VIDEO);
             break;
           case GalleryAdapter.PickerTile.GALLERY:
             startGalleryIntent();
             break;
           case GalleryAdapter.PickerTile.IMAGE:
             complete(pickerTile.getImageUri());
-
             break;
-
           default:
             errorMessage();
         }
@@ -379,19 +379,19 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     }
   }
 
-  private void startCameraIntent() {
-    Intent cameraInent;
+  private void startCameraIntent(int mediaType) {
+    Intent cameraIntent;
     File mediaFile;
 
-    if (builder.mediaType == Builder.MediaType.IMAGE) {
-      cameraInent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    if (mediaType == Builder.MediaType.IMAGE) {
+      cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
       mediaFile = getImageFile();
     } else {
-      cameraInent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+      cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
       mediaFile = getVideoFile();
     }
 
-    if (cameraInent.resolveActivity(getActivity().getPackageManager()) == null) {
+    if (cameraIntent.resolveActivity(getActivity().getPackageManager()) == null) {
       errorMessage("This Application do not have Camera Application");
       return;
     }
@@ -400,17 +400,17 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         getContext().getApplicationContext().getPackageName() + ".provider", mediaFile);
 
     List<ResolveInfo> resolvedIntentActivities = getContext().getPackageManager()
-        .queryIntentActivities(cameraInent, PackageManager.MATCH_DEFAULT_ONLY);
+        .queryIntentActivities(cameraIntent, PackageManager.MATCH_DEFAULT_ONLY);
     for (ResolveInfo resolvedIntentInfo : resolvedIntentActivities) {
       String packageName = resolvedIntentInfo.activityInfo.packageName;
       getContext().grantUriPermission(packageName, photoURI,
           Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
     }
 
-    cameraInent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 
     TedOnActivityResult.with(getActivity())
-        .setIntent(cameraInent)
+        .setIntent(cameraIntent)
         .setListener(new OnActivityResultListener() {
           @Override
           public void onActivityResult(int resultCode, Intent data) {
@@ -559,7 +559,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     }
 
     if (builder.multipleMediaBarTextColor > 0) {
-      selected_photos_empty.setTextColor(getResources().getColor(builder.multipleMediaBarTextColor));
+      selected_photos_empty.setTextColor(
+          getResources().getColor(builder.multipleMediaBarTextColor));
     }
   }
 
@@ -629,6 +630,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     public Context context;
     public int previewMaxCount = 25;
     public Drawable cameraTileDrawable;
+    public Drawable captureVideoTileDrawable;
     public Drawable galleryTileDrawable;
 
     public Drawable deSelectIconDrawable;
@@ -642,8 +644,10 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     public ImageProvider imageProvider;
     public boolean showCamera = true;
     public boolean showGallery = true;
+    public boolean showVideoCapture = true;
     public int peekHeight = -1;
     public int cameraTileBackgroundResId = R.color.tedbottompicker_camera;
+    public int captureVideoTileBackgroundResId = R.color.tedbottompicker_camera;
     public int galleryTileBackgroundResId = R.color.tedbottompicker_gallery;
 
     public String title;
@@ -693,6 +697,16 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     public Builder setCameraTile(Drawable cameraTileDrawable) {
       this.cameraTileDrawable = cameraTileDrawable;
+      return this;
+    }
+
+    public Builder setCaptureVideoTile(Drawable captureVideoTileDrawable) {
+      this.captureVideoTileDrawable = captureVideoTileDrawable;
+      return this;
+    }
+
+    public Builder setShowVideoCapture(boolean showVideoCapture) {
+      this.showVideoCapture = showVideoCapture;
       return this;
     }
 
@@ -784,6 +798,11 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     public Builder setCameraTileBackgroundResId(@ColorRes int colorResId) {
       this.cameraTileBackgroundResId = colorResId;
+      return this;
+    }
+
+    public Builder setCaptureVideoTileBackgroundResId(int captureVideoTileBackgroundResId) {
+      this.captureVideoTileBackgroundResId = captureVideoTileBackgroundResId;
       return this;
     }
 
