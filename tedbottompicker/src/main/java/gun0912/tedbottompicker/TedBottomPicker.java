@@ -46,6 +46,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.gun0912.tedonactivityresult.TedOnActivityResult;
 import com.gun0912.tedonactivityresult.listener.OnActivityResultListener;
 import gun0912.tedbottompicker.adapter.GalleryAdapter;
+import gun0912.tedbottompicker.util.FileUtils;
 import gun0912.tedbottompicker.util.RealPathUtil;
 import java.io.File;
 import java.io.IOException;
@@ -94,6 +95,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
           Log.d(TAG, "onSlide() slideOffset: " + slideOffset);
         }
       };
+
+  private Uri photoURI;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -238,7 +241,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
   private void setRecyclerView() {
 
-    GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
+    GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), builder.spanCount);
     rc_gallery.setLayoutManager(gridLayoutManager);
     rc_gallery.addItemDecoration(
         new GridSpacingItemDecoration(gridLayoutManager.getSpanCount(), builder.spacing,
@@ -385,41 +388,71 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     if (mediaType == Builder.MediaType.IMAGE) {
       cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-      mediaFile = getImageFile();
+      try {
+        mediaFile = FileUtils.createImageFile(getContext(), "");
+
+        if (cameraIntent.resolveActivity(getActivity().getPackageManager()) == null) {
+          errorMessage("This Application do not have Camera Application");
+          return;
+        }
+
+        photoURI = FileProvider.getUriForFile(getContext(),
+            getContext().getApplicationContext().getPackageName() + ".provider", mediaFile);
+
+        List<ResolveInfo> resolvedIntentActivities = getContext().getPackageManager()
+            .queryIntentActivities(cameraIntent, PackageManager.MATCH_DEFAULT_ONLY);
+        for (ResolveInfo resolvedIntentInfo : resolvedIntentActivities) {
+          String packageName = resolvedIntentInfo.activityInfo.packageName;
+          getContext().grantUriPermission(packageName, photoURI,
+              Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+
+        TedOnActivityResult.with(getActivity())
+            .setIntent(cameraIntent)
+            .setListener(new OnActivityResultListener() {
+              @Override
+              public void onActivityResult(int resultCode, Intent data) {
+                if (resultCode == Activity.RESULT_OK) {
+                  onActivityResultCamera(cameraImageUri);
+                }
+              }
+            })
+            .startActivityForResult();
+      } catch (Exception e) {
+        Log.e("LOGLOG", "create image file failed");
+      }
     } else {
       cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
       mediaFile = getVideoFile();
-    }
 
-    if (cameraIntent.resolveActivity(getActivity().getPackageManager()) == null) {
-      errorMessage("This Application do not have Camera Application");
-      return;
-    }
+      Uri photoURI = FileProvider.getUriForFile(getContext(),
+          getContext().getApplicationContext().getPackageName() + ".provider", mediaFile);
 
-    Uri photoURI = FileProvider.getUriForFile(getContext(),
-        getContext().getApplicationContext().getPackageName() + ".provider", mediaFile);
+      List<ResolveInfo> resolvedIntentActivities = getContext().getPackageManager()
+          .queryIntentActivities(cameraIntent, PackageManager.MATCH_DEFAULT_ONLY);
+      for (ResolveInfo resolvedIntentInfo : resolvedIntentActivities) {
+        String packageName = resolvedIntentInfo.activityInfo.packageName;
+        getContext().grantUriPermission(packageName, photoURI,
+            Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+      }
 
-    List<ResolveInfo> resolvedIntentActivities = getContext().getPackageManager()
-        .queryIntentActivities(cameraIntent, PackageManager.MATCH_DEFAULT_ONLY);
-    for (ResolveInfo resolvedIntentInfo : resolvedIntentActivities) {
-      String packageName = resolvedIntentInfo.activityInfo.packageName;
-      getContext().grantUriPermission(packageName, photoURI,
-          Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-    }
+      cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 
-    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-
-    TedOnActivityResult.with(getActivity())
-        .setIntent(cameraIntent)
-        .setListener(new OnActivityResultListener() {
-          @Override
-          public void onActivityResult(int resultCode, Intent data) {
-            if (resultCode == Activity.RESULT_OK) {
-              onActivityResultCamera(cameraImageUri);
+      TedOnActivityResult.with(getActivity())
+          .setIntent(cameraIntent)
+          .setListener(new OnActivityResultListener() {
+            @Override
+            public void onActivityResult(int resultCode, Intent data) {
+              if (resultCode == Activity.RESULT_OK) {
+                onActivityResultCamera(cameraImageUri);
+              }
             }
-          }
-        })
-        .startActivityForResult();
+          })
+          .startActivityForResult();
+    }
+
   }
 
   private File getImageFile() {
@@ -569,25 +602,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
   }
 
   private void onActivityResultCamera(final Uri cameraImageUri) {
-
-    MediaScannerConnection.scanFile(getContext(), new String[] {cameraImageUri.getPath()},
-        new String[] {"image/jpeg"}, new MediaScannerConnection.MediaScannerConnectionClient() {
-          @Override
-          public void onMediaScannerConnected() {
-
-          }
-
-          @Override
-          public void onScanCompleted(String s, Uri uri) {
-            getActivity().runOnUiThread(new Runnable() {
-              @Override
-              public void run() {
-                updateAdapter();
-                complete(cameraImageUri);
-              }
-            });
-          }
-        });
+    updateAdapter();
+    complete(photoURI);
   }
 
   private void onActivityResultGallery(Intent data) {
@@ -628,6 +644,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
   public static class Builder {
 
     public Context context;
+    public int spanCount = 3;
     public int previewMaxCount = 25;
     public Drawable cameraTileDrawable;
     public Drawable captureVideoTileDrawable;
@@ -675,9 +692,9 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
       this.context = context;
 
-      setCameraTile(R.drawable.ic_camera);
-      setGalleryTile(R.drawable.ic_gallery);
-      setCaptureVideoTile(R.drawable.video);
+      setCameraTile(R.drawable.baseline_photo_camera_white_36);
+      setGalleryTile(R.drawable.baseline_collections_white_36);
+      setCaptureVideoTile(R.drawable.baseline_videocam_white_48);
       setSpacingResId(R.dimen.tedbottompicker_grid_layout_margin);
     }
 
@@ -722,6 +739,11 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     public Builder setDeSelectIcon(@DrawableRes int deSelectIconResId) {
       setDeSelectIcon(ContextCompat.getDrawable(context, deSelectIconResId));
+      return this;
+    }
+
+    public Builder setSpanCount(int spanCount) {
+      this.spanCount = spanCount;
       return this;
     }
 
