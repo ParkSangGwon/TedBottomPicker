@@ -13,7 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import gun0912.tedbottompicker.R;
@@ -170,7 +169,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
       isSelected = selectedUriList.contains(uri);
     }
 
-    if (holder.root instanceof FrameLayout) {
+    if (holder.root != null) {
 
       Drawable foregroundDrawable;
 
@@ -180,7 +179,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         foregroundDrawable = ContextCompat.getDrawable(context, R.drawable.gallery_photo_selected);
       }
 
-      ((FrameLayout) holder.root).setForeground(isSelected ? foregroundDrawable : null);
+      holder.root.setForeground(isSelected ? foregroundDrawable : null);
     }
 
     if (onItemClickListener != null) {
@@ -272,7 +271,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
       return tileType == GALLERY;
     }
 
-    public boolean isVideoTile() { return tileType == VIDEO; }
+    public boolean isVideoTile() {
+      return tileType == VIDEO;
+    }
 
     @IntDef({IMAGE, CAMERA, GALLERY, VIDEO})
     @Retention(RetentionPolicy.SOURCE)
@@ -293,8 +294,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
     public GalleryViewHolder(View view) {
       super(view);
-      root = (TedSquareFrameLayout) view.findViewById(R.id.root);
-      iv_thumbnail = (TedSquareImageView) view.findViewById(R.id.iv_thumbnail);
+      root = view.findViewById(R.id.root);
+      iv_thumbnail = view.findViewById(R.id.iv_thumbnail);
     }
   }
 }

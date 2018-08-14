@@ -677,6 +677,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
       setCameraTile(R.drawable.ic_camera);
       setGalleryTile(R.drawable.ic_gallery);
+      setCaptureVideoTile(R.drawable.video);
       setSpacingResId(R.dimen.tedbottompicker_grid_layout_margin);
     }
 
@@ -703,6 +704,10 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     public Builder setCaptureVideoTile(Drawable captureVideoTileDrawable) {
       this.captureVideoTileDrawable = captureVideoTileDrawable;
       return this;
+    }
+
+    public void setCaptureVideoTile(@DrawableRes int captureVideoResId) {
+      setCaptureVideoTile(ContextCompat.getDrawable(context, captureVideoResId));
     }
 
     public Builder setShowVideoCapture(boolean showVideoCapture) {
