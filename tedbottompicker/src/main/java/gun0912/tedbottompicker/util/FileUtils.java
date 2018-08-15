@@ -46,8 +46,7 @@ public class FileUtils {
   /**
    * Gets the extension of a file name, like ".png" or ".jpg".
    *
-   * @return Extension including the dot("."); "" if there is no extension;
-   * null if uri was null.
+   * @return Extension including the dot("."); "" if there is no extension; null if uri was null.
    */
   public static String getExtension(String uri) {
     if (uri == null) {
@@ -310,8 +309,8 @@ public class FileUtils {
   /**
    * Convert Uri into File, if possible.
    *
-   * @return file A local file that the Uri was pointing to, or null if the
-   * Uri is unsupported or pointed to a remote resource.
+   * @return file A local file that the Uri was pointing to, or null if the Uri is unsupported or
+   * pointed to a remote resource.
    * @see #getPath(Context, Uri)
    */
   public static File getFile(Context context, Uri uri) {
@@ -456,8 +455,8 @@ public class FileUtils {
 
   public static File createImageFile(Context context, String prefix) throws IOException {
     // Create an image file name
-    File swipestoxDir =  new File(context.getExternalCacheDirs()[0], "/swipestoximages");
-    if(!swipestoxDir.exists()) {
+    File swipestoxDir = new File(context.getExternalCacheDirs()[0], "/swipestoximages");
+    if (!swipestoxDir.exists()) {
       swipestoxDir.mkdir();
     }
     File image = new File(swipestoxDir, getUniqueFilename(prefix));
@@ -466,13 +465,23 @@ public class FileUtils {
   }
 
   public static File createVideoFile(Context context) throws IOException {
-    // Create an image file name
-    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-    String videoFileName = "VIDEO_" + timeStamp + ".mp4";
-    File[] files = ContextCompat.getExternalFilesDirs(context, Environment.DIRECTORY_PICTURES);
-    File image = new File(files[0], videoFileName);
-    image.createNewFile();
-    return image;
+    File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+        Environment.DIRECTORY_PICTURES), context.getPackageName());
+
+    if (!mediaStorageDir.exists()) {
+      if (!mediaStorageDir.mkdirs()) {
+        Log.d(TAG, "Failed to create directory.");
+        return null;
+      }
+    }
+
+    String timeStamp = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date());
+    File mediaFile;
+
+    mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+        "VID_" + timeStamp + ".mp4");
+
+    return mediaFile;
   }
 
   public static boolean checkExists(Context context, String filename) {
@@ -504,7 +513,7 @@ public class FileUtils {
     return image;
   }
 
-  public static File saveFile(Context context, String path,Bitmap bitmap) throws IOException {
+  public static File saveFile(Context context, String path, Bitmap bitmap) throws IOException {
     // Create an image file name
     String imageFileName = path;
     File[] files = ContextCompat.getExternalCacheDirs(context);
@@ -532,7 +541,8 @@ public class FileUtils {
   }
 
   //TODO Nihad check for out of memory exception
-  public static File saveAndScaleFileFromContent(Context context, Uri uri, String name) throws IOException {
+  public static File saveAndScaleFileFromContent(Context context, Uri uri, String name)
+      throws IOException {
     InputStream inputStream = context.getContentResolver().openInputStream(uri);
     Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
     float ratio = Math.min(
@@ -548,15 +558,16 @@ public class FileUtils {
   }
 
   public static void deleteDirectoryRecursively(File directory) {
-    if(directory.isDirectory()) {
-      for(File file : directory.listFiles()) {
+    if (directory.isDirectory()) {
+      for (File file : directory.listFiles()) {
         deleteDirectoryRecursively(file);
       }
     }
     directory.delete();
   }
 
-  public static String copyBundledRealmFile(InputStream inputStream, String outFileName, Context context) {
+  public static String copyBundledRealmFile(InputStream inputStream, String outFileName,
+      Context context) {
     try {
       File file = new File(context.getFilesDir(), outFileName);
       FileOutputStream outputStream = new FileOutputStream(file);
@@ -572,5 +583,4 @@ public class FileUtils {
     }
     return null;
   }
-
 }

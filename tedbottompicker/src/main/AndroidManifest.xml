@@ -2,18 +2,31 @@
     package="gun0912.tedbottompicker">
 
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <application>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.CAMERA"/>
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+  <application>
     <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
-        </provider>
-     </application>
+        android:name="android.support.v4.content.FileProvider"
+        android:authorities="${applicationId}.provider"
+        android:exported="false"
+        android:grantUriPermissions="true">
+      <meta-data
+          android:name="android.support.FILE_PROVIDER_PATHS"
+          android:resource="@xml/provider_paths"/>
+    </provider>
+
+    <activity
+        android:name="io.github.memfis19.annca.internal.ui.camera.Camera1Activity"
+        android:screenOrientation="portrait"/>
+    <activity
+        android:name="io.github.memfis19.annca.internal.ui.camera2.Camera2Activity"
+        android:screenOrientation="portrait"/>
+    <activity
+        android:name="io.github.memfis19.annca.internal.ui.preview.PreviewActivity"
+        android:screenOrientation="portrait"/>
+  </application>
 
 
 </manifest>

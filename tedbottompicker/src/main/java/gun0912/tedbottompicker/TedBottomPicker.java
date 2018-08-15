@@ -1,6 +1,7 @@
 package gun0912.tedbottompicker;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -8,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -48,6 +48,8 @@ import com.gun0912.tedonactivityresult.listener.OnActivityResultListener;
 import gun0912.tedbottompicker.adapter.GalleryAdapter;
 import gun0912.tedbottompicker.util.FileUtils;
 import gun0912.tedbottompicker.util.RealPathUtil;
+import io.github.memfis19.annca.Annca;
+import io.github.memfis19.annca.internal.configuration.AnncaConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Retention;
@@ -382,7 +384,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     }
   }
 
-  private void startCameraIntent(int mediaType) {
+  @SuppressLint("MissingPermission") private void startCameraIntent(int mediaType) {
     Intent cameraIntent;
     File mediaFile;
 
@@ -415,44 +417,29 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
               @Override
               public void onActivityResult(int resultCode, Intent data) {
                 if (resultCode == Activity.RESULT_OK) {
-                  onActivityResultCamera(cameraImageUri);
+                  onActivityResultCamera(photoURI);
                 }
               }
             })
             .startActivityForResult();
       } catch (Exception e) {
+        e.printStackTrace();
         Log.e("LOGLOG", "create image file failed");
       }
     } else {
       cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-      mediaFile = getVideoFile();
 
-      Uri photoURI = FileProvider.getUriForFile(getContext(),
-          getContext().getApplicationContext().getPackageName() + ".provider", mediaFile);
-
-      List<ResolveInfo> resolvedIntentActivities = getContext().getPackageManager()
-          .queryIntentActivities(cameraIntent, PackageManager.MATCH_DEFAULT_ONLY);
-      for (ResolveInfo resolvedIntentInfo : resolvedIntentActivities) {
-        String packageName = resolvedIntentInfo.activityInfo.packageName;
-        getContext().grantUriPermission(packageName, photoURI,
-            Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+      try {
+        AnncaConfiguration.Builder videoLimited =
+            new AnncaConfiguration.Builder(this, 102);
+        videoLimited.setMediaAction(AnncaConfiguration.MEDIA_ACTION_VIDEO);
+        videoLimited.setMediaQuality(AnncaConfiguration.MEDIA_QUALITY_MEDIUM);
+        videoLimited.setVideoDuration(15 * 1000);
+        new Annca(videoLimited.build()).launchCamera();
+      } catch (Exception e) {
+        e.printStackTrace();
       }
-
-      cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-
-      TedOnActivityResult.with(getActivity())
-          .setIntent(cameraIntent)
-          .setListener(new OnActivityResultListener() {
-            @Override
-            public void onActivityResult(int resultCode, Intent data) {
-              if (resultCode == Activity.RESULT_OK) {
-                onActivityResultCamera(cameraImageUri);
-              }
-            }
-          })
-          .startActivityForResult();
     }
-
   }
 
   private File getImageFile() {
@@ -492,26 +479,33 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
       String timeStamp =
           new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
       String imageFileName = "VIDEO_" + timeStamp + "_";
-      File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
+      File storageDir = Environment.getExternalStoragePublicDirectory(
+          Environment.DIRECTORY_MOVIES);
 
       if (!storageDir.exists()) {
         storageDir.mkdirs();
       }
 
-      videoFile = File.createTempFile(
-          imageFileName,  /* prefix */
-          ".mp4",         /* suffix */
-          storageDir      /* directory */
-      );
+      videoFile = FileUtils.createVideoFile(getContext());
 
       // Save a file: path for use with ACTION_VIEW intents
       cameraImageUri = Uri.fromFile(videoFile);
+
+      return videoFile;
     } catch (IOException e) {
       e.printStackTrace();
       errorMessage("Could not create imageFile for camera");
     }
 
     return videoFile;
+  }
+
+  @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == 102) {
+      onActivityResultCamera(Uri.fromFile(new File(data.getExtras().getString("io.memfis19.annca.camera_video_file_path"))));
+    }
+
+    super.onActivityResult(requestCode, resultCode, data);
   }
 
   private void errorMessage(String message) {
@@ -603,7 +597,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
   private void onActivityResultCamera(final Uri cameraImageUri) {
     updateAdapter();
-    complete(photoURI);
+    complete(cameraImageUri);
   }
 
   private void onActivityResultGallery(Intent data) {
