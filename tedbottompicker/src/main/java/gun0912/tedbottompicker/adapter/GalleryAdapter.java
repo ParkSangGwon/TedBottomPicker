@@ -22,6 +22,7 @@ import gun0912.tedbottompicker.view.TedSquareImageView;
 import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder> {
@@ -31,6 +32,16 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
   TedBottomPicker.Builder builder;
   OnItemClickListener onItemClickListener;
   ArrayList<Uri> selectedUriList;
+  private TYPE type;
+
+  private enum TYPE {
+    VIDEO_CAPTURE,
+    VIDEO,
+    IMAGE,
+    CAMERA,
+    GALLERY,
+    OTHER
+  }
 
   public GalleryAdapter(Context context, TedBottomPicker.Builder builder) {
 
@@ -45,7 +56,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     }
 
     if (builder.showVideoCapture) {
-      pickerTiles.add(new PickerTile(PickerTile.VIDEO));
+      pickerTiles.add(new PickerTile(PickerTile.VIDEO_CAPTURE));
     }
 
     if (builder.showGallery) {
@@ -130,10 +141,15 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
   @Override
   public GalleryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View view = View.inflate(context, R.layout.tedbottompicker_grid_item, null);
-    final GalleryViewHolder holder = new GalleryViewHolder(view);
 
-    return holder;
+    View view;
+    if (viewType == TYPE.VIDEO.ordinal()) {
+      view = View.inflate(context, R.layout.video_grid_item, null);
+    } else {
+      view = View.inflate(context, R.layout.tedbottompicker_grid_item, null);
+    }
+
+    return new GalleryViewHolder(view);
   }
 
   @Override
@@ -146,7 +162,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     if (pickerTile.isCameraTile()) {
       holder.iv_thumbnail.setBackgroundResource(builder.cameraTileBackgroundResId);
       holder.iv_thumbnail.setImageDrawable(builder.cameraTileDrawable);
-    } else if (pickerTile.isVideoTile()) {
+    } else if (pickerTile.isVideoCaptureTile()) {
       holder.iv_thumbnail.setBackgroundResource(builder.cameraTileBackgroundResId);
       holder.iv_thumbnail.setImageDrawable(builder.captureVideoTileDrawable);
     } else if (pickerTile.isGalleryTile()) {
@@ -201,6 +217,23 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     return pickerTiles.size();
   }
 
+  @Override public int getItemViewType(int position) {
+    PickerTile pickerTile = pickerTiles.get(position);
+    if (pickerTile.isVideoCaptureTile()) {
+      return TYPE.VIDEO_CAPTURE.ordinal();
+    } else if (pickerTile.isVideoTile()) {
+      return TYPE.VIDEO.ordinal();
+    } else if (pickerTile.isImageTile()) {
+      return TYPE.IMAGE.ordinal();
+    } else if (pickerTile.isGalleryTile()) {
+      return TYPE.GALLERY.ordinal();
+    } else if (pickerTile.isCameraTile()) {
+      return TYPE.CAMERA.ordinal();
+    }
+
+    return TYPE.OTHER.ordinal();
+  }
+
   public void setOnItemClickListener(
       OnItemClickListener onItemClickListener) {
     this.onItemClickListener = onItemClickListener;
@@ -214,7 +247,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
     public static final int IMAGE = 1;
     public static final int CAMERA = 2;
-    public static final int VIDEO = 3;
+    public static final int VIDEO_CAPTURE = 3;
     public static final int GALLERY = 4;
     protected final Uri imageUri;
     protected final
@@ -250,7 +283,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         return "ImageTile: " + imageUri;
       } else if (isCameraTile()) {
         return "CameraTile";
-      } else if (isVideoTile()) {
+      } else if (isVideoCaptureTile()) {
         return "VideoTile";
       } else if (isGalleryTile()) {
         return "PickerTile";
@@ -271,16 +304,25 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
       return tileType == GALLERY;
     }
 
-    public boolean isVideoTile() {
-      return tileType == VIDEO;
+    public boolean isVideoCaptureTile() {
+      return tileType == VIDEO_CAPTURE;
     }
 
-    @IntDef({IMAGE, CAMERA, GALLERY, VIDEO})
+    public boolean isVideoTile() {
+      if (imageUri != null) {
+        String mimeType = URLConnection.guessContentTypeFromName(imageUri.getPath());
+        return mimeType != null && mimeType.startsWith("video");
+      }
+
+      return false;
+    }
+
+    @IntDef({IMAGE, CAMERA, GALLERY, VIDEO_CAPTURE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface TileType {
     }
 
-    @IntDef({CAMERA, GALLERY, VIDEO})
+    @IntDef({CAMERA, GALLERY, VIDEO_CAPTURE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface SpecialTileType {
     }

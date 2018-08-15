@@ -65,6 +65,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
   public static final String TAG = "TedBottomPicker";
   static final String EXTRA_CAMERA_IMAGE_URI = "camera_image_uri";
   static final String EXTRA_CAMERA_SELECTED_IMAGE_URI = "camera_selected_image_uri";
+  static final String VIDEO_CAPTURE_STRING = "io.memfis19.annca.camera_video_file_path";
   public static Builder builder;
   GalleryAdapter imageGalleryAdapter;
   View view_title_container;
@@ -267,7 +268,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
           case GalleryAdapter.PickerTile.CAMERA:
             startCameraIntent(Builder.MediaType.IMAGE);
             break;
-          case GalleryAdapter.PickerTile.VIDEO:
+          case GalleryAdapter.PickerTile.VIDEO_CAPTURE:
             startCameraIntent(Builder.MediaType.VIDEO);
             break;
           case GalleryAdapter.PickerTile.GALLERY:
@@ -284,8 +285,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
   }
 
   private void complete(final Uri uri) {
-    Log.d(TAG, "selected uri: " + uri.toString());
-    //uri = Uri.parse(uri.toString());
     if (isMultiSelect()) {
 
       if (selectedUriList.contains(uri)) {
@@ -502,7 +501,13 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
   @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == 102) {
-      onActivityResultCamera(Uri.fromFile(new File(data.getExtras().getString("io.memfis19.annca.camera_video_file_path"))));
+      if (data != null) {
+        Bundle bundle = data.getExtras();
+        if (bundle != null && bundle.getString(VIDEO_CAPTURE_STRING) != null) {
+          onActivityResultCamera(Uri.fromFile(
+              new File(bundle.getString(VIDEO_CAPTURE_STRING))));
+        }
+      }
     }
 
     super.onActivityResult(requestCode, resultCode, data);
