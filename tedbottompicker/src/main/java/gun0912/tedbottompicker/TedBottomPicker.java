@@ -63,6 +63,8 @@ import gun0912.tedbottompicker.util.RealPathUtil;
 public class TedBottomPicker extends BottomSheetDialogFragment {
 
     public static final String TAG = "TedBottomPicker";
+
+    private static Context context;
     static final String EXTRA_CAMERA_IMAGE_URI = "camera_image_uri";
     static final String EXTRA_CAMERA_SELECTED_IMAGE_URI = "camera_selected_image_uri";
     public static Builder builder;
@@ -99,7 +101,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             Log.d(TAG, "onSlide() slideOffset: " + slideOffset);
         }
     };
-    
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -578,7 +580,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     private void onActivityResultCamera(final Uri cameraImageUri) {
 
-        MediaScannerConnection.scanFile(getContext(), new String[]{cameraImageUri.getPath()}, new String[]{"image/jpeg"}, new MediaScannerConnection.MediaScannerConnectionClient() {
+        MediaScannerConnection.scanFile(this.context, new String[]{cameraImageUri.getPath()}, new String[]{"image/jpeg"}, new MediaScannerConnection.MediaScannerConnectionClient() {
             @Override
             public void onMediaScannerConnected() {
 
@@ -678,6 +680,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         public Builder(@NonNull Context context) {
 
             this.context = context;
+            TedBottomPicker.context = context;
 
             setCameraTile(R.drawable.ic_camera);
             setGalleryTile(R.drawable.ic_gallery);
