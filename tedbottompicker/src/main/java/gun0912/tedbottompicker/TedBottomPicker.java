@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -47,8 +46,6 @@ import com.gun0912.tedonactivityresult.TedOnActivityResult;
 import com.gun0912.tedonactivityresult.listener.OnActivityResultListener;
 import gun0912.tedbottompicker.adapter.GalleryAdapter;
 import gun0912.tedbottompicker.util.FileUtils;
-import io.github.memfis19.annca.Annca;
-import io.github.memfis19.annca.internal.configuration.AnncaConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Retention;
@@ -56,7 +53,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class TedBottomPicker extends BottomSheetDialogFragment {
@@ -383,61 +379,91 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
   }
 
   @SuppressLint("MissingPermission") private void startCameraIntent(int mediaType) {
-    Intent cameraIntent;
+    Intent cameraInent;
     File mediaFile;
 
-    if (mediaType == Builder.MediaType.IMAGE) {
-      cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-      try {
-        mediaFile = FileUtils.createImageFile(getContext(), "");
-
-        if (cameraIntent.resolveActivity(getActivity().getPackageManager()) == null) {
-          errorMessage("This Application do not have Camera Application");
-          return;
-        }
-
-        photoURI = FileProvider.getUriForFile(getContext(),
-            getContext().getApplicationContext().getPackageName() + ".provider", mediaFile);
-
-        List<ResolveInfo> resolvedIntentActivities = getContext().getPackageManager()
-            .queryIntentActivities(cameraIntent, PackageManager.MATCH_DEFAULT_ONLY);
-        for (ResolveInfo resolvedIntentInfo : resolvedIntentActivities) {
-          String packageName = resolvedIntentInfo.activityInfo.packageName;
-          getContext().grantUriPermission(packageName, photoURI,
-              Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        }
-
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-
-        TedOnActivityResult.with(getActivity())
-            .setIntent(cameraIntent)
-            .setListener(new OnActivityResultListener() {
-              @Override
-              public void onActivityResult(int resultCode, Intent data) {
-                if (resultCode == Activity.RESULT_OK) {
-                  onActivityResultCamera(photoURI);
-                }
-              }
-            })
-            .startActivityForResult();
-      } catch (Exception e) {
-        e.printStackTrace();
-        Log.e("LOGLOG", "create image file failed");
-      }
+    if (builder.mediaType == Builder.MediaType.IMAGE) {
+      cameraInent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+      mediaFile = getImageFile();
     } else {
-      cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-
-      try {
-        AnncaConfiguration.Builder videoLimited =
-            new AnncaConfiguration.Builder(this, 102);
-        videoLimited.setMediaAction(AnncaConfiguration.MEDIA_ACTION_VIDEO);
-        videoLimited.setMediaQuality(AnncaConfiguration.MEDIA_QUALITY_MEDIUM);
-        videoLimited.setVideoDuration(15 * 1000);
-        new Annca(videoLimited.build()).launchCamera();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+      cameraInent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+      mediaFile = getVideoFile();
     }
+
+    if (cameraInent.resolveActivity(getActivity().getPackageManager()) == null) {
+      errorMessage("This Application do not have Camera Application");
+      return;
+    }
+
+    final Uri photoURI = FileProvider.getUriForFile(getContext(),
+        getContext().getApplicationContext().getPackageName() + ".provider", mediaFile);
+
+    cameraInent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+
+    TedOnActivityResult.with(getActivity())
+        .setIntent(cameraInent)
+        .setListener(new OnActivityResultListener() {
+          @Override
+          public void onActivityResult(int resultCode, Intent data) {
+            if (resultCode == Activity.RESULT_OK) {
+              onActivityResultCamera(photoURI);
+            }
+          }
+        })
+        .startActivityForResult();
+
+    //if (mediaType == Builder.MediaType.IMAGE) {
+    //  cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    //  try {
+    //    mediaFile = FileUtils.createImageFile(getContext(), "");
+    //
+    //    if (cameraIntent.resolveActivity(getActivity().getPackageManager()) == null) {
+    //      errorMessage("This Application do not have Camera Application");
+    //      return;
+    //    }
+    //
+    //    photoURI = FileProvider.getUriForFile(getContext(),
+    //        getContext().getApplicationContext().getPackageName() + ".provider", mediaFile);
+    //
+    //    List<ResolveInfo> resolvedIntentActivities = getContext().getPackageManager()
+    //        .queryIntentActivities(cameraIntent, PackageManager.MATCH_DEFAULT_ONLY);
+    //    for (ResolveInfo resolvedIntentInfo : resolvedIntentActivities) {
+    //      String packageName = resolvedIntentInfo.activityInfo.packageName;
+    //      getContext().grantUriPermission(packageName, photoURI,
+    //          Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+    //    }
+    //
+    //    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+    //
+    //    TedOnActivityResult.with(getActivity())
+    //        .setIntent(cameraIntent)
+    //        .setListener(new OnActivityResultListener() {
+    //          @Override
+    //          public void onActivityResult(int resultCode, Intent data) {
+    //            if (resultCode == Activity.RESULT_OK) {
+    //              onActivityResultCamera(photoURI);
+    //            }
+    //          }
+    //        })
+    //        .startActivityForResult();
+    //  } catch (Exception e) {
+    //    e.printStackTrace();
+    //    Log.e("LOGLOG", "create image file failed");
+    //  }
+    //} else {
+    //  cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+    //
+    //  try {
+    //    AnncaConfiguration.Builder videoLimited =
+    //        new AnncaConfiguration.Builder(this, 102);
+    //    videoLimited.setMediaAction(AnncaConfiguration.MEDIA_ACTION_VIDEO);
+    //    videoLimited.setMediaQuality(AnncaConfiguration.MEDIA_QUALITY_MEDIUM);
+    //    videoLimited.setVideoDuration(15 * 1000);
+    //    new Annca(videoLimited.build()).launchCamera();
+    //  } catch (Exception e) {
+    //    e.printStackTrace();
+    //  }
+    //}
   }
 
   private File getImageFile() {
@@ -447,8 +473,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
       String timeStamp =
           new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
       String imageFileName = "JPEG_" + timeStamp + "_";
-      File storageDir =
-          Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+      File storageDir = new File(getContext().getExternalCacheDirs()[0], "/swipestoximages");
 
       if (!storageDir.exists()) {
         storageDir.mkdirs();

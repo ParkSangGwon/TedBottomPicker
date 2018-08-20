@@ -21,6 +21,7 @@ import gun0912.tedbottompicker.TedBottomPicker;
 import gun0912.tedbottompicker.util.TypeUtil;
 import gun0912.tedbottompicker.view.TedSquareFrameLayout;
 import gun0912.tedbottompicker.view.TedSquareImageView;
+import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -97,22 +98,17 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
       if (cursor != null) {
 
         int count = 0;
-        int imageIdIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID);
-        int videoIdIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns._ID);
-        int mediaTypeIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns.MEDIA_TYPE);
         while (cursor.moveToNext() && count < builder.previewMaxCount) {
 
-          Uri uri;
-
-          if (cursor.getInt(mediaTypeIndex) == 1) {
-            uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                cursor.getInt(imageIdIndex));
+          String dataIndex;
+          if (builder.mediaType == TedBottomPicker.Builder.MediaType.IMAGE) {
+            dataIndex = MediaStore.Images.Media.DATA;
           } else {
-            uri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                cursor.getInt(videoIdIndex));
+            dataIndex = MediaStore.Video.VideoColumns.DATA;
           }
-
-          pickerTiles.add(new PickerTile(uri));
+          String imageLocation = cursor.getString(cursor.getColumnIndex(dataIndex));
+          File imageFile = new File(imageLocation);
+          pickerTiles.add(new PickerTile(Uri.fromFile(imageFile)));
           count++;
         }
       }
