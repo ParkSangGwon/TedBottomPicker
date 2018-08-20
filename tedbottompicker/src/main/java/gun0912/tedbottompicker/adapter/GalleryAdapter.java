@@ -1,5 +1,6 @@
 package gun0912.tedbottompicker.adapter;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.database.Cursor;
@@ -17,12 +18,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import gun0912.tedbottompicker.R;
 import gun0912.tedbottompicker.TedBottomPicker;
+import gun0912.tedbottompicker.util.TypeUtil;
 import gun0912.tedbottompicker.view.TedSquareFrameLayout;
 import gun0912.tedbottompicker.view.TedSquareImageView;
-import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder> {
@@ -97,17 +97,22 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
       if (cursor != null) {
 
         int count = 0;
+        int imageIdIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID);
+        int videoIdIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns._ID);
+        int mediaTypeIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns.MEDIA_TYPE);
         while (cursor.moveToNext() && count < builder.previewMaxCount) {
 
-          String dataIndex;
-          if (builder.mediaType == TedBottomPicker.Builder.MediaType.IMAGE) {
-            dataIndex = MediaStore.Images.Media.DATA;
+          Uri uri;
+
+          if (cursor.getInt(mediaTypeIndex) == 1) {
+            uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                cursor.getInt(imageIdIndex));
           } else {
-            dataIndex = MediaStore.Video.VideoColumns.DATA;
+            uri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                cursor.getInt(videoIdIndex));
           }
-          String imageLocation = cursor.getString(cursor.getColumnIndex(dataIndex));
-          File imageFile = new File(imageLocation);
-          pickerTiles.add(new PickerTile(Uri.fromFile(imageFile)));
+
+          pickerTiles.add(new PickerTile(uri));
           count++;
         }
       }
@@ -221,7 +226,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     PickerTile pickerTile = pickerTiles.get(position);
     if (pickerTile.isVideoCaptureTile()) {
       return TYPE.VIDEO_CAPTURE.ordinal();
-    } else if (pickerTile.isVideoTile()) {
+    } else if (TypeUtil.isContentVideo(context, pickerTile.getImageUri())) {
       return TYPE.VIDEO.ordinal();
     } else if (pickerTile.isImageTile()) {
       return TYPE.IMAGE.ordinal();
@@ -306,15 +311,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
     public boolean isVideoCaptureTile() {
       return tileType == VIDEO_CAPTURE;
-    }
-
-    public boolean isVideoTile() {
-      if (imageUri != null) {
-        String mimeType = URLConnection.guessContentTypeFromName(imageUri.getPath());
-        return mimeType != null && mimeType.startsWith("video");
-      }
-
-      return false;
     }
 
     @IntDef({IMAGE, CAMERA, GALLERY, VIDEO_CAPTURE})

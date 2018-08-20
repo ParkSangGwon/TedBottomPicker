@@ -47,7 +47,6 @@ import com.gun0912.tedonactivityresult.TedOnActivityResult;
 import com.gun0912.tedonactivityresult.listener.OnActivityResultListener;
 import gun0912.tedbottompicker.adapter.GalleryAdapter;
 import gun0912.tedbottompicker.util.FileUtils;
-import gun0912.tedbottompicker.util.RealPathUtil;
 import io.github.memfis19.annca.Annca;
 import io.github.memfis19.annca.internal.configuration.AnncaConfiguration;
 import java.io.File;
@@ -610,15 +609,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     if (temp == null) {
       errorMessage();
-    }
-
-    String realPath = RealPathUtil.getRealPath(getActivity(), temp);
-
-    Uri selectedImageUri = null;
-    try {
-      selectedImageUri = Uri.fromFile(new File(realPath));
-    } catch (Exception ex) {
-      selectedImageUri = Uri.parse(realPath);
     }
 
     complete(temp);
