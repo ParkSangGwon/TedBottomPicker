@@ -11,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
@@ -382,7 +381,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     Intent cameraInent;
     File mediaFile;
 
-    if (builder.mediaType == Builder.MediaType.IMAGE) {
+    if (mediaType == Builder.MediaType.IMAGE) {
       cameraInent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
       mediaFile = getImageFile();
     } else {
@@ -406,64 +405,11 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
           @Override
           public void onActivityResult(int resultCode, Intent data) {
             if (resultCode == Activity.RESULT_OK) {
-              onActivityResultCamera(photoURI);
+              onActivityResultCamera(cameraImageUri);
             }
           }
         })
         .startActivityForResult();
-
-    //if (mediaType == Builder.MediaType.IMAGE) {
-    //  cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-    //  try {
-    //    mediaFile = FileUtils.createImageFile(getContext(), "");
-    //
-    //    if (cameraIntent.resolveActivity(getActivity().getPackageManager()) == null) {
-    //      errorMessage("This Application do not have Camera Application");
-    //      return;
-    //    }
-    //
-    //    photoURI = FileProvider.getUriForFile(getContext(),
-    //        getContext().getApplicationContext().getPackageName() + ".provider", mediaFile);
-    //
-    //    List<ResolveInfo> resolvedIntentActivities = getContext().getPackageManager()
-    //        .queryIntentActivities(cameraIntent, PackageManager.MATCH_DEFAULT_ONLY);
-    //    for (ResolveInfo resolvedIntentInfo : resolvedIntentActivities) {
-    //      String packageName = resolvedIntentInfo.activityInfo.packageName;
-    //      getContext().grantUriPermission(packageName, photoURI,
-    //          Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-    //    }
-    //
-    //    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-    //
-    //    TedOnActivityResult.with(getActivity())
-    //        .setIntent(cameraIntent)
-    //        .setListener(new OnActivityResultListener() {
-    //          @Override
-    //          public void onActivityResult(int resultCode, Intent data) {
-    //            if (resultCode == Activity.RESULT_OK) {
-    //              onActivityResultCamera(photoURI);
-    //            }
-    //          }
-    //        })
-    //        .startActivityForResult();
-    //  } catch (Exception e) {
-    //    e.printStackTrace();
-    //    Log.e("LOGLOG", "create image file failed");
-    //  }
-    //} else {
-    //  cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-    //
-    //  try {
-    //    AnncaConfiguration.Builder videoLimited =
-    //        new AnncaConfiguration.Builder(this, 102);
-    //    videoLimited.setMediaAction(AnncaConfiguration.MEDIA_ACTION_VIDEO);
-    //    videoLimited.setMediaQuality(AnncaConfiguration.MEDIA_QUALITY_MEDIUM);
-    //    videoLimited.setVideoDuration(15 * 1000);
-    //    new Annca(videoLimited.build()).launchCamera();
-    //  } catch (Exception e) {
-    //    e.printStackTrace();
-    //  }
-    //}
   }
 
   private File getImageFile() {
@@ -502,19 +448,20 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
       String timeStamp =
           new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
       String imageFileName = "VIDEO_" + timeStamp + "_";
-      File storageDir = Environment.getExternalStoragePublicDirectory(
-          Environment.DIRECTORY_MOVIES);
+      File storageDir = new File(getContext().getExternalCacheDirs()[0], "/swipestoximages");
 
       if (!storageDir.exists()) {
         storageDir.mkdirs();
       }
 
-      videoFile = FileUtils.createVideoFile(getContext());
+      videoFile = File.createTempFile(
+          imageFileName,  /* prefix */
+          ".mp4",         /* suffix */
+          storageDir      /* directory */
+      );
 
       // Save a file: path for use with ACTION_VIEW intents
       cameraImageUri = Uri.fromFile(videoFile);
-
-      return videoFile;
     } catch (IOException e) {
       e.printStackTrace();
       errorMessage("Could not create imageFile for camera");
