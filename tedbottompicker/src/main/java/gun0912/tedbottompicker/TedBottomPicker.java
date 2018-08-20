@@ -621,7 +621,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
       selectedImageUri = Uri.parse(realPath);
     }
 
-    complete(selectedImageUri);
+    complete(temp);
   }
 
   public interface OnMultiImageSelectedListener {

@@ -120,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
                     .setTitleColor(android.R.color.white)
                     .setTitle("TEST TEST")
                     .setSpanCount(4)
+                    .setSelectMaxCount(3)
                     .setCompleteButtonText("Done")
                     .setTopBarBackgroundResId(R.color.red)
                     .setButtonTextColor(android.R.color.white)
