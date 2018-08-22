@@ -3,6 +3,7 @@ package gun0912.tedbottompicker.entity;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import java.net.URLConnection;
 
 public class MediaPickerEntity implements Parcelable {
   private Uri uri;
@@ -52,5 +53,10 @@ public class MediaPickerEntity implements Parcelable {
 
   public MEDIA_TYPE getType() {
     return type;
+  }
+
+  public boolean isVideo() {
+    String mimeType = URLConnection.guessContentTypeFromName(uri.getPath());
+    return mimeType != null && mimeType.startsWith("video");
   }
 }
