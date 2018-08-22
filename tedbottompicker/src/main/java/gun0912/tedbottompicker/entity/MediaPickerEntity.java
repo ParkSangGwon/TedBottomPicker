@@ -59,4 +59,17 @@ public class MediaPickerEntity implements Parcelable {
     String mimeType = URLConnection.guessContentTypeFromName(uri.getPath());
     return mimeType != null && mimeType.startsWith("video");
   }
+
+  @Override public boolean equals(Object obj) {
+    MediaPickerEntity mediaPickerEntity = (MediaPickerEntity) obj;
+    return hashCode() == mediaPickerEntity.hashCode();
+  }
+
+  @Override public int hashCode() {
+    if (uri != null) {
+      return uri.hashCode();
+    }
+
+    return 0;
+  }
 }

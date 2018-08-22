@@ -1,6 +1,5 @@
 package gun0912.tedbottompicker.adapter;
 
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.database.Cursor;
