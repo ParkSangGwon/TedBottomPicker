@@ -130,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
                     .setButtonTextColor(android.R.color.white)
                     .setMultipleMediaBarTextColor(android.R.color.white)
                     .setMultipleMediaBarColor(R.color.red)
-                    .setEmptySelectionText("No Select")
                     .create();
 
             bottomSheetDialogFragment.show(getSupportFragmentManager());

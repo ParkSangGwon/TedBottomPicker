@@ -22,6 +22,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:text="@string/done"
+        android:textStyle="bold"
         android:textSize="16sp"/>
 
     <TextView
@@ -32,6 +33,7 @@
         android:layout_toLeftOf="@id/btn_done"
         android:text="@string/tedbottompicker_title"
         android:textSize="16sp"
+        android:textStyle="bold"
         android:layout_toStartOf="@id/btn_done"/>
 
   </RelativeLayout>
@@ -48,6 +50,8 @@
         android:layout_height="match_parent"
         android:background="@color/tedbottompicker_selected"
         android:fillViewport="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:foregroundGravity="left"
         >
 

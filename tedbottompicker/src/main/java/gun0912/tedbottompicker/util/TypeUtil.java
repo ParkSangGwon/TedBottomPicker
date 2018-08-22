@@ -21,10 +21,6 @@ public class TypeUtil {
       }
     }
 
-    if (mimeType != null && mimeType.contains("video")) {
-      return true;
-    } else {
-      return false;
-    }
+    return mimeType != null && mimeType.contains("video");
   }
 }
