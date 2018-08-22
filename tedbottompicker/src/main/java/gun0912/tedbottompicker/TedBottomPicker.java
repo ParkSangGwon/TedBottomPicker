@@ -44,7 +44,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.gun0912.tedonactivityresult.TedOnActivityResult;
 import com.gun0912.tedonactivityresult.listener.OnActivityResultListener;
 import gun0912.tedbottompicker.adapter.GalleryAdapter;
-import gun0912.tedbottompicker.util.FileUtils;
+import gun0912.tedbottompicker.entity.MediaPickerEntity;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Retention;
@@ -72,8 +72,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
   TextView selected_photos_empty;
   View contentView;
-  ArrayList<Uri> selectedUriList;
-  ArrayList<Uri> tempUriList;
+  ArrayList<MediaPickerEntity> selectedUriList;
+  ArrayList<MediaPickerEntity> tempUriList;
   private Uri cameraImageUri;
   private RecyclerView rc_gallery;
   private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback =
@@ -163,10 +163,10 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     selectedUriList = new ArrayList<>();
 
     if (builder.onImageSelectedListener != null && cameraImageUri != null) {
-      addUri(cameraImageUri);
+      addUri(new MediaPickerEntity(cameraImageUri).setType(MediaPickerEntity.MEDIA_TYPE.CAMERA));
     } else if (builder.onMultiImageSelectedListener != null && tempUriList != null) {
-      for (Uri uri : tempUriList) {
-        addUri(uri);
+      for (MediaPickerEntity mediaPickerEntity : tempUriList) {
+        addUri(mediaPickerEntity);
       }
     }
 
@@ -269,7 +269,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             startGalleryIntent();
             break;
           case GalleryAdapter.PickerTile.IMAGE:
-            complete(pickerTile.getImageUri());
+            complete(new MediaPickerEntity(pickerTile.getImageUri()).setType(
+                MediaPickerEntity.MEDIA_TYPE.PICKER));
             break;
           default:
             errorMessage();
@@ -278,21 +279,21 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     });
   }
 
-  private void complete(final Uri uri) {
+  private void complete(final MediaPickerEntity mediaPickerEntity) {
     if (isMultiSelect()) {
 
-      if (selectedUriList.contains(uri)) {
-        removeImage(uri);
+      if (selectedUriList.contains(mediaPickerEntity)) {
+        removeImage(mediaPickerEntity);
       } else {
-        addUri(uri);
+        addUri(mediaPickerEntity);
       }
     } else {
-      builder.onImageSelectedListener.onImageSelected(uri);
+      builder.onImageSelectedListener.onImageSelected(mediaPickerEntity.getUri());
       dismissAllowingStateLoss();
     }
   }
 
-  private boolean addUri(final Uri uri) {
+  private boolean addUri(final MediaPickerEntity mediaPickerEntity) {
 
     if (selectedUriList.size() == builder.selectMaxCount) {
       String message;
@@ -307,13 +308,13 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
       return false;
     }
 
-    selectedUriList.add(uri);
+    selectedUriList.add(mediaPickerEntity);
 
     final View rootView =
         LayoutInflater.from(getActivity()).inflate(R.layout.tedbottompicker_selected_item, null);
-    ImageView thumbnail = (ImageView) rootView.findViewById(R.id.selected_photo);
-    ImageView iv_close = (ImageView) rootView.findViewById(R.id.iv_close);
-    rootView.setTag(uri);
+    ImageView thumbnail = rootView.findViewById(R.id.selected_photo);
+    ImageView iv_close = rootView.findViewById(R.id.iv_close);
+    rootView.setTag(mediaPickerEntity.getUri());
 
     selected_photos_container.addView(rootView, 0);
 
@@ -322,7 +323,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     if (builder.imageProvider == null) {
       Glide.with(getActivity())
-          .load(uri)
+          .load(mediaPickerEntity.getUri())
           .thumbnail(0.1f)
           .apply(new RequestOptions()
               .centerCrop()
@@ -330,7 +331,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
               .error(R.drawable.img_error))
           .into(thumbnail);
     } else {
-      builder.imageProvider.onProvideImage(thumbnail, uri);
+      builder.imageProvider.onProvideImage(thumbnail, mediaPickerEntity.getUri());
     }
 
     if (builder.deSelectIconDrawable != null) {
@@ -340,30 +341,31 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     iv_close.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        removeImage(uri);
+        removeImage(mediaPickerEntity);
       }
     });
 
     updateSelectedView();
-    imageGalleryAdapter.setSelectedUriList(selectedUriList, uri);
+    imageGalleryAdapter.setSelectedUriList(selectedUriList, mediaPickerEntity.getUri());
     return true;
   }
 
-  private void removeImage(Uri uri) {
+  private void removeImage(MediaPickerEntity mediaPickerEntity) {
 
-    selectedUriList.remove(uri);
+    selectedUriList.remove(mediaPickerEntity);
 
     for (int i = 0; i < selected_photos_container.getChildCount(); i++) {
       View childView = selected_photos_container.getChildAt(i);
 
-      if (childView.getTag().equals(uri)) {
+      if (childView.getTag().equals(mediaPickerEntity.getUri())) {
         selected_photos_container.removeViewAt(i);
         break;
       }
     }
 
     updateSelectedView();
-    imageGalleryAdapter.setSelectedUriList(selectedUriList, uri);
+
+    imageGalleryAdapter.setSelectedUriList(selectedUriList, mediaPickerEntity.getUri());
   }
 
   private void updateSelectedView() {
@@ -573,7 +575,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
   private void onActivityResultCamera(final Uri cameraImageUri) {
     updateAdapter();
-    complete(cameraImageUri);
+    complete(new MediaPickerEntity(cameraImageUri).setType(MediaPickerEntity.MEDIA_TYPE.CAMERA));
   }
 
   private void onActivityResultGallery(Intent data) {
@@ -583,11 +585,11 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
       errorMessage();
     }
 
-    complete(temp);
+    complete(new MediaPickerEntity(temp).setType(MediaPickerEntity.MEDIA_TYPE.GALLERY));
   }
 
   public interface OnMultiImageSelectedListener {
-    void onImagesSelected(ArrayList<Uri> uriList);
+    void onImagesSelected(ArrayList<MediaPickerEntity> selectedUris);
   }
 
   public interface OnImageSelectedListener {
@@ -646,7 +648,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     public String selectMinCountErrorText;
     public @MediaType
     int mediaType = MediaType.IMAGE;
-    ArrayList<Uri> selectedUriList;
+    ArrayList<MediaPickerEntity> selectedUriList;
     Uri selectedUri;
 
     public Builder(@NonNull Context context) {
@@ -889,7 +891,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
       return this;
     }
 
-    public Builder setSelectedUriList(ArrayList<Uri> selectedUriList) {
+    public Builder setSelectedUriList(ArrayList<MediaPickerEntity> selectedUriList) {
       this.selectedUriList = selectedUriList;
       return this;
     }

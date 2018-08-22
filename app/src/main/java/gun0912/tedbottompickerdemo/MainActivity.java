@@ -19,6 +19,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import gun0912.tedbottompicker.TedBottomPicker;
+import gun0912.tedbottompicker.entity.MediaPickerEntity;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -112,9 +113,12 @@ public class MainActivity extends AppCompatActivity {
                     .setOnMultiImageSelectedListener(
                         new TedBottomPicker.OnMultiImageSelectedListener() {
                           @Override
-                          public void onImagesSelected(ArrayList<Uri> uriList) {
-                            selectedUriList = uriList;
-                            showUriList(uriList);
+                          public void onImagesSelected(ArrayList<MediaPickerEntity> entities) {
+                            for (MediaPickerEntity mediaPickerEntity : entities) {
+                              Log.e("LOGLOG", "selected from: " + mediaPickerEntity.getType().name());
+                            }
+                            //selectedUriList = uriList;
+                            //showUriList(uriList);
                           }
                         })
                     .setTitleColor(android.R.color.white)
@@ -127,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
                     .setMultipleMediaBarTextColor(android.R.color.white)
                     .setMultipleMediaBarColor(R.color.red)
                     .setEmptySelectionText("No Select")
-                    .setSelectedUriList(selectedUriList)
                     .create();
 
             bottomSheetDialogFragment.show(getSupportFragmentManager());

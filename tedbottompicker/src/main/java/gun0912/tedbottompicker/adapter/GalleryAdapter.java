@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import gun0912.tedbottompicker.R;
 import gun0912.tedbottompicker.TedBottomPicker;
+import gun0912.tedbottompicker.entity.MediaPickerEntity;
 import gun0912.tedbottompicker.util.TypeUtil;
 import gun0912.tedbottompicker.view.TedSquareFrameLayout;
 import gun0912.tedbottompicker.view.TedSquareImageView;
@@ -121,8 +122,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     }
   }
 
-  public void setSelectedUriList(ArrayList<Uri> selectedUriList, Uri uri) {
-    this.selectedUriList = selectedUriList;
+  public void setSelectedUriList(ArrayList<MediaPickerEntity> selectedUriList, Uri uri) {
+    ArrayList<Uri> selectedUris = new ArrayList<>();
+    for (MediaPickerEntity mediaPickerEntity : selectedUriList) {
+      selectedUris.add(mediaPickerEntity.getUri());
+    }
+    this.selectedUriList = selectedUris;
 
     int position = -1;
 
