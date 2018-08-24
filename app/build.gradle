@@ -33,7 +33,7 @@ repositories {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:27.0.2'
+    compile 'com.android.support:appcompat-v7:27.1.1'
     compile project(':tedbottompicker')
 
     compile 'gun0912.ted:tedpermission:2.2.0'
