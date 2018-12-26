@@ -77,10 +77,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
       // Return only video and image metadata.
       String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-          + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
-          + " OR "
-          + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-          + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+          + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
+
+      if (builder.isShowVideoMedia()) {
+        selection += " OR "
+            + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+            + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+      }
 
       Uri queryUri = MediaStore.Files.getContentUri("external");
 
@@ -313,12 +316,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
       return tileType == VIDEO_CAPTURE;
     }
 
-    @IntDef({IMAGE, CAMERA, GALLERY, VIDEO_CAPTURE})
+    @IntDef({ IMAGE, CAMERA, GALLERY, VIDEO_CAPTURE })
     @Retention(RetentionPolicy.SOURCE)
     public @interface TileType {
     }
 
-    @IntDef({CAMERA, GALLERY, VIDEO_CAPTURE})
+    @IntDef({ CAMERA, GALLERY, VIDEO_CAPTURE })
     @Retention(RetentionPolicy.SOURCE)
     public @interface SpecialTileType {
     }
