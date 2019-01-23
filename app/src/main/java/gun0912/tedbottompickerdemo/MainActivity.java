@@ -80,6 +80,13 @@ public class MainActivity extends AppCompatActivity {
                                 .setSelectedUri(selectedUri)
                                 //.showVideoMedia()
                                 .setPeekHeight(1200)
+                                .setOnErrorListener(new TedBottomPicker.OnErrorListener() {
+                                    @Override
+                                    public void onError(Throwable throwable) {
+                                        throwable.printStackTrace();
+                                        Toast.makeText(getBaseContext(), "Error : " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                })
                                 .create();
 
                         bottomSheetDialogFragment.show(getSupportFragmentManager());
@@ -131,6 +138,13 @@ public class MainActivity extends AppCompatActivity {
                                 .setCompleteButtonText("Done")
                                 .setEmptySelectionText("No Select")
                                 .setSelectedUriList(selectedUriList)
+                                .setOnErrorListener(new TedBottomPicker.OnErrorListener() {
+                                    @Override
+                                    public void onError(Throwable throwable) {
+                                        throwable.printStackTrace();
+                                        Toast.makeText(getBaseContext(), "Error : " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                })
                                 .create();
 
                         bottomSheetDialogFragment.show(getSupportFragmentManager());

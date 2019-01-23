@@ -58,6 +58,7 @@ import java.util.List;
 import java.util.Locale;
 
 import gun0912.tedbottompicker.adapter.GalleryAdapter;
+import gun0912.tedbottompicker.exception.OnErrorNotImplementedException;
 import gun0912.tedbottompicker.util.RealPathUtil;
 
 public class TedBottomPicker extends BottomSheetDialogFragment {
@@ -274,7 +275,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
                 GalleryAdapter.PickerTile pickerTile = imageGalleryAdapter.getItem(position);
 
-                switch (pickerTile.getTileType()) {
+                int tileType = pickerTile.getTileType();
+                switch (tileType) {
                     case GalleryAdapter.PickerTile.CAMERA:
                         startCameraIntent();
                         break;
@@ -287,7 +289,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
                         break;
 
                     default:
-                        errorMessage();
+                        onError(new IllegalStateException("Unexpected type : " + tileType));
                 }
 
             }
@@ -420,7 +422,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         }
 
         if (cameraInent.resolveActivity(getActivity().getPackageManager()) == null) {
-            errorMessage("This Application do not have Camera Application");
+            onError("This Application do not have Camera Application");
             return;
         }
 
@@ -470,7 +472,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             cameraImageUri = Uri.fromFile(imageFile);
         } catch (IOException e) {
             e.printStackTrace();
-            errorMessage("Could not create imageFile for camera");
+            onError("Could not create imageFile for camera");
         }
 
 
@@ -499,21 +501,21 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             cameraImageUri = Uri.fromFile(videoFile);
         } catch (IOException e) {
             e.printStackTrace();
-            errorMessage("Could not create imageFile for camera");
+            onError("Could not create imageFile for camera");
         }
 
 
         return videoFile;
     }
 
-    private void errorMessage(String message) {
+    private void onError(String message) {
         String errorMessage = message == null ? "Something wrong." : message;
 
-        if (builder.onErrorListener == null) {
-            Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
-        } else {
-            builder.onErrorListener.onError(errorMessage);
-        }
+        onError(new RuntimeException(errorMessage));
+    }
+
+    private void onError(Throwable throwable) {
+        builder.onErrorListener.onError(throwable);
     }
 
     private void startGalleryIntent() {
@@ -529,7 +531,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         }
 
         if (galleryIntent.resolveActivity(getActivity().getPackageManager()) == null) {
-            errorMessage("This Application do not have Gallery Application");
+            onError("This Application do not have Gallery Application");
             return;
         }
 
@@ -544,10 +546,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
                     }
                 })
                 .startActivityForResult();
-    }
-
-    private void errorMessage() {
-        errorMessage(null);
     }
 
     private void setTitle() {
@@ -603,7 +601,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         Uri temp = data.getData();
 
         if (temp == null) {
-            errorMessage();
+            onError(new NullPointerException("Intent data is null"));
+            return;
         }
 
         String realPath = RealPathUtil.getRealPath(getActivity(), temp);
@@ -629,7 +628,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     }
 
     public interface OnErrorListener {
-        void onError(String message);
+        void onError(Throwable throwable);
     }
 
     public interface ImageProvider {
@@ -675,9 +674,17 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         ArrayList<Uri> selectedUriList;
         Uri selectedUri;
 
+        private OnErrorListener defaultErrorListener = new OnErrorListener() {
+            @Override
+            public void onError(Throwable throwable) {
+                throw new OnErrorNotImplementedException("Error listener is not implemented", throwable);
+            }
+        };
+
         public Builder(@NonNull Context context) {
 
             this.context = context;
+            this.onErrorListener = defaultErrorListener;
 
             setCameraTile(R.drawable.ic_camera);
             setGalleryTile(R.drawable.ic_gallery);

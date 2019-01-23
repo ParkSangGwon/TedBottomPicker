@@ -100,6 +100,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
         } catch (Exception e) {
             e.printStackTrace();
+            onError(e);
         } finally {
             if (cursor != null && !cursor.isClosed()) {
                 cursor.close();
@@ -220,6 +221,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         public void onItemClick(View view, int position);
     }
 
+    private void onError(Throwable throwable){
+        builder.onErrorListener.onError(throwable);
+    }
 
     public static class PickerTile {
 
@@ -263,7 +267,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
             } else if (isGalleryTile()) {
                 return "PickerTile";
             } else {
-                return "Invalid item";
+                throw new IllegalStateException("Invalid item");
             }
         }
 

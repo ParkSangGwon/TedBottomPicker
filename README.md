@@ -133,6 +133,7 @@ You can customize something ...<br />
 * `showTitle(Boolean) (default: true)`
 * `setTitleBackgroundResId(R.color.xxx)`
 * `setImageProvider(ImageProvider)`
+* `setOnErrorListener(OnErrorListener onErrorListener)`
 : If you want load grid image yourself, you can use your ImageProvider
 
 #### Single Select
