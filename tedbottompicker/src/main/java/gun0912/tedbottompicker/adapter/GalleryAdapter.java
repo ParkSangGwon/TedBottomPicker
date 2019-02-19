@@ -12,7 +12,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -21,9 +20,10 @@ import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+import java.util.List;
 
 import gun0912.tedbottompicker.R;
-import gun0912.tedbottompicker.TedBottomPicker;
+import gun0912.tedbottompicker.TedBottomSheetDialogFragment;
 import gun0912.tedbottompicker.view.TedSquareFrameLayout;
 import gun0912.tedbottompicker.view.TedSquareImageView;
 
@@ -35,12 +35,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
     private ArrayList<PickerTile> pickerTiles;
     private Context context;
-    private TedBottomPicker.Builder builder;
+    private TedBottomSheetDialogFragment.BaseBuilder builder;
     private OnItemClickListener onItemClickListener;
-    private ArrayList<Uri> selectedUriList;
+    private List<Uri> selectedUriList;
 
 
-    public GalleryAdapter(Context context, TedBottomPicker.Builder builder) {
+    public GalleryAdapter(Context context, TedBottomSheetDialogFragment.BaseBuilder builder) {
 
         this.context = context;
         this.builder = builder;
@@ -61,7 +61,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
             String[] columns;
             String orderBy;
             Uri uri;
-            if (builder.mediaType == TedBottomPicker.Builder.MediaType.IMAGE) {
+            if (builder.mediaType == TedBottomSheetDialogFragment.BaseBuilder.MediaType.IMAGE) {
                 uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
                 columns = new String[]{MediaStore.Images.Media.DATA};
                 orderBy = MediaStore.Images.Media.DATE_ADDED + " DESC";
@@ -84,7 +84,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                 while (cursor.moveToNext() && count < builder.previewMaxCount) {
 
                     String dataIndex;
-                    if (builder.mediaType == TedBottomPicker.Builder.MediaType.IMAGE) {
+                    if (builder.mediaType == TedBottomSheetDialogFragment.BaseBuilder.MediaType.IMAGE) {
                         dataIndex = MediaStore.Images.Media.DATA;
                     }else{
                         dataIndex = MediaStore.Video.VideoColumns.DATA;
@@ -109,7 +109,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
     }
 
-    public void setSelectedUriList(ArrayList<Uri> selectedUriList,@NonNull Uri uri) {
+    public void setSelectedUriList(List<Uri> selectedUriList, @NonNull Uri uri) {
         this.selectedUriList = selectedUriList;
 
         int position = -1;

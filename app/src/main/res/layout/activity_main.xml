@@ -14,7 +14,6 @@
         android:id="@+id/btn_single_show"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:text="Show Ted Bottom Picker(Single)" />
 
 
@@ -22,8 +21,22 @@
         android:id="@+id/btn_multi_show"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:text="Show Ted Bottom Picker(Multi)" />
+
+
+
+    <Button
+        android:id="@+id/btn_rx_single_show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Ted Rx Bottom Picker(Single)" />
+
+
+    <Button
+        android:id="@+id/btn_rx_multi_show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Ted Rx Bottom Picker(Multi)" />
 
     <ImageView
         android:id="@+id/iv_image"

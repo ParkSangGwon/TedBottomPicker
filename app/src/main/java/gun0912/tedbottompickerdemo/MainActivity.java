@@ -21,15 +21,19 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import gun0912.tedbottompicker.TedBottomPicker;
+import gun0912.tedbottompicker.TedRxBottomPicker;
+import io.reactivex.disposables.Disposable;
 
 public class MainActivity extends AppCompatActivity {
 
-
     ImageView iv_image;
-    ArrayList<Uri> selectedUriList;
+    List<Uri> selectedUriList;
     Uri selectedUri;
+    private Disposable singleImageDisposable;
+    private Disposable multiImageDisposable;
     private ViewGroup mSelectedImagesContainer;
     private RequestManager requestManager;
 
@@ -43,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
         requestManager = Glide.with(this);
         setSingleShowButton();
         setMultiShowButton();
-
+        setRxSingleShowButton();
+        setRxMultiShowButton();
 
     }
 
@@ -60,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onPermissionGranted() {
 
-                        TedBottomPicker bottomSheetDialogFragment = new TedBottomPicker.Builder(MainActivity.this)
+                        TedBottomPicker.with(MainActivity.this)
                                 .setOnImageSelectedListener(new TedBottomPicker.OnImageSelectedListener() {
                                     @Override
                                     public void onImageSelected(final Uri uri) {
@@ -80,9 +85,7 @@ public class MainActivity extends AppCompatActivity {
                                 .setSelectedUri(selectedUri)
                                 //.showVideoMedia()
                                 .setPeekHeight(1200)
-                                .create();
-
-                        bottomSheetDialogFragment.show(getSupportFragmentManager());
+                                .show(getSupportFragmentManager());
 
 
                     }
@@ -117,10 +120,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onPermissionGranted() {
 
-                        TedBottomPicker bottomSheetDialogFragment = new TedBottomPicker.Builder(MainActivity.this)
+                        TedBottomPicker.with(MainActivity.this)
                                 .setOnMultiImageSelectedListener(new TedBottomPicker.OnMultiImageSelectedListener() {
                                     @Override
-                                    public void onImagesSelected(ArrayList<Uri> uriList) {
+                                    public void onImagesSelected(List<Uri> uriList) {
                                         selectedUriList = uriList;
                                         showUriList(uriList);
                                     }
@@ -131,9 +134,7 @@ public class MainActivity extends AppCompatActivity {
                                 .setCompleteButtonText("Done")
                                 .setEmptySelectionText("No Select")
                                 .setSelectedUriList(selectedUriList)
-                                .create();
-
-                        bottomSheetDialogFragment.show(getSupportFragmentManager());
+                                .show(getSupportFragmentManager());
 
 
                     }
@@ -158,7 +159,96 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void showUriList(ArrayList<Uri> uriList) {
+    private void setRxSingleShowButton() {
+
+        Button btnSingleShow = findViewById(R.id.btn_rx_single_show);
+        btnSingleShow.setOnClickListener(view -> {
+            PermissionListener permissionlistener = new PermissionListener() {
+                @Override
+                public void onPermissionGranted() {
+
+                    singleImageDisposable = TedRxBottomPicker.with(MainActivity.this)
+                            //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
+                            .setSelectedUri(selectedUri)
+                            //.showVideoMedia()
+                            .setPeekHeight(1200)
+                            .showSingleImage(getSupportFragmentManager())
+                            .subscribe(uri -> {
+                                selectedUri = uri;
+
+                                iv_image.setVisibility(View.VISIBLE);
+                                mSelectedImagesContainer.setVisibility(View.GONE);
+
+                                requestManager
+                                        .load(uri)
+                                        .into(iv_image);
+                            }, Throwable::printStackTrace);
+
+
+                }
+
+                @Override
+                public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                    Toast.makeText(MainActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+                }
+
+
+            };
+
+            TedPermission.with(MainActivity.this)
+                    .setPermissionListener(permissionlistener)
+                    .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                    .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .check();
+
+        });
+    }
+
+
+    private void setRxMultiShowButton() {
+
+        Button btnRxMultiShow = findViewById(R.id.btn_rx_multi_show);
+        btnRxMultiShow.setOnClickListener(view -> {
+            PermissionListener permissionlistener = new PermissionListener() {
+                @Override
+                public void onPermissionGranted() {
+
+                    multiImageDisposable = TedRxBottomPicker.with(MainActivity.this)
+                            //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
+                            .setPeekHeight(1600)
+                            .showTitle(false)
+                            .setCompleteButtonText("Done")
+                            .setEmptySelectionText("No Select")
+                            .setSelectedUriList(selectedUriList)
+                            .showMultiImage(getSupportFragmentManager())
+                            .subscribe(uris -> {
+                                selectedUriList = uris;
+                                showUriList(uris);
+                            }, Throwable::printStackTrace);
+
+
+                }
+
+                @Override
+                public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                    Toast.makeText(MainActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+                }
+
+
+            };
+
+            TedPermission.with(MainActivity.this)
+                    .setPermissionListener(permissionlistener)
+                    .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                    .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .check();
+
+        });
+
+    }
+
+
+    private void showUriList(List<Uri> uriList) {
         // Remove all views before
         // adding the new ones.
         mSelectedImagesContainer.removeAllViews();
@@ -187,5 +277,16 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (singleImageDisposable != null && !singleImageDisposable.isDisposed()) {
+            singleImageDisposable.dispose();
+        }
+        if (multiImageDisposable != null && !multiImageDisposable.isDisposed()) {
+            multiImageDisposable.dispose();
+        }
+        super.onDestroy();
     }
 }
