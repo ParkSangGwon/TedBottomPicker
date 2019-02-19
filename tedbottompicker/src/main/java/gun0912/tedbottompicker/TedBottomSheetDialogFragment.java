@@ -612,19 +612,19 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         public boolean showGallery = true;
         public int cameraTileBackgroundResId = R.color.tedbottompicker_camera;
         public int galleryTileBackgroundResId = R.color.tedbottompicker_gallery;
-        private String title;
-        private boolean showTitle = true;
         @MediaType
         public int mediaType = MediaType.IMAGE;
-        private List<Uri> selectedUriList;
-        private Uri selectedUri;
         protected FragmentActivity fragmentActivity;
-        private Drawable deSelectIconDrawable;
-        private int spacing = 1;
-        private boolean includeEdgeSpacing = false;
         OnImageSelectedListener onImageSelectedListener;
         OnMultiImageSelectedListener onMultiImageSelectedListener;
         OnErrorListener onErrorListener;
+        private String title;
+        private boolean showTitle = true;
+        private List<Uri> selectedUriList;
+        private Uri selectedUri;
+        private Drawable deSelectIconDrawable;
+        private int spacing = 1;
+        private boolean includeEdgeSpacing = false;
         private int peekHeight = -1;
         private int titleBackgroundResId;
         private int selectMaxCount = Integer.MAX_VALUE;
@@ -849,7 +849,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             }
 
             TedBottomSheetDialogFragment customBottomSheetDialogFragment = new TedBottomSheetDialogFragment();
-            customBottomSheetDialogFragment.builder = (T)this;
+            customBottomSheetDialogFragment.builder = (T) this;
             return customBottomSheetDialogFragment;
         }
 

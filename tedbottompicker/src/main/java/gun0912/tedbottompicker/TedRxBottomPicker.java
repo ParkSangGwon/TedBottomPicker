@@ -1,10 +1,7 @@
 package gun0912.tedbottompicker;
 
-import android.content.Context;
 import android.net.Uri;
-import android.os.Build;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 
 import java.util.List;
 
