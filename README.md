@@ -40,6 +40,7 @@ If you want pick image from gallery or take picture, this library can help easil
 ```javascript
 dependencies {
     implementation 'gun0912.ted:tedbottompicker:x.y.z'
+    //implementation 'gun0912.ted:tedbottompicker:2.0.0-alpha1'
 }
 
 ```
@@ -63,50 +64,64 @@ I recommend [TedPermission](https://github.com/ParkSangGwon/TedPermission)<br/>
 
 
 ### 2. Start TedBottomPicker
-**TedBottomPicker** class extend `BottomSheetDialogFragment`.<br/>
-`TedBottomPicker.Builder` make `new TedBottomPicker()`.<br/>
-After then, you can show TedBottomPicker<br/>
+- TedBottomPicker support `RxJava` and `Listener` style
+#### RxJava
+- Single image
+```java
+        TedRxBottomPicker.with(MainActivity.this)
+                 .show()
+                 .subscribe(uri ->
+                    // here is selected image uri
+                 }, Throwable::printStackTrace);
 
 
-```javascript
+```
+- Multi image
+```java
+        
+        TedRxBottomPicker.with(MainActivity.this)
+                //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
+                .setPeekHeight(1600)
+                .showTitle(false)
+                .setCompleteButtonText("Done")
+                .setEmptySelectionText("No Select")
+                .setSelectedUriList(selectedUriList)
+                .showMultiImage()
+                .subscribe(uris -> {
+                   // here is selected image uri list
+                }, Throwable::printStackTrace);
 
-     TedBottomPicker tedBottomPicker = new TedBottomPicker.Builder(MainActivity.this)
-                                .setOnImageSelectedListener(new TedBottomPicker.OnImageSelectedListener() {
-                                    @Override
-                                    public void onImageSelected(Uri uri) {
-                                        // here is selected uri
-                                    }
-                                })
-                                .create();
-
-     tedBottomPicker.show(getSupportFragmentManager());
 ```
 
-If you want select multi image, you can use `OnMultiImageSelectedListener`
-```javascript
- TedBottomPicker bottomSheetDialogFragment = new TedBottomPicker.Builder(MainActivity.this)
-                               .setOnMultiImageSelectedListener(new TedBottomPicker.OnMultiImageSelectedListener() {
-                                   @Override
-                                   public void onImagesSelected(ArrayList<Uri> uriList) {
-                                       // here is selected uri list
-                                   }
-                               })
-                                .setPeekHeight(1600)
-                                .showTitle(false)
-                                .setCompleteButtonText("Done")
-                                .setEmptySelectionText("No Select")
-                                .create();
 
-                        bottomSheetDialogFragment.show(getSupportFragmentManager());
+#### Listener
+- Single image
+```java
+        TedBottomPicker.with(MainActivity.this)
+               .show(new TedBottomSheetDialogFragment.OnImageSelectedListener() {
+                   @Override
+                   public void onImageSelected(Uri uri) {
+                     // here is selected image uri
+                   }
+               });
+
 ```
 
-**Don't forget!!**<br/>
-You have to declare `setOnImageSelectedListener()` or `OnMultiImageSelectedListener()` in Builder.<br/>
-This listener will pass selected Uri/UriList.<br/>
-
-
-
-
+- Multi image
+```java
+        TedBottomPicker.with(MainActivity.this)
+               .setPeekHeight(1600)
+               .showTitle(false)
+               .setCompleteButtonText("Done")
+               .setEmptySelectionText("No Select")
+               .setSelectedUriList(selectedUriList)
+               .showMultiImage(new TedBottomSheetDialogFragment.OnMultiImageSelectedListener() {
+                    @Override
+                    public void onImagesSelected(List<Uri> uriList) {
+                         // here is selected image uri list
+                    }
+              });
+```
 <br/>
 
 ## Customize
