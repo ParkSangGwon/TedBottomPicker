@@ -65,7 +65,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     public static final String TAG = "TedBottomPicker";
     static final String EXTRA_CAMERA_IMAGE_URI = "camera_image_uri";
     static final String EXTRA_CAMERA_SELECTED_IMAGE_URI = "camera_selected_image_uri";
-    public static Builder builder;
+    public Builder builder;
     private GalleryAdapter imageGalleryAdapter;
     private View view_title_container;
     private TextView tv_title;
@@ -890,7 +890,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
             }
 
             TedBottomPicker customBottomSheetDialogFragment = new TedBottomPicker();
-
             customBottomSheetDialogFragment.builder = this;
             return customBottomSheetDialogFragment;
         }
