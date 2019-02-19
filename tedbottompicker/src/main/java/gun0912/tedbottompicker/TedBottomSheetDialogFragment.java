@@ -3,7 +3,6 @@ package gun0912.tedbottompicker;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -24,6 +23,7 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -618,7 +618,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         public int mediaType = MediaType.IMAGE;
         private List<Uri> selectedUriList;
         private Uri selectedUri;
-        private Context context;
+        protected FragmentActivity fragmentActivity;
         private Drawable deSelectIconDrawable;
         private int spacing = 1;
         private boolean includeEdgeSpacing = false;
@@ -634,9 +634,9 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         private String selectMaxCountErrorText;
         private String selectMinCountErrorText;
 
-        public BaseBuilder(@NonNull Context context) {
+        public BaseBuilder(@NonNull FragmentActivity fragmentActivity) {
 
-            this.context = context;
+            this.fragmentActivity = fragmentActivity;
 
             setCameraTile(R.drawable.ic_camera);
             setGalleryTile(R.drawable.ic_gallery);
@@ -644,17 +644,17 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         }
 
         public T setCameraTile(@DrawableRes int cameraTileResId) {
-            setCameraTile(ContextCompat.getDrawable(context, cameraTileResId));
+            setCameraTile(ContextCompat.getDrawable(fragmentActivity, cameraTileResId));
             return (T) this;
         }
 
         public BaseBuilder<T> setGalleryTile(@DrawableRes int galleryTileResId) {
-            setGalleryTile(ContextCompat.getDrawable(context, galleryTileResId));
+            setGalleryTile(ContextCompat.getDrawable(fragmentActivity, galleryTileResId));
             return this;
         }
 
         public T setSpacingResId(@DimenRes int dimenResId) {
-            this.spacing = context.getResources().getDimensionPixelSize(dimenResId);
+            this.spacing = fragmentActivity.getResources().getDimensionPixelSize(dimenResId);
             return (T) this;
         }
 
@@ -669,7 +669,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         }
 
         public T setDeSelectIcon(@DrawableRes int deSelectIconResId) {
-            setDeSelectIcon(ContextCompat.getDrawable(context, deSelectIconResId));
+            setDeSelectIcon(ContextCompat.getDrawable(fragmentActivity, deSelectIconResId));
             return (T) this;
         }
 
@@ -679,7 +679,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         }
 
         public T setSelectedForeground(@DrawableRes int selectedForegroundResId) {
-            setSelectedForeground(ContextCompat.getDrawable(context, selectedForegroundResId));
+            setSelectedForeground(ContextCompat.getDrawable(fragmentActivity, selectedForegroundResId));
             return (T) this;
         }
 
@@ -744,7 +744,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         }
 
         public T setPeekHeightResId(@DimenRes int dimenResId) {
-            this.peekHeight = context.getResources().getDimensionPixelSize(dimenResId);
+            this.peekHeight = fragmentActivity.getResources().getDimensionPixelSize(dimenResId);
             return (T) this;
         }
 
@@ -764,7 +764,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         }
 
         public T setTitle(@StringRes int stringResId) {
-            this.title = context.getResources().getString(stringResId);
+            this.title = fragmentActivity.getResources().getString(stringResId);
             return (T) this;
         }
 
@@ -779,7 +779,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         }
 
         public T setCompleteButtonText(@StringRes int completeButtonResId) {
-            this.completeButtonText = context.getResources().getString(completeButtonResId);
+            this.completeButtonText = fragmentActivity.getResources().getString(completeButtonResId);
             return (T) this;
         }
 
@@ -789,7 +789,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         }
 
         public T setEmptySelectionText(@StringRes int emptySelectionResId) {
-            this.emptySelectionText = context.getResources().getString(emptySelectionResId);
+            this.emptySelectionText = fragmentActivity.getResources().getString(emptySelectionResId);
             return (T) this;
         }
 
@@ -799,7 +799,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         }
 
         public T setSelectMaxCountErrorText(@StringRes int selectMaxCountErrorResId) {
-            this.selectMaxCountErrorText = context.getResources().getString(selectMaxCountErrorResId);
+            this.selectMaxCountErrorText = fragmentActivity.getResources().getString(selectMaxCountErrorResId);
             return (T) this;
         }
 
@@ -809,7 +809,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         }
 
         public T setSelectMinCountErrorText(@StringRes int selectMinCountErrorResId) {
-            this.selectMinCountErrorText = context.getResources().getString(selectMinCountErrorResId);
+            this.selectMinCountErrorText = fragmentActivity.getResources().getString(selectMinCountErrorResId);
             return (T) this;
         }
 
@@ -840,7 +840,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
         public TedBottomSheetDialogFragment create() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-                    && ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    && ContextCompat.checkSelfPermission(fragmentActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 throw new RuntimeException("Missing required WRITE_EXTERNAL_STORAGE permission. Did you remember to request it first?");
             }
 

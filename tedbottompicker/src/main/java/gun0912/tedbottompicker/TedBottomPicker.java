@@ -1,28 +1,29 @@
 package gun0912.tedbottompicker;
 
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 public class TedBottomPicker extends TedBottomSheetDialogFragment {
 
-    public static Builder with(Context context) {
-        return new Builder(context);
+    public static Builder with(FragmentActivity fragmentActivity) {
+        return new Builder(fragmentActivity);
     }
 
     public static class Builder extends BaseBuilder<Builder> {
 
-        private Builder(Context context) {
-            super(context);
+        private Builder(FragmentActivity fragmentActivity) {
+            super(fragmentActivity);
         }
 
-        public void show(FragmentManager fragmentManager, OnImageSelectedListener onImageSelectedListener) {
+        public void show(OnImageSelectedListener onImageSelectedListener) {
             this.onImageSelectedListener = onImageSelectedListener;
-            create().show(fragmentManager);
+            create().show(fragmentActivity.getSupportFragmentManager());
         }
 
-        public void showMultiImage(FragmentManager fragmentManager, OnMultiImageSelectedListener onMultiImageSelectedListener) {
+        public void showMultiImage(OnMultiImageSelectedListener onMultiImageSelectedListener) {
             this.onMultiImageSelectedListener = onMultiImageSelectedListener;
-            create().show(fragmentManager);
+            create().show(fragmentActivity.getSupportFragmentManager());
         }
     }
 

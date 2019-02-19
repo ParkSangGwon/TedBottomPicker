@@ -3,6 +3,7 @@ package gun0912.tedbottompicker;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import java.util.List;
@@ -11,15 +12,15 @@ import io.reactivex.Single;
 
 public class TedRxBottomPicker extends TedBottomSheetDialogFragment {
 
-    public static Builder with(Context context) {
-        return new Builder(context);
+    public static Builder with(FragmentActivity fragmentActivity) {
+        return new Builder(fragmentActivity);
     }
 
 
     public static class Builder extends BaseBuilder<Builder> {
 
-        private Builder(Context context) {
-            super(context);
+        private Builder(FragmentActivity fragmentActivity) {
+            super(fragmentActivity);
         }
 
         @Override
@@ -32,19 +33,19 @@ public class TedRxBottomPicker extends TedBottomSheetDialogFragment {
             throw new RuntimeException("You have to use showMultiImage() method. Or read usage document");
         }
 
-        public Single<Uri> show(FragmentManager fragmentManager) {
+        public Single<Uri> show() {
             return Single.create(emitter -> {
                 onImageSelectedListener = emitter::onSuccess;
                 onErrorListener = message -> emitter.onError(new Exception(message));
-                create().show(fragmentManager);
+                create().show(fragmentActivity.getSupportFragmentManager());
             });
         }
 
-        public Single<List<Uri>> showMultiImage(FragmentManager fragmentManager) {
+        public Single<List<Uri>> showMultiImage() {
             return Single.create(emitter -> {
                 onMultiImageSelectedListener = emitter::onSuccess;
                 onErrorListener = message -> emitter.onError(new Exception(message));
-                create().show(fragmentManager);
+                create().show(fragmentActivity.getSupportFragmentManager());
             });
         }
     }

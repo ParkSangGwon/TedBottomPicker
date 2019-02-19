@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                             .setSelectedUri(selectedUri)
                             //.showVideoMedia()
                             .setPeekHeight(1200)
-                            .show(getSupportFragmentManager(), uri -> {
+                            .show(uri -> {
                                 Log.d("ted", "uri: " + uri);
                                 Log.d("ted", "uri.getPath(): " + uri.getPath());
                                 selectedUri = uri;
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                             .setCompleteButtonText("Done")
                             .setEmptySelectionText("No Select")
                             .setSelectedUriList(selectedUriList)
-                            .showMultiImage(getSupportFragmentManager(), uriList -> {
+                            .showMultiImage(uriList -> {
                                 selectedUriList = uriList;
                                 showUriList(uriList);
                             });
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                             .setSelectedUri(selectedUri)
                             //.showVideoMedia()
                             .setPeekHeight(1200)
-                            .show(getSupportFragmentManager())
+                            .show()
                             .subscribe(uri -> {
                                 selectedUri = uri;
 
@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
                             .setCompleteButtonText("Done")
                             .setEmptySelectionText("No Select")
                             .setSelectedUriList(selectedUriList)
-                            .showMultiImage(getSupportFragmentManager())
+                            .showMultiImage()
                             .subscribe(uris -> {
                                 selectedUriList = uris;
                                 showUriList(uris);
