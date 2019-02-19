@@ -65,6 +65,7 @@ I recommend [TedPermission](https://github.com/ParkSangGwon/TedPermission)<br/>
 
 ### 2. Start TedBottomPicker
 - TedBottomPicker support `RxJava` and `Listener` style
+<br/><br/>
 ### RxJava
 **You have to use TedRxBottomPicker**
 - Single image
@@ -94,7 +95,7 @@ I recommend [TedPermission](https://github.com/ParkSangGwon/TedPermission)<br/>
 
 ```
 
-
+<br/><br/>
 ### Listener
 **You have to use TedBottomPicker**
 - Single image
