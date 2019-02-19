@@ -42,7 +42,6 @@ public class TedSquareFrameLayout extends FrameLayout {
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec){
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-      //  Dlog.w("start: "+widthMeasureSpec+"x"+heightMeasureSpec);
         if(mMatchHeightToWidth){
             setMeasuredDimension(widthMeasureSpec, widthMeasureSpec);
         } else if(mMatchWidthToHeight){

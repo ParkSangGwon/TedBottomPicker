@@ -78,7 +78,6 @@
         >
 
         <HorizontalScrollView
-            android:id="@+id/hsv_selected_photos"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/tedbottompicker_selected"
