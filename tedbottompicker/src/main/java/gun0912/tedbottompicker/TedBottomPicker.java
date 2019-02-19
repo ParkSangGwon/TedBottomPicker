@@ -15,7 +15,13 @@ public class TedBottomPicker extends TedBottomSheetDialogFragment {
             super(context);
         }
 
-        public void show(FragmentManager fragmentManager) {
+        public void show(FragmentManager fragmentManager, OnImageSelectedListener onImageSelectedListener) {
+            this.onImageSelectedListener = onImageSelectedListener;
+            create().show(fragmentManager);
+        }
+
+        public void showMultiImage(FragmentManager fragmentManager, OnMultiImageSelectedListener onMultiImageSelectedListener) {
+            this.onMultiImageSelectedListener = onMultiImageSelectedListener;
             create().show(fragmentManager);
         }
     }

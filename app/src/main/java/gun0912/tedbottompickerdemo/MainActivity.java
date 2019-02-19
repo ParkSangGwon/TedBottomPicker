@@ -61,7 +61,11 @@ public class MainActivity extends AppCompatActivity {
                 public void onPermissionGranted() {
 
                     TedBottomPicker.with(MainActivity.this)
-                            .setOnImageSelectedListener(uri -> {
+                            //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
+                            .setSelectedUri(selectedUri)
+                            //.showVideoMedia()
+                            .setPeekHeight(1200)
+                            .show(getSupportFragmentManager(), uri -> {
                                 Log.d("ted", "uri: " + uri);
                                 Log.d("ted", "uri.getPath(): " + uri.getPath());
                                 selectedUri = uri;
@@ -72,12 +76,7 @@ public class MainActivity extends AppCompatActivity {
                                 requestManager
                                         .load(uri)
                                         .into(iv_image);
-                            })
-                            //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
-                            .setSelectedUri(selectedUri)
-                            //.showVideoMedia()
-                            .setPeekHeight(1200)
-                            .show(getSupportFragmentManager());
+                            });
 
 
                 }
@@ -104,17 +103,16 @@ public class MainActivity extends AppCompatActivity {
                 public void onPermissionGranted() {
 
                     TedBottomPicker.with(MainActivity.this)
-                            .setOnMultiImageSelectedListener(uriList -> {
-                                selectedUriList = uriList;
-                                showUriList(uriList);
-                            })
                             //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
                             .setPeekHeight(1600)
                             .showTitle(false)
                             .setCompleteButtonText("Done")
                             .setEmptySelectionText("No Select")
                             .setSelectedUriList(selectedUriList)
-                            .show(getSupportFragmentManager());
+                            .showMultiImage(getSupportFragmentManager(), uriList -> {
+                                selectedUriList = uriList;
+                                showUriList(uriList);
+                            });
 
 
                 }
@@ -147,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                             .setSelectedUri(selectedUri)
                             //.showVideoMedia()
                             .setPeekHeight(1200)
-                            .showSingleImage(getSupportFragmentManager())
+                            .show(getSupportFragmentManager())
                             .subscribe(uri -> {
                                 selectedUri = uri;
 

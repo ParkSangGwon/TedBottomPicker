@@ -24,7 +24,7 @@ public class TedRxBottomPicker extends TedBottomSheetDialogFragment {
 
         @Override
         public Builder setOnImageSelectedListener(OnImageSelectedListener onImageSelectedListener) {
-            throw new RuntimeException("You have to use showSingleImage() method. Or read usage document");
+            throw new RuntimeException("You have to use show() method. Or read usage document");
         }
 
         @Override
@@ -32,7 +32,7 @@ public class TedRxBottomPicker extends TedBottomSheetDialogFragment {
             throw new RuntimeException("You have to use showMultiImage() method. Or read usage document");
         }
 
-        public Single<Uri> showSingleImage(FragmentManager fragmentManager) {
+        public Single<Uri> show(FragmentManager fragmentManager) {
             return Single.create(emitter -> {
                 onImageSelectedListener = emitter::onSuccess;
                 onErrorListener = message -> emitter.onError(new Exception(message));
