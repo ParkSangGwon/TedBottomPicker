@@ -66,19 +66,19 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     static final String EXTRA_CAMERA_IMAGE_URI = "camera_image_uri";
     static final String EXTRA_CAMERA_SELECTED_IMAGE_URI = "camera_selected_image_uri";
     public static Builder builder;
-    GalleryAdapter imageGalleryAdapter;
-    View view_title_container;
-    TextView tv_title;
-    Button btn_done;
+    private GalleryAdapter imageGalleryAdapter;
+    private View view_title_container;
+    private TextView tv_title;
+    private Button btn_done;
 
-    FrameLayout selected_photos_container_frame;
-    HorizontalScrollView hsv_selected_photos;
-    LinearLayout selected_photos_container;
+    private FrameLayout selected_photos_container_frame;
+    private HorizontalScrollView hsv_selected_photos;
+    private LinearLayout selected_photos_container;
 
-    TextView selected_photos_empty;
-    View contentView;
-    ArrayList<Uri> selectedUriList;
-    ArrayList<Uri> tempUriList;
+    private TextView selected_photos_empty;
+    private View contentView;
+    private ArrayList<Uri> selectedUriList;
+    private ArrayList<Uri> tempUriList;
     private Uri cameraImageUri;
     private RecyclerView rc_gallery;
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
