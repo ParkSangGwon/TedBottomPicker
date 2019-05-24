@@ -1,7 +1,8 @@
 package gun0912.tedbottompickerdemo;
 
 import android.app.Application;
-import android.support.multidex.MultiDexApplication;
+
+import androidx.multidex.MultiDexApplication;
 
 import com.squareup.leakcanary.LeakCanary;
 
