@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -45,6 +44,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.gun0912.tedonactivityresult.TedOnActivityResult;
 import com.gun0912.tedonactivityresult.listener.OnActivityResultListener;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -297,17 +298,17 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return;
         }
+        
+        // Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), "cropped"));
+        CropImage.activity(uri)
+                .setAspectRatio(1, 1)
+                .setRequestedSize(500, 500, CropImageView.RequestSizeOptions.RESIZE_INSIDE)
+                .start(getContext(), this);
 
 
-        File f = new File(uri.getPath());
-        long size = f.length();//in bytes
-        if (size > 2097152) {
-            Log.d("SIZE", size + "");
-            Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), "cropped"));
+    }
 
-        }
-
-
+    private void setToLayout(Uri uri) {
         selectedUriList.add(uri);
 
         final View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.tedbottompicker_selected_item, null);
@@ -354,13 +355,17 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent result) {
-/*
-        if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                setToLayout(resultUri);
 
-
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
         }
-*/
     }
 
     private void removeImage(Uri uri) {
