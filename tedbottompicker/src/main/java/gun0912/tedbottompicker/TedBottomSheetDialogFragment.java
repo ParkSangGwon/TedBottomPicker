@@ -45,6 +45,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.gun0912.tedonactivityresult.TedOnActivityResult;
 import com.gun0912.tedonactivityresult.listener.OnActivityResultListener;
 import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -301,10 +302,11 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         if (builder.setCropper) {
 
             CropImage.ActivityBuilder bi = CropImage.activity(uri);
-            if (builder.ratioX != 0) {
+            if (builder.ratioX > 0) {
                 bi.setAspectRatio(builder.ratioX, builder.ratioY);
             }
-            // bi.setRequestedSize(500, 500, CropImageView.RequestSizeOptions.RESIZE_INSIDE)
+            if (builder.resizeWidth > 0)
+                bi.setRequestedSize(builder.resizeWidth, builder.resizeHeight, builder.resizeOption);
             bi.start(getContext(), this);
 
         } else {
@@ -660,6 +662,9 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         private boolean includeEdgeSpacing = false;
         private int peekHeight = -1;
         private boolean setCropper = false;
+        private int resizeWidth = 0;
+        private int resizeHeight = 0;
+        private CropImageView.RequestSizeOptions resizeOption = CropImageView.RequestSizeOptions.NONE;
         private int ratioX = 0;
         private int ratioY = 0;
         private int titleBackgroundResId;
@@ -787,6 +792,13 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         public T setCropperRatio(int ratioX, int ratioY) {
             this.ratioX = ratioX;
             this.ratioY = ratioY;
+            return (T) this;
+        }
+
+        public T setResize(int resizeWidth, int resizeHeight, CropImageView.RequestSizeOptions resizeOption) {
+            this.resizeWidth = resizeWidth;
+            this.resizeHeight = resizeHeight;
+            this.resizeOption = resizeOption;
             return (T) this;
         }
 
