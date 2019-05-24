@@ -20,6 +20,7 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                             .setPeekHeight(1600)
                             .setCropper(true)
                             .setCropperRatio(1,1)
+                            .setResize(500,500, CropImageView.RequestSizeOptions.RESIZE_INSIDE)
                             .showTitle(false)
                             .setCompleteButtonText("Done")
                             .setEmptySelectionText("No Select")
