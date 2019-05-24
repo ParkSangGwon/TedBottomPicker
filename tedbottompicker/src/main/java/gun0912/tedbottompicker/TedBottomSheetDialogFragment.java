@@ -45,7 +45,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.gun0912.tedonactivityresult.TedOnActivityResult;
 import com.gun0912.tedonactivityresult.listener.OnActivityResultListener;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -298,12 +297,19 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return;
         }
-        
-        // Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), "cropped"));
-        CropImage.activity(uri)
-                .setAspectRatio(1, 1)
-                .setRequestedSize(500, 500, CropImageView.RequestSizeOptions.RESIZE_INSIDE)
-                .start(getContext(), this);
+
+        if (builder.setCropper) {
+
+            CropImage.ActivityBuilder bi = CropImage.activity(uri);
+            if (builder.ratioX != 0) {
+                bi.setAspectRatio(builder.ratioX, builder.ratioY);
+            }
+            // bi.setRequestedSize(500, 500, CropImageView.RequestSizeOptions.RESIZE_INSIDE)
+            bi.start(getContext(), this);
+
+        } else {
+            setToLayout(uri);
+        }
 
 
     }
@@ -653,6 +659,9 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         private int spacing = 1;
         private boolean includeEdgeSpacing = false;
         private int peekHeight = -1;
+        private boolean setCropper = false;
+        private int ratioX = 0;
+        private int ratioY = 0;
         private int titleBackgroundResId;
         private int selectMaxCount = Integer.MAX_VALUE;
         private int selectMinCount = 0;
@@ -767,6 +776,17 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
         public T setPeekHeight(int peekHeight) {
             this.peekHeight = peekHeight;
+            return (T) this;
+        }
+
+        public T setCropper(boolean setCropper) {
+            this.setCropper = setCropper;
+            return (T) this;
+        }
+
+        public T setCropperRatio(int ratioX, int ratioY) {
+            this.ratioX = ratioX;
+            this.ratioY = ratioY;
             return (T) this;
         }
 

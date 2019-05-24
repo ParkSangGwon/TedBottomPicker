@@ -106,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
                     TedBottomPicker.with(MainActivity.this)
                             //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
                             .setPeekHeight(1600)
+                            .setCropper(true)
+                            .setCropperRatio(1,1)
                             .showTitle(false)
                             .setCompleteButtonText("Done")
                             .setEmptySelectionText("No Select")
@@ -114,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
                                 selectedUriList = uriList;
                                 showUriList(uriList);
                             });
-
 
                 }
 
