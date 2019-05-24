@@ -3,12 +3,12 @@ apply plugin: 'com.android.library'
 
 android {
 
-    compileSdkVersion 27
+    compileSdkVersion 28
 
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -53,6 +53,10 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     implementation 'gun0912.ted:tedonactivityresult:1.0.6'
     implementation "io.reactivex.rxjava2:rxjava:2.2.6"
+    api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+
+
+
 }
 
 apply from: rootProject.file('publish.gradle')
