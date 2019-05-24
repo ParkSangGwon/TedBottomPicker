@@ -298,11 +298,11 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return;
         }
-        
+
         // Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), "cropped"));
         CropImage.activity(uri)
                 .setAspectRatio(1, 1)
-                .setRequestedSize(500, 500, CropImageView.RequestSizeOptions.RESIZE_INSIDE)
+              //  .setRequestedSize(500, 500, CropImageView.RequestSizeOptions.RESIZE_INSIDE)
                 .start(getContext(), this);
 
 
