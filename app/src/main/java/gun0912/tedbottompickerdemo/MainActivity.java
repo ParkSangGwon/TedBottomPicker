@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
                             //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
                             .setSelectedUri(selectedUri)
                             //.showVideoMedia()
+                            .setCropper(true)
+                            .setResize(500, 500,CropImageView.RequestSizeOptions.RESIZE_INSIDE)
                             .setPeekHeight(1200)
                             .show(uri -> {
                                 Log.d("ted", "uri: " + uri);
@@ -108,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
                             //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
                             .setPeekHeight(1600)
                             .setCropper(true)
-                            .setCropperRatio(1,1)
-                            .setResize(500,500, CropImageView.RequestSizeOptions.RESIZE_INSIDE)
+                            .setCropperRatio(1, 1)
+                            .setResize(500, 500, CropImageView.RequestSizeOptions.RESIZE_INSIDE)
                             .showTitle(false)
                             .setCompleteButtonText("Done")
                             .setEmptySelectionText("No Select")
