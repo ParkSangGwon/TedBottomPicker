@@ -280,8 +280,20 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             }
 
         } else {
-            builder.onImageSelectedListener.onImageSelected(uri);
-            dismissAllowingStateLoss();
+            if (builder.setCropper) {
+
+                CropImage.ActivityBuilder bi = CropImage.activity(uri);
+                if (builder.ratioX > 0) {
+                    bi.setAspectRatio(builder.ratioX, builder.ratioY);
+                }
+                if (builder.resizeWidth > 0)
+                    bi.setRequestedSize(builder.resizeWidth, builder.resizeHeight, builder.resizeOption);
+                bi.start(getContext(), this);
+
+            } else {
+                builder.onImageSelectedListener.onImageSelected(uri);
+                dismissAllowingStateLoss();
+            }
         }
 
     }
@@ -298,7 +310,6 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (builder.setCropper) {
 
             CropImage.ActivityBuilder bi = CropImage.activity(uri);
@@ -312,7 +323,6 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         } else {
             setToLayout(uri);
         }
-
 
     }
 
@@ -368,7 +378,12 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 Uri resultUri = result.getUri();
-                setToLayout(resultUri);
+                if (isMultiSelect()) setToLayout(resultUri);
+                else {
+                    builder.onImageSelectedListener.onImageSelected(resultUri);
+                    dismissAllowingStateLoss();
+
+                }
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
