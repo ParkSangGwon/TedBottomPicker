@@ -139,6 +139,10 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
         }
 
+        if (builder == null) {
+            dismissAllowingStateLoss();
+            return;
+        }
         initView(contentView);
 
         setTitle();
