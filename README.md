@@ -14,11 +14,14 @@ If you want pick image from gallery or take picture, this library can help easil
 **TedBottomPicker** is simple image picker using bottom sheet.
 
 <br/><br/>
+## TedImagePicker
+- If you want full screen image picker, use [TedImagePicker](https://github.com/ParkSangGwon/TedImagePicker)
+- TedImagePicker is simple/beautiful/smart image picker
 
+<img src="https://github.com/ParkSangGwon/TedImagePicker/raw/master/art/multi_select.gif" width="200"> .   <img src="https://github.com/ParkSangGwon/TedImagePicker/raw/master/art/album.gif" width="200">
 
-
-## Demo
 <br/><br/>
+## Demo
 1. Show Bottom Sheet.
 2. Pick Image
 
@@ -40,7 +43,7 @@ If you want pick image from gallery or take picture, this library can help easil
 ```javascript
 dependencies {
     implementation 'gun0912.ted:tedbottompicker:x.y.z'
-    //implementation 'gun0912.ted:tedbottompicker:2.0.0-alpha1'
+    //implementation 'gun0912.ted:tedbottompicker:2.0.1'
 }
 
 ```
