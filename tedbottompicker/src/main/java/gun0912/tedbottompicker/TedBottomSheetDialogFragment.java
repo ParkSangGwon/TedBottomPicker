@@ -281,21 +281,23 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
         } else {
             if (builder.setCropper) {
-
-                CropImage.ActivityBuilder bi = CropImage.activity(uri);
-                if (builder.ratioX > 0) {
-                    bi.setAspectRatio(builder.ratioX, builder.ratioY);
-                }
-                if (builder.resizeWidth > 0)
-                    bi.setRequestedSize(builder.resizeWidth, builder.resizeHeight, builder.resizeOption);
-                bi.start(getContext(), this);
-
+                openCropper(uri);
             } else {
                 builder.onImageSelectedListener.onImageSelected(uri);
                 dismissAllowingStateLoss();
             }
         }
 
+    }
+
+    private void openCropper(Uri uri) {
+        CropImage.ActivityBuilder bi = CropImage.activity(uri);
+        if (builder.ratioX > 0) {
+            bi.setAspectRatio(builder.ratioX, builder.ratioY);
+        }
+        if (builder.resizeWidth > 0)
+            bi.setRequestedSize(builder.resizeWidth, builder.resizeHeight, builder.resizeOption);
+        bi.start(getContext(), this);
     }
 
     private void addUri(final Uri uri) {
@@ -311,14 +313,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             return;
         }
         if (builder.setCropper) {
-            CropImage.ActivityBuilder bi = CropImage.activity(uri);
-            if (builder.ratioX > 0) {
-                bi.setAspectRatio(builder.ratioX, builder.ratioY);
-            }
-            if (builder.resizeWidth > 0)
-                bi.setRequestedSize(builder.resizeWidth, builder.resizeHeight, builder.resizeOption);
-            bi.start(getContext(), this);
-
+            openCropper(uri);
         } else {
             setToLayout(uri);
         }
