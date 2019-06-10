@@ -311,7 +311,6 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             return;
         }
         if (builder.setCropper) {
-
             CropImage.ActivityBuilder bi = CropImage.activity(uri);
             if (builder.ratioX > 0) {
                 bi.setAspectRatio(builder.ratioX, builder.ratioY);
@@ -387,6 +386,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
+                errorMessage(error.getMessage());
             }
         }
     }
