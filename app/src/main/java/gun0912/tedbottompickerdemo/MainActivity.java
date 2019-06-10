@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                             .setSelectedUri(selectedUri)
                             //.showVideoMedia()
                             .setCropper(true)
-                            .setResize(500, 500,CropImageView.RequestSizeOptions.RESIZE_INSIDE)
+                            .setResize(500, 500, CropImageView.RequestSizeOptions.RESIZE_INSIDE)
                             .setPeekHeight(1200)
                             .show(uri -> {
                                 Log.d("ted", "uri: " + uri);
