@@ -59,7 +59,7 @@ If you think this library is useful, please press star button at upside.
 ### 1. Check Permission
 You have to grant `WRITE_EXTERNAL_STORAGE` permission from user.<br/>
 If your targetSDK version is 23+, you have to check permission and request permission to user.<br/>
-Because after Marshmallow(6.0), you have to not only decalare permisions in `AndroidManifest.xml` but also request permissions at runtime.<br/>
+Because after Marshmallow(6.0), you have to not only declare permissions in `AndroidManifest.xml` but also request permissions at runtime.<br/>
 There are so many permission check library in [Android-Arsenal](http://android-arsenal.com/tag/235?sort=rating)<br/>
 I recommend [TedPermission](https://github.com/ParkSangGwon/TedPermission)<br/>
 **TedPermission** is super simple and smart permission check library.<br/>
