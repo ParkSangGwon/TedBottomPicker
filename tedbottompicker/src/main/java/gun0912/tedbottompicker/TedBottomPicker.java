@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -53,6 +54,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class TedBottomPicker extends BottomSheetDialogFragment {
 
@@ -506,6 +508,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
       galleryIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
       galleryIntent.setType("video/*");
     }
+    galleryIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
     if (galleryIntent.resolveActivity(getActivity().getPackageManager()) == null) {
       errorMessage("This Application do not have Gallery Application");
@@ -579,13 +582,16 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
   }
 
   private void onActivityResultGallery(Intent data) {
-    Uri temp = data.getData();
+    Uri uri = data.getData();
 
-    if (temp == null) {
+    if (uri == null) {
       errorMessage();
     }
 
-    complete(new MediaPickerEntity(temp).setType(MediaPickerEntity.MEDIA_TYPE.GALLERY));
+    final ContentResolver resolver = Objects.requireNonNull(getContext()).getContentResolver();
+    resolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+    complete(new MediaPickerEntity(uri).setType(MediaPickerEntity.MEDIA_TYPE.GALLERY));
   }
 
   public interface OnMultiImageSelectedListener {
