@@ -1,7 +1,6 @@
 package gun0912.tedbottompicker;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,23 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.ColorRes;
-import android.support.annotation.DimenRes;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,10 +22,30 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.ColorRes;
+import androidx.annotation.DimenRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.gun0912.tedonactivityresult.TedOnActivityResult;
 import com.gun0912.tedonactivityresult.listener.OnActivityResultListener;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,6 +59,8 @@ import java.util.Locale;
 
 import gun0912.tedbottompicker.adapter.GalleryAdapter;
 import gun0912.tedbottompicker.util.RealPathUtil;
+
+import static android.app.Activity.RESULT_OK;
 
 public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
@@ -280,10 +284,24 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             }
 
         } else {
-            builder.onImageSelectedListener.onImageSelected(uri);
-            dismissAllowingStateLoss();
+            if (builder.setCropper) {
+                openCropper(uri);
+            } else {
+                builder.onImageSelectedListener.onImageSelected(uri);
+                dismissAllowingStateLoss();
+            }
         }
 
+    }
+
+    private void openCropper(Uri uri) {
+        CropImage.ActivityBuilder bi = CropImage.activity(uri);
+        if (builder.ratioX > 0) {
+            bi.setAspectRatio(builder.ratioX, builder.ratioY);
+        }
+        if (builder.resizeWidth > 0)
+            bi.setRequestedSize(builder.resizeWidth, builder.resizeHeight, builder.resizeOption);
+        bi.start(getContext(), this);
     }
 
     private void addUri(final Uri uri) {
@@ -298,8 +316,15 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             return;
         }
+        if (builder.setCropper) {
+            openCropper(uri);
+        } else {
+            setToLayout(uri);
+        }
 
+    }
 
+    private void setToLayout(Uri uri) {
         selectedUriList.add(uri);
 
         final View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.tedbottompicker_selected_item, null);
@@ -343,6 +368,26 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         updateSelectedView();
         imageGalleryAdapter.setSelectedUriList(selectedUriList, uri);
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                if (isMultiSelect()) setToLayout(resultUri);
+                else {
+                    builder.onImageSelectedListener.onImageSelected(resultUri);
+                    dismissAllowingStateLoss();
+
+                }
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+                errorMessage(error.getMessage());
+            }
+        }
     }
 
     private void removeImage(Uri uri) {
@@ -409,7 +454,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
                 .setListener(new OnActivityResultListener() {
                     @Override
                     public void onActivityResult(int resultCode, Intent data) {
-                        if (resultCode == Activity.RESULT_OK) {
+                        if (resultCode == RESULT_OK) {
                             onActivityResultCamera(cameraImageUri);
                         }
                     }
@@ -507,7 +552,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
                 .setListener(new OnActivityResultListener() {
                     @Override
                     public void onActivityResult(int resultCode, Intent data) {
-                        if (resultCode == Activity.RESULT_OK) {
+                        if (resultCode == RESULT_OK) {
                             onActivityResultGallery(data);
                         }
                     }
@@ -630,6 +675,12 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         private int spacing = 1;
         private boolean includeEdgeSpacing = false;
         private int peekHeight = -1;
+        private boolean setCropper = false;
+        private int resizeWidth = 0;
+        private int resizeHeight = 0;
+        private CropImageView.RequestSizeOptions resizeOption = CropImageView.RequestSizeOptions.NONE;
+        private int ratioX = 0;
+        private int ratioY = 0;
         private int titleBackgroundResId;
         private int selectMaxCount = Integer.MAX_VALUE;
         private int selectMinCount = 0;
@@ -744,6 +795,24 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
         public T setPeekHeight(int peekHeight) {
             this.peekHeight = peekHeight;
+            return (T) this;
+        }
+
+        public T setCropper(boolean setCropper) {
+            this.setCropper = setCropper;
+            return (T) this;
+        }
+
+        public T setCropperRatio(int ratioX, int ratioY) {
+            this.ratioX = ratioX;
+            this.ratioY = ratioY;
+            return (T) this;
+        }
+
+        public T setResize(int resizeWidth, int resizeHeight, CropImageView.RequestSizeOptions resizeOption) {
+            this.resizeWidth = resizeWidth;
+            this.resizeHeight = resizeHeight;
+            this.resizeOption = resizeOption;
             return (T) this;
         }
 

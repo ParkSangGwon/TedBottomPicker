@@ -1,8 +1,9 @@
 package gun0912.tedbottompicker;
 
 import android.graphics.Rect;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by TedPark on 2016. 8. 30..

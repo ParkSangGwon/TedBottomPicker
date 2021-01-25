@@ -3,7 +3,6 @@ package gun0912.tedbottompickerdemo;
 import android.Manifest;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -14,11 +13,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
                             //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
                             .setSelectedUri(selectedUri)
                             //.showVideoMedia()
+                            .setCropper(true)
+                            .setResize(500, 500, CropImageView.RequestSizeOptions.RESIZE_INSIDE)
                             .setPeekHeight(1200)
                             .show(uri -> {
                                 Log.d("ted", "uri: " + uri);
@@ -105,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
                     TedBottomPicker.with(MainActivity.this)
                             //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
                             .setPeekHeight(1600)
+                            .setCropper(true)
+                            .setCropperRatio(1, 1)
+                            .setResize(500, 500, CropImageView.RequestSizeOptions.RESIZE_INSIDE)
                             .showTitle(false)
                             .setCompleteButtonText("Done")
                             .setEmptySelectionText("No Select")
@@ -113,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
                                 selectedUriList = uriList;
                                 showUriList(uriList);
                             });
-
 
                 }
 
