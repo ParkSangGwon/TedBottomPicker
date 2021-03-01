@@ -125,7 +125,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         }
 
 
-        if (position > 0) {
+        if (position >= 0) {
             notifyItemChanged(position);
         }
 
