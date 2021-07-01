@@ -2,13 +2,12 @@
 
 buildscript {
     repositories {
-        jcenter()
         google()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.2'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
+        classpath 'com.android.tools.build:gradle:4.1.3'
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.16.0'
     }
 }
 
@@ -20,6 +19,12 @@ allprojects {
 
     group = GROUP
     version = VERSION_NAME
+
+    plugins.withId("com.vanniktech.maven.publish") {
+        mavenPublish {
+            sonatypeHost = "S01"
+        }
+    }
 }
 
 task clean(type: Delete) {
