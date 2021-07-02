@@ -3,6 +3,7 @@ package gun0912.tedbottompicker;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -515,6 +516,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
                 .startActivityForResult();
     }
 
+
     private void errorMessage() {
         errorMessage(null);
     }
@@ -605,6 +607,17 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         void onProvideImage(ImageView imageView, Uri imageUri);
     }
 
+    public interface onUserCancelListener
+    {
+        void onCancel();
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        builder.onCancelListener.onCancel();
+        super.onCancel(dialog);
+    }
+
     public abstract static class BaseBuilder<T extends BaseBuilder> {
 
         public int previewMaxCount = 25;
@@ -620,6 +633,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         public int mediaType = MediaType.IMAGE;
         protected FragmentActivity fragmentActivity;
         OnImageSelectedListener onImageSelectedListener;
+        onUserCancelListener onCancelListener;
         OnMultiImageSelectedListener onMultiImageSelectedListener;
         OnErrorListener onErrorListener;
         private String title;
@@ -711,6 +725,12 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             this.onImageSelectedListener = onImageSelectedListener;
             return (T) this;
         }
+
+        public T SetOnUserCancelled(onUserCancelListener onUserCancelListener ){
+            this.onCancelListener = onUserCancelListener;
+            return (T) this;
+        }
+
 
         public T setOnMultiImageSelectedListener(OnMultiImageSelectedListener onMultiImageSelectedListener) {
             this.onMultiImageSelectedListener = onMultiImageSelectedListener;

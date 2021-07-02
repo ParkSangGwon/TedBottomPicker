@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gun0912.tedbottompicker.TedBottomPicker;
+import gun0912.tedbottompicker.TedBottomSheetDialogFragment;
 import gun0912.tedbottompicker.TedRxBottomPicker;
 import io.reactivex.disposables.Disposable;
 
@@ -109,6 +110,12 @@ public class MainActivity extends AppCompatActivity {
                             .setCompleteButtonText("Done")
                             .setEmptySelectionText("No Select")
                             .setSelectedUriList(selectedUriList)
+                            .SetOnUserCancelled( new TedBottomSheetDialogFragment.onUserCancelListener(){
+                                @Override
+                                public void onCancel() {
+
+                                }
+                            })
                             .showMultiImage(uriList -> {
                                 selectedUriList = uriList;
                                 showUriList(uriList);
