@@ -43,7 +43,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.gun0912.tedonactivityresult.TedOnActivityResult;
-import com.gun0912.tedonactivityresult.listener.OnActivityResultListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,30 +61,29 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
     private static final String EXTRA_CAMERA_IMAGE_URI = "camera_image_uri";
     private static final String EXTRA_CAMERA_SELECTED_IMAGE_URI = "camera_selected_image_uri";
+
     public BaseBuilder builder;
+
     private GalleryAdapter imageGalleryAdapter;
-    private View view_title_container;
-    private TextView tv_title;
-    private Button btn_done;
 
-    private FrameLayout selected_photos_container_frame;
-    private LinearLayout selected_photos_container;
-
-    private TextView selected_photos_empty;
     private List<Uri> selectedUriList;
     private List<Uri> tempUriList;
     private Uri cameraImageUri;
-    private RecyclerView rc_gallery;
-    private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
 
+    private FrameLayout selectedPhotosContainerFrame;
+    private LinearLayout selectedPhotosContainer;
+    private Button btnDone;
+    private RecyclerView rcGallery;
+    private TextView selectedPhotosEmpty;
+    private TextView tvTitle;
+    private View viewTitleContainer;
 
+    private BottomSheetBehavior.BottomSheetCallback bottomSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
         @Override
         public void onStateChanged(@NonNull View bottomSheet, int newState) {
             if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                 dismissAllowingStateLoss();
             }
-
-
         }
 
         @Override
@@ -122,7 +120,6 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         ft.commitAllowingStateLoss();
     }
 
-
     @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
@@ -132,7 +129,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
                 (CoordinatorLayout.LayoutParams) ((View) contentView.getParent()).getLayoutParams();
         CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
         if (behavior instanceof BottomSheetBehavior) {
-            ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetBehaviorCallback);
+            ((BottomSheetBehavior) behavior).setBottomSheetCallback(bottomSheetCallback);
             if (builder != null && builder.peekHeight > 0) {
                 ((BottomSheetBehavior) behavior).setPeekHeight(builder.peekHeight);
             }
@@ -151,7 +148,6 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
         selectedUriList = new ArrayList<>();
 
-
         if (builder.onImageSelectedListener != null && cameraImageUri != null) {
             addUri(cameraImageUri);
         } else if (builder.onMultiImageSelectedListener != null && tempUriList != null) {
@@ -165,29 +161,17 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
     }
 
     private void setSelectionView() {
-
         if (builder.emptySelectionText != null) {
-            selected_photos_empty.setText(builder.emptySelectionText);
+            selectedPhotosEmpty.setText(builder.emptySelectionText);
         }
-
-
     }
 
     private void setDoneButton() {
-
         if (builder.completeButtonText != null) {
-            btn_done.setText(builder.completeButtonText);
+            btnDone.setText(builder.completeButtonText);
         }
 
-        btn_done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                onMultiSelectComplete();
-
-
-            }
-        });
+        btnDone.setOnClickListener(view -> onMultiSelectComplete());
     }
 
     private void onMultiSelectComplete() {
@@ -211,62 +195,50 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
     private void checkMultiMode() {
         if (!isMultiSelect()) {
-            btn_done.setVisibility(View.GONE);
-            selected_photos_container_frame.setVisibility(View.GONE);
+            btnDone.setVisibility(View.GONE);
+            selectedPhotosContainerFrame.setVisibility(View.GONE);
         }
-
     }
 
     private void initView(View contentView) {
+        viewTitleContainer = contentView.findViewById(R.id.view_title_container);
+        rcGallery = contentView.findViewById(R.id.rc_gallery);
+        tvTitle = contentView.findViewById(R.id.tv_title);
+        btnDone = contentView.findViewById(R.id.btn_done);
 
-        view_title_container = contentView.findViewById(R.id.view_title_container);
-        rc_gallery = contentView.findViewById(R.id.rc_gallery);
-        tv_title = contentView.findViewById(R.id.tv_title);
-        btn_done = contentView.findViewById(R.id.btn_done);
-
-        selected_photos_container_frame = contentView.findViewById(R.id.selected_photos_container_frame);
-        selected_photos_container = contentView.findViewById(R.id.selected_photos_container);
-        selected_photos_empty = contentView.findViewById(R.id.selected_photos_empty);
+        selectedPhotosContainerFrame = contentView.findViewById(R.id.selected_photos_container_frame);
+        selectedPhotosContainer = contentView.findViewById(R.id.selected_photos_container);
+        selectedPhotosEmpty = contentView.findViewById(R.id.selected_photos_empty);
     }
 
     private void setRecyclerView() {
-
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
-        rc_gallery.setLayoutManager(gridLayoutManager);
-        rc_gallery.addItemDecoration(new GridSpacingItemDecoration(gridLayoutManager.getSpanCount(), builder.spacing, builder.includeEdgeSpacing));
+        rcGallery.setLayoutManager(gridLayoutManager);
+        rcGallery.addItemDecoration(new GridSpacingItemDecoration(gridLayoutManager.getSpanCount(), builder.spacing, builder.includeEdgeSpacing));
         updateAdapter();
     }
 
     private void updateAdapter() {
+        imageGalleryAdapter = new GalleryAdapter(getContext(), builder);
+        rcGallery.setAdapter(imageGalleryAdapter);
+        imageGalleryAdapter.setOnItemClickListener((view, position) -> {
 
-        imageGalleryAdapter = new GalleryAdapter(
-                getActivity()
-                , builder);
-        rc_gallery.setAdapter(imageGalleryAdapter);
-        imageGalleryAdapter.setOnItemClickListener(new GalleryAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
+            GalleryAdapter.PickerTile pickerTile = imageGalleryAdapter.getItem(position);
 
-                GalleryAdapter.PickerTile pickerTile = imageGalleryAdapter.getItem(position);
-
-                switch (pickerTile.getTileType()) {
-                    case GalleryAdapter.PickerTile.CAMERA:
-                        startCameraIntent();
-                        break;
-                    case GalleryAdapter.PickerTile.GALLERY:
-                        startGalleryIntent();
-                        break;
-                    case GalleryAdapter.PickerTile.IMAGE:
-                        if (pickerTile.getImageUri() != null) {
-                            complete(pickerTile.getImageUri());
-                        }
-
-                        break;
-
-                    default:
-                        errorMessage();
-                }
-
+            switch (pickerTile.getTileType()) {
+                case GalleryAdapter.PickerTile.CAMERA:
+                    startCameraIntent();
+                    break;
+                case GalleryAdapter.PickerTile.GALLERY:
+                    startGalleryIntent();
+                    break;
+                case GalleryAdapter.PickerTile.IMAGE:
+                    if (pickerTile.getImageUri() != null) {
+                        complete(pickerTile.getImageUri());
+                    }
+                    break;
+                default:
+                    errorMessage();
             }
         });
     }
@@ -283,7 +255,6 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             builder.onImageSelectedListener.onImageSelected(uri);
             dismissAllowingStateLoss();
         }
-
     }
 
     private void addUri(final Uri uri) {
@@ -299,19 +270,17 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             return;
         }
 
-
         selectedUriList.add(uri);
 
         final View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.tedbottompicker_selected_item, null);
-        ImageView thumbnail = rootView.findViewById(R.id.selected_photo);
-        ImageView iv_close = rootView.findViewById(R.id.iv_close);
+        ImageView ivThumbnail = rootView.findViewById(R.id.selected_photo);
+        ImageView ivClose = rootView.findViewById(R.id.iv_close);
         rootView.setTag(uri);
 
-        selected_photos_container.addView(rootView, 0);
-
+        selectedPhotosContainer.addView(rootView, 0);
 
         int px = (int) getResources().getDimension(R.dimen.tedbottompicker_selected_image_height);
-        thumbnail.setLayoutParams(new FrameLayout.LayoutParams(px, px));
+        ivThumbnail.setLayoutParams(new FrameLayout.LayoutParams(px, px));
 
         if (builder.imageProvider == null) {
             Glide.with(getActivity())
@@ -321,24 +290,16 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
                             .centerCrop()
                             .placeholder(R.drawable.ic_gallery)
                             .error(R.drawable.img_error))
-                    .into(thumbnail);
+                    .into(ivThumbnail);
         } else {
-            builder.imageProvider.onProvideImage(thumbnail, uri);
+            builder.imageProvider.onProvideImage(ivThumbnail, uri);
         }
-
 
         if (builder.deSelectIconDrawable != null) {
-            iv_close.setImageDrawable(builder.deSelectIconDrawable);
+            ivClose.setImageDrawable(builder.deSelectIconDrawable);
         }
 
-        iv_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeImage(uri);
-
-            }
-        });
-
+        ivClose.setOnClickListener(v -> removeImage(uri));
 
         updateSelectedView();
         imageGalleryAdapter.setSelectedUriList(selectedUriList, uri);
@@ -346,16 +307,14 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
     }
 
     private void removeImage(Uri uri) {
-
         selectedUriList.remove(uri);
 
-
-        for (int i = 0; i < selected_photos_container.getChildCount(); i++) {
-            View childView = selected_photos_container.getChildAt(i);
+        for (int i = 0; i < selectedPhotosContainer.getChildCount(); i++) {
+            View childView = selectedPhotosContainer.getChildAt(i);
 
 
             if (childView.getTag().equals(uri)) {
-                selected_photos_container.removeViewAt(i);
+                selectedPhotosContainer.removeViewAt(i);
                 break;
             }
         }
@@ -365,53 +324,56 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
     }
 
     private void updateSelectedView() {
-
         if (selectedUriList == null || selectedUriList.size() == 0) {
-            selected_photos_empty.setVisibility(View.VISIBLE);
-            selected_photos_container.setVisibility(View.GONE);
+            selectedPhotosEmpty.setVisibility(View.VISIBLE);
+            selectedPhotosContainer.setVisibility(View.GONE);
         } else {
-            selected_photos_empty.setVisibility(View.GONE);
-            selected_photos_container.setVisibility(View.VISIBLE);
+            selectedPhotosEmpty.setVisibility(View.GONE);
+            selectedPhotosContainer.setVisibility(View.VISIBLE);
         }
 
     }
 
     private void startCameraIntent() {
-        Intent cameraInent;
+        Intent cameraIntent;
         File mediaFile;
 
-        if (builder.mediaType == BaseBuilder.MediaType.IMAGE) {
-            cameraInent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            mediaFile = getImageFile();
-        } else {
-            cameraInent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-            mediaFile = getVideoFile();
+        switch (builder.mediaType) {
+            case BaseBuilder.MediaType.IMAGE:
+                cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                mediaFile = getImageFile();
+                break;
+            case BaseBuilder.MediaType.VIDEO:
+                cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                mediaFile = getVideoFile();
+                break;
+            case BaseBuilder.MediaType.IMAGE_AND_VIDEO:
+            default:
+                cameraIntent = new Intent();
+                mediaFile = getVideoFile();
+                break;
         }
 
-        if (cameraInent.resolveActivity(getActivity().getPackageManager()) == null) {
+        if (cameraIntent.resolveActivity(getActivity().getPackageManager()) == null) {
             errorMessage("This Application do not have Camera Application");
             return;
         }
 
-
         Uri photoURI = FileProvider.getUriForFile(getContext(), getContext().getApplicationContext().getPackageName() + ".provider", mediaFile);
 
-        List<ResolveInfo> resolvedIntentActivities = getContext().getPackageManager().queryIntentActivities(cameraInent, PackageManager.MATCH_DEFAULT_ONLY);
+        List<ResolveInfo> resolvedIntentActivities = getContext().getPackageManager().queryIntentActivities(cameraIntent, PackageManager.MATCH_DEFAULT_ONLY);
         for (ResolveInfo resolvedIntentInfo : resolvedIntentActivities) {
             String packageName = resolvedIntentInfo.activityInfo.packageName;
             getContext().grantUriPermission(packageName, photoURI, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
 
-        cameraInent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 
         TedOnActivityResult.with(getActivity())
-                .setIntent(cameraInent)
-                .setListener(new OnActivityResultListener() {
-                    @Override
-                    public void onActivityResult(int resultCode, Intent data) {
-                        if (resultCode == Activity.RESULT_OK) {
-                            onActivityResultCamera(cameraImageUri);
-                        }
+                .setIntent(cameraIntent)
+                .setListener((resultCode, data) -> {
+                    if (resultCode == Activity.RESULT_OK) {
+                        onActivityResultCamera(cameraImageUri);
                     }
                 })
                 .startActivityForResult();
@@ -425,8 +387,9 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             String imageFileName = "JPEG_" + timeStamp + "_";
             File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
-            if (!storageDir.exists())
+            if (!storageDir.exists()) {
                 storageDir.mkdirs();
+            }
 
             imageFile = File.createTempFile(
                     imageFileName,  /* prefix */
@@ -434,14 +397,12 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
                     storageDir      /* directory */
             );
 
-
             // Save a file: path for use with ACTION_VIEW intents
             cameraImageUri = Uri.fromFile(imageFile);
         } catch (IOException e) {
             e.printStackTrace();
             errorMessage("Could not create imageFile for camera");
         }
-
 
         return imageFile;
     }
@@ -454,8 +415,9 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             String imageFileName = "VIDEO_" + timeStamp + "_";
             File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
 
-            if (!storageDir.exists())
+            if (!storageDir.exists()) {
                 storageDir.mkdirs();
+            }
 
             videoFile = File.createTempFile(
                     imageFileName,  /* prefix */
@@ -463,14 +425,12 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
                     storageDir      /* directory */
             );
 
-
             // Save a file: path for use with ACTION_VIEW intents
             cameraImageUri = Uri.fromFile(videoFile);
         } catch (IOException e) {
             e.printStackTrace();
             errorMessage("Could not create imageFile for camera");
         }
-
 
         return videoFile;
     }
@@ -487,14 +447,12 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
     private void startGalleryIntent() {
         Intent galleryIntent;
-        Uri uri;
         if (builder.mediaType == BaseBuilder.MediaType.IMAGE) {
             galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             galleryIntent.setType("image/*");
         } else {
             galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
             galleryIntent.setType("video/*");
-
         }
 
         if (galleryIntent.resolveActivity(getActivity().getPackageManager()) == null) {
@@ -504,12 +462,9 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
         TedOnActivityResult.with(getActivity())
                 .setIntent(galleryIntent)
-                .setListener(new OnActivityResultListener() {
-                    @Override
-                    public void onActivityResult(int resultCode, Intent data) {
-                        if (resultCode == Activity.RESULT_OK) {
-                            onActivityResultGallery(data);
-                        }
+                .setListener((resultCode, data) -> {
+                    if (resultCode == Activity.RESULT_OK) {
+                        onActivityResultGallery(data);
                     }
                 })
                 .startActivityForResult();
@@ -520,25 +475,23 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
     }
 
     private void setTitle() {
-
         if (!builder.showTitle) {
-            tv_title.setVisibility(View.GONE);
+            tvTitle.setVisibility(View.GONE);
 
             if (!isMultiSelect()) {
-                view_title_container.setVisibility(View.GONE);
+                viewTitleContainer.setVisibility(View.GONE);
             }
 
             return;
         }
 
         if (!TextUtils.isEmpty(builder.title)) {
-            tv_title.setText(builder.title);
+            tvTitle.setText(builder.title);
         }
 
         if (builder.titleBackgroundResId > 0) {
-            tv_title.setBackgroundResource(builder.titleBackgroundResId);
+            tvTitle.setBackgroundResource(builder.titleBackgroundResId);
         }
-
     }
 
     private boolean isMultiSelect() {
@@ -546,27 +499,20 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
     }
 
     private void onActivityResultCamera(final Uri cameraImageUri) {
-
         MediaScannerConnection.scanFile(getContext(), new String[]{cameraImageUri.getPath()}, new String[]{"image/jpeg"}, new MediaScannerConnection.MediaScannerConnectionClient() {
             @Override
             public void onMediaScannerConnected() {
-
             }
 
             @Override
             public void onScanCompleted(String s, Uri uri) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        updateAdapter();
-                        complete(cameraImageUri);
-                    }
+                getActivity().runOnUiThread(() -> {
+                    updateAdapter();
+                    complete(cameraImageUri);
                 });
-
             }
         });
     }
-
 
     private void onActivityResultGallery(Intent data) {
         Uri temp = data.getData();
@@ -585,9 +531,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         }
 
         complete(selectedImageUri);
-
     }
-
 
     public interface OnMultiImageSelectedListener {
         void onImagesSelected(List<Uri> uriList);
@@ -842,6 +786,11 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             return (T) this;
         }
 
+        public T showImageAndVideoMedia() {
+            this.mediaType = MediaType.IMAGE_AND_VIDEO;
+            return (T) this;
+        }
+
         public TedBottomSheetDialogFragment create() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
                     && ContextCompat.checkSelfPermission(fragmentActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -858,14 +807,11 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        @IntDef({MediaType.IMAGE, MediaType.VIDEO})
+        @IntDef({MediaType.IMAGE, MediaType.VIDEO, MediaType.IMAGE_AND_VIDEO})
         public @interface MediaType {
             int IMAGE = 1;
             int VIDEO = 2;
+            int IMAGE_AND_VIDEO = 3;
         }
-
-
     }
-
-
 }

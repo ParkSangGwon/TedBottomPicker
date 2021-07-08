@@ -13,7 +13,6 @@ public class TedRxBottomPicker extends TedBottomSheetDialogFragment {
         return new Builder(fragmentActivity);
     }
 
-
     public static class Builder extends BaseBuilder<Builder> {
 
         private Builder(FragmentActivity fragmentActivity) {
@@ -46,5 +45,4 @@ public class TedRxBottomPicker extends TedBottomSheetDialogFragment {
             });
         }
     }
-
 }
