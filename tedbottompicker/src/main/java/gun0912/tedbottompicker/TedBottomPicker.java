@@ -502,10 +502,10 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     Intent galleryIntent;
     Uri uri;
     if (builder.mediaType == Builder.MediaType.IMAGE) {
-      galleryIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+      galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
       galleryIntent.setType("image/*");
     } else {
-      galleryIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+      galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
       galleryIntent.setType("video/*");
     }
     galleryIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -587,9 +587,6 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     if (uri == null) {
       errorMessage();
     }
-
-    final ContentResolver resolver = Objects.requireNonNull(getContext()).getContentResolver();
-    resolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
     complete(new MediaPickerEntity(uri).setType(MediaPickerEntity.MEDIA_TYPE.GALLERY));
   }
