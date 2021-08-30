@@ -35,7 +35,8 @@ public class MediaPickerEntity implements Parcelable {
   public enum MEDIA_TYPE {
     CAMERA,
     GALLERY,
-    PICKER
+    PICKER,
+    PDF
   }
 
   public MediaPickerEntity setType(MEDIA_TYPE type) {
