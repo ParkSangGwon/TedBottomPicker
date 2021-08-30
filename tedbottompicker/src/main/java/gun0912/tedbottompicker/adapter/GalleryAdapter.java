@@ -41,7 +41,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     IMAGE,
     CAMERA,
     GALLERY,
-    OTHER
+    OTHER,
+    PDF
   }
 
   public GalleryAdapter(Context context, TedBottomPicker.Builder builder) {
@@ -62,6 +63,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
     if (builder.showGallery) {
       pickerTiles.add(new PickerTile(PickerTile.GALLERY));
+    }
+
+    if (builder.showPDFPicker) {
+      pickerTiles.add(new PickerTile(PickerTile.PDF));
     }
 
     Cursor cursor = null;
@@ -176,6 +181,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     } else if (pickerTile.isGalleryTile()) {
       holder.iv_thumbnail.setBackgroundResource(builder.galleryTileBackgroundResId);
       holder.iv_thumbnail.setImageDrawable(builder.galleryTileDrawable);
+    } else if (pickerTile.isPDFTile()) {
+      holder.iv_thumbnail.setBackgroundResource(builder.pdfTileBackgroundResId);
+      holder.iv_thumbnail.setImageDrawable(builder.pdfTileDrawable);
     } else {
       Uri uri = pickerTile.getImageUri();
       if (builder.imageProvider == null) {
@@ -237,6 +245,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
       return TYPE.GALLERY.ordinal();
     } else if (pickerTile.isCameraTile()) {
       return TYPE.CAMERA.ordinal();
+    } else if (pickerTile.isPDFTile()) {
+      return TYPE.PDF.ordinal();
     }
 
     return TYPE.OTHER.ordinal();
@@ -257,6 +267,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     public static final int CAMERA = 2;
     public static final int VIDEO_CAPTURE = 3;
     public static final int GALLERY = 4;
+    public static final int PDF = 5;
     protected final Uri imageUri;
     protected final
     @TileType
@@ -295,6 +306,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         return "VideoTile";
       } else if (isGalleryTile()) {
         return "PickerTile";
+      } else if (isPDFTile()) {
+        return "PDFTile";
       } else {
         return "Invalid item";
       }
@@ -316,12 +329,16 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
       return tileType == VIDEO_CAPTURE;
     }
 
-    @IntDef({ IMAGE, CAMERA, GALLERY, VIDEO_CAPTURE })
+    public boolean isPDFTile() {
+      return tileType == PDF;
+    }
+
+    @IntDef({ IMAGE, CAMERA, GALLERY, VIDEO_CAPTURE, PDF })
     @Retention(RetentionPolicy.SOURCE)
     public @interface TileType {
     }
 
-    @IntDef({ CAMERA, GALLERY, VIDEO_CAPTURE })
+    @IntDef({ CAMERA, GALLERY, VIDEO_CAPTURE, PDF })
     @Retention(RetentionPolicy.SOURCE)
     public @interface SpecialTileType {
     }

@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                     .setTitle("TEST TEST")
                     .setSpanCount(4)
                     .setSelectMaxCount(3)
+                    .setShowPDFPicker(true)
                     .setCompleteButtonText("Done")
                     .setTopBarBackgroundResId(R.color.red)
                     .setButtonTextColor(android.R.color.white)
