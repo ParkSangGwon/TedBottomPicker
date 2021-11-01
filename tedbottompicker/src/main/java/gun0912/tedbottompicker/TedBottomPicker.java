@@ -155,7 +155,10 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         ((BottomSheetBehavior) behavior).setPeekHeight(builder.peekHeight);
       }
     }
-
+    if (builder == null) {
+      dismissAllowingStateLoss();
+      return;
+    }
     initView(contentView);
 
     setTitle();
