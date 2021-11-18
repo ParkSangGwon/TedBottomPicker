@@ -253,9 +253,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
   private void updateAdapter() {
 
-    imageGalleryAdapter = new GalleryAdapter(
-        getActivity()
-        , builder);
+    imageGalleryAdapter = new GalleryAdapter(getActivity(), builder);
     rc_gallery.setAdapter(imageGalleryAdapter);
     imageGalleryAdapter.setOnItemClickListener(new GalleryAdapter.OnItemClickListener() {
       @Override
@@ -290,11 +288,10 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
   private void complete(final MediaPickerEntity mediaPickerEntity) {
     if (isMultiSelect()) {
 
-      if (selectedUriList.contains(mediaPickerEntity)) {
-        removeImage(mediaPickerEntity);
-      } else {
+      if (!selectedUriList.contains(mediaPickerEntity)) {
         addUri(mediaPickerEntity);
       }
+
     } else {
       builder.onImageSelectedListener.onImageSelected(mediaPickerEntity.getUri());
       dismissAllowingStateLoss();
