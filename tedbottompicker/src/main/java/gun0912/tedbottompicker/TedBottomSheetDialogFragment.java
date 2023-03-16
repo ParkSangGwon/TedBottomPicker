@@ -575,7 +575,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
             errorMessage();
         }
 
-        String realPath = RealPathUtil.getRealPath(getActivity(), temp);
+        String realPath = RealPathUtil.getRealPath(getActivity(), temp, builder.mediaType);
 
         Uri selectedImageUri;
         try {
