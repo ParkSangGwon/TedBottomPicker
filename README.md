@@ -1,4 +1,5 @@
- 
+# [THIS LIBRARY IS DEPRECATED] Please use [TedImagePicker](https://github.com/ParkSangGwon/TedImagePicker)
+<br/><br/><br/><br/><br/><br/>
 # What is TedBottomPicker?
 In Google's Material Design, Google introduce **Bottom sheets**.([Components – Bottom sheets](https://material.google.com/components/bottom-sheets.html))<br/>
 **Bottom sheets** slide up from the bottom of the screen to reveal more content.
