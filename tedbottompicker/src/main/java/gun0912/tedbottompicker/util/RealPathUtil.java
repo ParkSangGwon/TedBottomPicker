@@ -1,5 +1,6 @@
 package gun0912.tedbottompicker.util;
 
+
 import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
@@ -11,13 +12,23 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+
+import gun0912.tedbottompicker.TedBottomSheetDialogFragment;
+
 /**
  * Created by TedPark on 2016. 11. 5..
  */
 
 public class RealPathUtil {
 
-    public static String getRealPath(Context context, Uri uri) {
+    public static String getRealPath(Context context, Uri uri, final int mediaType) {
         String realPath;
         // SDK < API11
         if (Build.VERSION.SDK_INT < 19) {
@@ -25,14 +36,14 @@ public class RealPathUtil {
         }
         // SDK > 19 (Android 4.4)
         else {
-            realPath = RealPathUtil.getRealPathFromURI_API19(context, uri);
+            realPath = RealPathUtil.getRealPathFromURI_API19(context, uri, mediaType);
         }
 
         return realPath;
     }
 
     @SuppressLint("NewApi")
-    public static String getRealPathFromURI_API19(final Context context, final Uri uri) {
+    public static String getRealPathFromURI_API19(final Context context, final Uri uri, final int mediaType) {
 
         // check here to KITKAT or new version
         final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
@@ -89,6 +100,9 @@ public class RealPathUtil {
             // Return the remote address
             if (isGooglePhotosUri(uri))
                 return uri.getLastPathSegment();
+            else if (isItAGooglePhotoWhichAreNotOnLocalDevice(uri)) {
+                return getPathFromInputStreamUri(context, uri, mediaType);
+            }
 
             return getDataColumn(context, uri, null, null);
         }
@@ -175,6 +189,16 @@ public class RealPathUtil {
                 .getAuthority());
     }
 
+    /**
+     * @param uri
+     *            The Uri to check.
+     * @return Whether the Uri authority is Google Photos which are not stored locally.
+     */
+    public static boolean isItAGooglePhotoWhichAreNotOnLocalDevice(Uri uri) {
+        return "com.google.android.apps.photos.contentprovider".equals(uri
+                .getAuthority());
+    }
+
     @SuppressLint("NewApi")
     public static String getRealPathFromURI_API11to18(Context context, Uri contentUri) {
         String[] proj = { MediaStore.Images.Media.DATA };
@@ -201,5 +225,77 @@ public class RealPathUtil {
                 = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
+    }
+
+    public static String getPathFromInputStreamUri(Context context, Uri uri, final int mediaType) {
+        InputStream inputStream = null;
+        String filePath = null;
+
+        if (uri.getAuthority() != null) {
+            try {
+                inputStream = context.getContentResolver().openInputStream(uri);
+                File photoFile = createTemporalFileFrom(context, inputStream, mediaType);
+
+                filePath = photoFile.getPath();
+
+                photoFile.deleteOnExit();
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (inputStream != null) {
+                        inputStream.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return filePath;
+    }
+
+    private static File createTemporalFileFrom(Context context, InputStream inputStream, final int mediaType) throws IOException {
+        File targetFile = null;
+
+        if (inputStream != null) {
+            int read;
+            byte[] buffer = new byte[8 * 1024];
+
+            targetFile = createTemporalFile(context, mediaType);
+            OutputStream outputStream;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                outputStream = Files.newOutputStream(targetFile.toPath());
+            } else {
+                outputStream = new FileOutputStream(targetFile);
+            }
+
+            while ((read = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, read);
+            }
+            outputStream.flush();
+
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return targetFile;
+    }
+
+    private static File createTemporalFile(Context context, final int mediaType) {
+        String fileExtension;
+        if (mediaType == TedBottomSheetDialogFragment.BaseBuilder.MediaType.VIDEO) {
+            fileExtension = ".mp4";
+        } else {
+            fileExtension = ".jpg";
+        }
+        return new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "tempPicture_" + System.currentTimeMillis() + fileExtension);
     }
 }
