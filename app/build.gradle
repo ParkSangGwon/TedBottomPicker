@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 30
+    compileSdkVersion 33
 
 
     defaultConfig {
         applicationId "gun0912.tedbottompickerdemo"
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0.0"
     }

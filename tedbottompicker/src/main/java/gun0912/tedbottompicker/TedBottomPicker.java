@@ -982,7 +982,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
     }
 
     public TedBottomPicker create() {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
           && ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
           != PackageManager.PERMISSION_GRANTED) {
         throw new RuntimeException(

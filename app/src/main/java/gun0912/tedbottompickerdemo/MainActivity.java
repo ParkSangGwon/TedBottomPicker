@@ -2,6 +2,7 @@ package gun0912.tedbottompickerdemo;
 
 import android.Manifest;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -90,8 +91,7 @@ public class MainActivity extends AppCompatActivity {
             .setPermissionListener(permissionlistener)
             .setDeniedMessage(
                 "If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-            .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO)
+            .setPermissions(getRequiredPermissions())
             .check();
       }
     });
@@ -147,8 +147,7 @@ public class MainActivity extends AppCompatActivity {
             .setPermissionListener(permissionlistener)
             .setDeniedMessage(
                 "If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-            .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO)
+            .setPermissions(getRequiredPermissions())
             .check();
       }
     });
@@ -180,6 +179,23 @@ public class MainActivity extends AppCompatActivity {
       mSelectedImagesContainer.addView(imageHolder);
 
       thumbnail.setLayoutParams(new FrameLayout.LayoutParams(wdpx, htpx));
+    }
+  }
+
+  private String[] getRequiredPermissions() {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+      return new String[] {
+          Manifest.permission.WRITE_EXTERNAL_STORAGE,
+          Manifest.permission.CAMERA,
+          Manifest.permission.RECORD_AUDIO
+      };
+    } else {
+      return new String[] {
+          Manifest.permission.CAMERA,
+          Manifest.permission.RECORD_AUDIO,
+          Manifest.permission.READ_MEDIA_IMAGES,
+          Manifest.permission.READ_MEDIA_VIDEO
+      };
     }
   }
 }
