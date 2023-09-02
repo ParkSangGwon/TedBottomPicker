@@ -1,71 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="gun0912.tedbottompickerdemo.MainActivity">
 
     <Button
-        android:id="@+id/btn_single_show"
-        android:layout_width="wrap_content"
+        android:id="@+id/btn_single_image_video"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Show Ted Bottom Picker(Single)" />
+        android:text="Show image/video picker" />
 
+    <Button
+        android:id="@+id/btn_single_show"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Show image picker (Single)" />
 
     <Button
         android:id="@+id/btn_multi_show"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Show Ted Bottom Picker(Multi)" />
-
-
+        android:text="Show image picker (Multi)" />
 
     <Button
         android:id="@+id/btn_rx_single_show"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Show Ted Rx Bottom Picker(Single)" />
-
 
     <Button
         android:id="@+id/btn_rx_multi_show"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Show Ted Rx Bottom Picker(Multi)" />
+
+    <TextView
+        android:id="@+id/tv_path"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" />
 
     <ImageView
         android:id="@+id/iv_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btn_single_show"
-        android:layout_centerInParent="true"
         android:layout_marginTop="@dimen/activity_vertical_margin" />
 
-
     <HorizontalScrollView
-        android:id="@+id/hori_scroll_view"
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
         android:fillViewport="false"
-        android:foregroundGravity="left"
-        >
-
+        android:foregroundGravity="left">
 
         <LinearLayout
             android:id="@+id/selected_photos_container"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:animateLayoutChanges="true"
-            android:gravity="left"
+            android:gravity="start"
             android:orientation="horizontal"
             android:visibility="visible">
-
 
             <!-- images will be added dynamicall to this layout -->
         </LinearLayout>

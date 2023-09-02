@@ -139,6 +139,7 @@ You can customize something ...<br />
 #### Common
 
 * `showVideoMedia()` : Not only load image, but also load video
+* `showImageAndVideoMedia()` : Load both images and video
 * `setPreviewMaxCount(Int) (default: 25)`
 * `setPeekHeight(Int)`
 * `setPeekHeightResId(R.dimen.xxx)`

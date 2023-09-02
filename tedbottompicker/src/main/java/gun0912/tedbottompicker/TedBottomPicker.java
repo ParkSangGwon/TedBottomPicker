@@ -24,6 +24,4 @@ public class TedBottomPicker extends TedBottomSheetDialogFragment {
             create().show(fragmentActivity.getSupportFragmentManager());
         }
     }
-
-
 }
