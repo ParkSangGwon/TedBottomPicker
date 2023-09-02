@@ -409,7 +409,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
                 .setListener(new OnActivityResultListener() {
                     @Override
                     public void onActivityResult(int resultCode, Intent data) {
-                        if (resultCode == Activity.RESULT_OK) {
+                        if (getActivity() != null && resultCode == Activity.RESULT_OK) {
                             onActivityResultCamera(cameraImageUri);
                         }
                     }
@@ -507,7 +507,7 @@ public class TedBottomSheetDialogFragment extends BottomSheetDialogFragment {
                 .setListener(new OnActivityResultListener() {
                     @Override
                     public void onActivityResult(int resultCode, Intent data) {
-                        if (resultCode == Activity.RESULT_OK) {
+                        if (getActivity() != null && resultCode == Activity.RESULT_OK) {
                             onActivityResultGallery(data);
                         }
                     }
